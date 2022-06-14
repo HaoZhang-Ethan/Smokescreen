@@ -1,2 +1,2 @@
 # Smokescreen
-FPGA acceleration vector matrix multiplication
+Vector matrix multiplication by NV-FPGA
