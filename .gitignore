@@ -1,32 +1,147 @@
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
+#
+#Executables and generated files
+#
 *.exe
+
+#Install
+bin/
+
+#
+# Cmake build system
+#
+CMakeCache.txt
+CMakeFiles
+build
+
+#
+#VTR Flow/Tasks
+#
+Tools/vtr/ODIN_II/vtr_flow/tasks/**/run[0-9]*
+Tools/vtr/ODIN_II/vtr_flow/tasks/**/run_latest
+Tools/vtr/ODIN_II/vtr_flow/tasks/**/latest
+Tools/vtr/ODIN_II/vtr_flow/tasks/**/qor_geomean.txt
+Tools/vtr/ODIN_II/vtr_flow/tasks/**/task_summary/
+quick_test/*
+temp/
+
+#
+# Titan benchmarks
+#
+#   We ignore the Titan netlists because of thier large size, and the
+#   Titan architectures since they need to be kept in sync with the
+#   netlists.
+#
+titan_release*.tar.gz
+Tools/vtr/ODIN_II/vtr_flow/arch/titan/*.xml
+Tools/vtr/ODIN_II/vtr_flow/benchmarks/titan_blif/*.blif
+Tools/vtr/ODIN_II/vtr_flow/benchmarks/titan_blif/*.sdc
+Tools/vtr/ODIN_II/vtr_flow/benchmarks/titan_other_blif/*.blif
+Tools/vtr/ODIN_II/vtr_flow/benchmarks/titan_other_blif/*.sdc
+
+
+#
+# ISPD benchmarks
+#
+#   We ignore the ISPD netlists because of thier large size.
+#
+ispd_benchmarks_vtr*.tar.gz
+Tools/vtr/ODIN_II/vtr_flow/benchmarks/ispd_blif/*.blif
+
+#
+# SymbiFlow benchmarks
+#
+#   We ignore the SymbiFlow netlists and architectures because of thier large size.
+#
+*symbiflow*.tar.xz
+Tools/vtr/ODIN_II/vtr_flow/arch/symbiflow/*.bin
+Tools/vtr/ODIN_II/vtr_flow/arch/symbiflow/*.xml
+Tools/vtr/ODIN_II/vtr_flow/benchmarks/symbiflow/*.eblif
+Tools/vtr/ODIN_II/vtr_flow/benchmarks/symbiflow/sdc/*.sdc
+
+#
+# Cloud9 Directory
+#
+.c9/
+.buildconfig
+
+#
+# Log Files
+#
+*.log
+*.log.sh
+vgcore*
+
+#
+# VPR Result files
+#
+*.net
+*.place
+*.route
 *.out
-*.app
+*.bin
+
+#
+# FASM result files
+#
+*.fasm
+
+#
+#Odin test outputs
+#
+Tools/vtr/ODIN_II/ODIN_II/log
+Tools/vtr/ODIN_II/ODIN_II/regression_test/run[0-9]*
+Tools/vtr/ODIN_II/ODIN_II/temp/*
+Tools/vtr/ODIN_II/ODIN_II/usefull_tools/**/run[0-9]*
+Tools/vtr/ODIN_II/ODIN_II/usefull_tools/**/track_completed
+#
+#C/C++
+#
+*.d
+*.o
+*.a
+
+#
+#Python
+#
+*.pyc
+/.venv
+
+#
+#Vim
+#
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+*~
+
+#
+# LibreOffice
+#
+\.~lock*\#
+
+#
+#Ctags
+#
+.tags*
+tags
+
+#
+# VS Code
+#
+.vscode
+.history
+#eclipse project
+.project
+
+#
+# CLION
+#
+.idea
+cmake-build-debug
+/.metadata/
+
+
+
+/mytest/
