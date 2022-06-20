@@ -144,4 +144,5 @@ cmake-build-debug
 
 
 
-/mytest/
+/mytest/MVM_benchmark
+/mytest/*.blif
