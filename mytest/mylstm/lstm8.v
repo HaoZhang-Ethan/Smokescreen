@@ -604,43 +604,27 @@ reg [15:0] sig_oo_d1,sig_oo_d2,sig_oo_d3,sig_oo_d4,sig_oo_d5;
 always @(posedge clk) begin
 
 //Pipeline Registers
-//----------- Zolid ---------------------
-		// mulout_fx_reg <= mulout_fx;
-		// mulout_fh_reg <= mulout_fh;
-		// mac_fx_reg <= macout_fx;
-		// mac_fh_reg <= macout_fh;
-
-		mac_fx_reg <= mulout_fx;
-		mac_fh_reg <= mulout_fh;
-// ------------------------------------
+		mulout_fx_reg <= mulout_fx;
+		mulout_fh_reg <= mulout_fh;
+		mac_fx_reg <= macout_fx;
+		mac_fh_reg <= macout_fh;
 		add_f_reg <= add_f;
 		addb_f_reg <= addbias_f; 
 		sig_fo_reg <= sig_fo;
 		elmul_fo_reg <= elmul_fo; //check if need to delay to wait for elmul_co
 
-//----------- Zolid ---------------------
-		// mulout_ix_reg <= mulout_ix;
-		// mulout_ih_reg <= mulout_ih;
-		// mac_ix_reg <= macout_ix;
-		// mac_ih_reg <= macout_ih;
-
-
-		mac_ix_reg <= mulout_ix;
-		mac_ih_reg <= mulout_ih;
-// ------------------------------------
+		mulout_ix_reg <= mulout_ix;
+		mulout_ih_reg <= mulout_ih;
+		mac_ix_reg <= macout_ix;
+		mac_ih_reg <= macout_ih;
 		add_i_reg <= add_i;
 		addb_i_reg <= addbias_i; 
 		sig_io_reg <= sig_io;
-
-//----------- Zolid ---------------------		
-		// mulout_ox_reg <= mulout_ox;
-		// mulout_oh_reg <= mulout_oh;
-		// mac_ox_reg <= macout_ox;
-		// mac_oh_reg <= macout_oh;
-
-		mac_ox_reg <= mulout_ox;
-		mac_oh_reg <= mulout_oh;
-// ------------------------------------
+		
+		mulout_ox_reg <= mulout_ox;
+		mulout_oh_reg <= mulout_oh;
+		mac_ox_reg <= macout_ox;
+		mac_oh_reg <= macout_oh;
 		add_o_reg <= add_o;
 		addb_o_reg <= addbias_o; 
 		sig_oo_reg <= sig_oo;   
@@ -669,8 +653,8 @@ end
 //FORGET GATE
   vecmat_mul_x #(`varraysize,`INPUT_DEPTH) f_gatex(.clk(clk),.reset(rst),.data(x_in),.W(Wf_in),.tmp(mulout_fx));
   vecmat_mul_h #(`uarraysize,`ARRAY_DEPTH) f_gateh(.clk(clk),.reset(rst),.data(h_in),.W(Uf_in),.tmp(mulout_fh));
-//   vecmat_add_x #(`varraysize,`INPUT_DEPTH) f_gateaddx(.clk(clk),.reset(rst),.mulout(mulout_fx_reg),.data_out(macout_fx));
-//   vecmat_add_h #(`uarraysize,`ARRAY_DEPTH) f_gateaddh(.clk(clk),.reset(rst),.mulout(mulout_fh_reg),.data_out(macout_fh));
+  vecmat_add_x #(`varraysize,`INPUT_DEPTH) f_gateaddx(.clk(clk),.reset(rst),.mulout(mulout_fx_reg),.data_out(macout_fx));
+  vecmat_add_h #(`uarraysize,`ARRAY_DEPTH) f_gateaddh(.clk(clk),.reset(rst),.mulout(mulout_fh_reg),.data_out(macout_fh));
   qadd2 f_gate_add(.a(mac_fx_reg),.b(mac_fh_reg),.c(add_f));
   qadd2 f_gate_biasadd(.a(bf_in),.b(add_f),.c(addbias_f));
   sigmoid sigf(addb_f_reg,sig_fo);
@@ -680,8 +664,8 @@ end
 //INPUT GATE
   vecmat_mul_x #(`varraysize,`INPUT_DEPTH) i_gatex(.clk(clk),.reset(rst),.data(x_in),.W(Wi_in),.tmp(mulout_ix));
   vecmat_mul_h #(`uarraysize,`ARRAY_DEPTH) i_gateh(.clk(clk),.reset(rst),.data(h_in),.W(Ui_in),.tmp(mulout_ih));
-//   vecmat_add_x #(`varraysize,`INPUT_DEPTH) i_gateaddx(.clk(clk),.reset(rst),.mulout(mulout_ix_reg),.data_out(macout_ix));
-//   vecmat_add_h #(`uarraysize,`ARRAY_DEPTH) i_gateaddh(.clk(clk),.reset(rst),.mulout(mulout_ih_reg),.data_out(macout_ih));
+  vecmat_add_x #(`varraysize,`INPUT_DEPTH) i_gateaddx(.clk(clk),.reset(rst),.mulout(mulout_ix_reg),.data_out(macout_ix));
+  vecmat_add_h #(`uarraysize,`ARRAY_DEPTH) i_gateaddh(.clk(clk),.reset(rst),.mulout(mulout_ih_reg),.data_out(macout_ih));
   qadd2 i_gate_add(.a(mac_ix_reg),.b(mac_ih_reg),.c(add_i));
   qadd2 i_gate_biasadd(.a(bi_in),.b(add_i),.c(addbias_i));
   sigmoid sigi(addb_i_reg,sig_io);
@@ -689,8 +673,8 @@ end
 //OUTPUT GATE
   vecmat_mul_x #(`varraysize,`INPUT_DEPTH) o_gatex(.clk(clk),.reset(rst),.data(x_in),.W(Wo_in),.tmp(mulout_ox));
   vecmat_mul_h #(`uarraysize,`ARRAY_DEPTH) o_gateh(.clk(clk),.reset(rst),.data(h_in),.W(Uo_in),.tmp(mulout_oh));
-//   vecmat_add_x #(`varraysize,`INPUT_DEPTH) o_gateaddx(.clk(clk),.reset(rst),.mulout(mulout_ox_reg),.data_out(macout_ox));
-//   vecmat_add_h #(`uarraysize,`ARRAY_DEPTH) o_gateaddh(.clk(clk),.reset(rst),.mulout(mulout_oh_reg),.data_out(macout_oh));
+  vecmat_add_x #(`varraysize,`INPUT_DEPTH) o_gateaddx(.clk(clk),.reset(rst),.mulout(mulout_ox_reg),.data_out(macout_ox));
+  vecmat_add_h #(`uarraysize,`ARRAY_DEPTH) o_gateaddh(.clk(clk),.reset(rst),.mulout(mulout_oh_reg),.data_out(macout_oh));
   qadd2 o_gate_add(.a(mac_ox_reg),.b(mac_oh_reg),.c(add_o));
   qadd2 o_gate_biasadd(.a(bo_in),.b(add_o),.c(addbias_o));
   sigmoid sigo(addb_o_reg,sig_oo);
@@ -698,8 +682,8 @@ end
 //CELL STATE GATE
   vecmat_mul_x #(`varraysize,`INPUT_DEPTH) c_gatex(.clk(clk),.reset(rst),.data(x_in),.W(Wc_in),.tmp(mulout_cx));
   vecmat_mul_h #(`uarraysize,`ARRAY_DEPTH) c_gateh(.clk(clk),.reset(rst),.data(h_in),.W(Uc_in),.tmp(mulout_ch));
-//   vecmat_add_x #(`varraysize,`INPUT_DEPTH) c_gateaddx(.clk(clk),.reset(rst),.mulout(mulout_cx_reg),.data_out(macout_cx));
-//   vecmat_add_h #(`uarraysize,`ARRAY_DEPTH) c_gateaddh(.clk(clk),.reset(rst),.mulout(mulout_ch_reg),.data_out(macout_ch));
+  vecmat_add_x #(`varraysize,`INPUT_DEPTH) c_gateaddx(.clk(clk),.reset(rst),.mulout(mulout_cx_reg),.data_out(macout_cx));
+  vecmat_add_h #(`uarraysize,`ARRAY_DEPTH) c_gateaddh(.clk(clk),.reset(rst),.mulout(mulout_ch_reg),.data_out(macout_ch));
   qadd2 c_gate_add(.a(mac_cx_reg),.b(mac_ch_reg),.c(add_c));
   qadd2 c_gate_biasadd(.a(bc_in),.b(add_c),.c(addbias_c)); 
   tanh tan_c1(addb_c_reg,tan_c);
@@ -814,6 +798,118 @@ module vecmat_mul_h #( parameter uarraysize=1024,parameter vectwidth=64)  //,mat
 	
 endmodule                    
 
+module vecmat_add_h #(parameter uarraysize=1024,parameter vectwidth=64)
+ (
+ input clk,reset,
+ input [uarraysize-1:0] mulout,
+ output reg [15:0] data_out
+ );
+           
+ wire [15:0] tmp0, tmp1 ,tmp2 ,tmp3 ,tmp4 ,tmp5 ,tmp6 ,tmp7 ,tmp8 ,tmp9 ,tmp10 ,tmp11 ,tmp12 ,tmp13 ,tmp14 ,tmp15 ,tmp16 ,tmp17 ,tmp18 ,tmp19 ,tmp20 ,tmp21 ,tmp22 ,tmp23 ,tmp24 ,tmp25 ,tmp26 ,tmp27 ,tmp28 ,tmp29 ,tmp30 ,tmp31 ,tmp32 ,tmp33 ,tmp34 ,tmp35 ,tmp36 ,tmp37 ,tmp38 ,tmp39 ,tmp40 ,tmp41 ,tmp42 ,tmp43 ,tmp44 ,tmp45 ,tmp46 ,tmp47 ,tmp48 ,tmp49 ,tmp50,tmp51 ,tmp52 ,tmp53,tmp54 ,tmp55 ,tmp56 ,tmp57 ,tmp58, tmp59 ,tmp60 ,tmp61,tmp62; 
+ reg[31:0] i;
+ reg [15:0] ff1,ff3,ff5,ff7,ff9,ff11,ff13,ff15,ff17,ff19,ff21,ff23,ff25,ff27,ff29,ff31;
+
+ always @(posedge clk) begin
+	if(~reset) begin
+		data_out <= tmp61;
+
+		//adding a flop pipeline stage
+		ff1 <= tmp1;
+		ff3 <= tmp3;
+		ff5 <= tmp5;
+		ff7 <= tmp7;
+		ff9 <= tmp9;
+		ff11 <= tmp11;
+		ff13 <= tmp13;
+		ff15 <= tmp15;
+		ff17 <= tmp17;
+		ff19 <= tmp19;
+		ff21 <= tmp21;
+		ff23 <= tmp23;
+		ff25 <= tmp25;
+		ff27 <= tmp27;
+		ff29 <= tmp29;
+		ff31 <= tmp31;
+	end   
+ end     
+                                                        
+           // fixed point addition  
+        	qadd2 Add_u0(.a(mulout[8*0+:8]),.b(mulout[8*1+:8]),.c(tmp0));
+		qadd2 Add_u2(.a(mulout[8*2+:8]),.b(mulout[8*3+:8]),.c(tmp2));
+		qadd2 Add_u4(.a(mulout[8*4+:8]),.b(mulout[8*5+:8]),.c(tmp4));
+		qadd2 Add_u6(.a(mulout[8*6+:8]),.b(mulout[8*7+:8]),.c(tmp6));
+		qadd2 Add_u8(.a(mulout[8*8+:8]),.b(mulout[8*9+:8]),.c(tmp8));
+		qadd2 Add_u10(.a(mulout[8*10+:8]),.b(mulout[8*11+:8]),.c(tmp10));
+		qadd2 Add_u12(.a(mulout[8*12+:8]),.b(mulout[8*13+:8]),.c(tmp12));
+		qadd2 Add_u14(.a(mulout[8*14+:8]),.b(mulout[8*15+:8]),.c(tmp14));
+		qadd2 Add_u16(.a(mulout[8*16+:8]),.b(mulout[8*17+:8]),.c(tmp16));
+		qadd2 Add_u18(.a(mulout[8*18+:8]),.b(mulout[8*19+:8]),.c(tmp18));
+		qadd2 Add_u20(.a(mulout[8*20+:8]),.b(mulout[8*21+:8]),.c(tmp20));
+		qadd2 Add_u22(.a(mulout[8*22+:8]),.b(mulout[8*23+:8]),.c(tmp22));
+		qadd2 Add_u24(.a(mulout[8*24+:8]),.b(mulout[8*25+:8]),.c(tmp24));
+		qadd2 Add_u26(.a(mulout[8*26+:8]),.b(mulout[8*27+:8]),.c(tmp26));
+		qadd2 Add_u28(.a(mulout[8*28+:8]),.b(mulout[8*29+:8]),.c(tmp28));
+		qadd2 Add_u30(.a(mulout[8*30+:8]),.b(mulout[8*31+:8]),.c(tmp30));
+		qadd2 Add_u32(.a(mulout[8*32+:8]),.b(mulout[8*33+:8]),.c(tmp32));
+		qadd2 Add_u34(.a(mulout[8*34+:8]),.b(mulout[8*35+:8]),.c(tmp34));
+		qadd2 Add_u36(.a(mulout[8*36+:8]),.b(mulout[8*37+:8]),.c(tmp36));
+		qadd2 Add_u38(.a(mulout[8*38+:8]),.b(mulout[8*39+:8]),.c(tmp38));
+		qadd2 Add_u40(.a(mulout[8*40+:8]),.b(mulout[8*41+:8]),.c(tmp40));
+		qadd2 Add_u42(.a(mulout[8*42+:8]),.b(mulout[8*43+:8]),.c(tmp42));
+		qadd2 Add_u44(.a(mulout[8*44+:8]),.b(mulout[8*45+:8]),.c(tmp44));
+		qadd2 Add_u46(.a(mulout[8*46+:8]),.b(mulout[8*47+:8]),.c(tmp46));
+		qadd2 Add_u48(.a(mulout[8*48+:8]),.b(mulout[8*49+:8]),.c(tmp48));
+		qadd2 Add_u50(.a(mulout[8*50+:8]),.b(mulout[8*51+:8]),.c(tmp50));
+		qadd2 Add_u52(.a(mulout[8*52+:8]),.b(mulout[8*53+:8]),.c(tmp52));
+		qadd2 Add_u54(.a(mulout[8*54+:8]),.b(mulout[8*55+:8]),.c(tmp54));
+		qadd2 Add_u56(.a(mulout[8*56+:8]),.b(mulout[8*57+:8]),.c(tmp56));
+		qadd2 Add_u58(.a(mulout[8*58+:8]),.b(mulout[8*59+:8]),.c(tmp58));
+		qadd2 Add_u60(.a(mulout[8*60+:8]),.b(mulout[8*61+:8]),.c(tmp60));
+		qadd2 Add_u62(.a(mulout[8*62+:8]),.b(mulout[8*63+:8]),.c(tmp62));
+            
+			qadd2 Add_u1(.a(tmp0),.b(tmp2),.c(tmp1));
+			qadd2 Add_u3(.a(tmp4),.b(tmp6),.c(tmp3));
+			qadd2 Add_u5(.a(tmp8),.b(tmp10),.c(tmp5));
+			qadd2 Add_u7(.a(tmp12),.b(tmp14),.c(tmp7));
+			qadd2 Add_u9(.a(tmp16),.b(tmp18),.c(tmp9));
+			qadd2 Add_u11(.a(tmp20),.b(tmp22),.c(tmp11));
+			qadd2 Add_u13(.a(tmp24),.b(tmp26),.c(tmp13));
+			qadd2 Add_u15(.a(tmp28),.b(tmp30),.c(tmp15));
+			qadd2 Add_u17(.a(tmp32),.b(tmp34),.c(tmp17));
+			qadd2 Add_u19(.a(tmp36),.b(tmp38),.c(tmp19));
+			qadd2 Add_u21(.a(tmp40),.b(tmp42),.c(tmp21));
+			qadd2 Add_u23(.a(tmp44),.b(tmp46),.c(tmp23));
+			qadd2 Add_u25(.a(tmp48),.b(tmp50),.c(tmp25));
+			qadd2 Add_u27(.a(tmp52),.b(tmp54),.c(tmp27));
+			qadd2 Add_u29(.a(tmp56),.b(tmp58),.c(tmp29));
+			qadd2 Add_u31(.a(tmp60),.b(tmp62),.c(tmp31));
+
+			qadd2 Add_u33(.a(ff1),.b(ff3),.c(tmp33));
+			qadd2 Add_u35(.a(ff5),.b(ff7),.c(tmp35));
+			qadd2 Add_u37(.a(ff9),.b(ff11),.c(tmp37));
+			qadd2 Add_u39(.a(ff13),.b(ff15),.c(tmp39));
+			qadd2 Add_u41(.a(ff17),.b(ff19),.c(tmp41));
+			qadd2 Add_u43(.a(ff21),.b(ff23),.c(tmp43));
+			qadd2 Add_u45(.a(ff25),.b(ff27),.c(tmp45));
+			qadd2 Add_u47(.a(ff29),.b(ff31),.c(tmp47));
+
+			qadd2 Add_u49(.a(tmp33),.b(tmp35),.c(tmp49));
+			qadd2 Add_u51(.a(tmp37),.b(tmp39),.c(tmp51));
+			qadd2 Add_u53(.a(tmp41),.b(tmp43),.c(tmp53));
+			qadd2 Add_u55(.a(tmp45),.b(tmp47),.c(tmp55));
+
+			qadd2 Add_u57(.a(tmp49),.b(tmp51),.c(tmp57));
+			qadd2 Add_u59(.a(tmp53),.b(tmp55),.c(tmp59));
+
+			qadd2 Add_u61(.a(tmp57),.b(tmp59),.c(tmp61));
+			
+			 /*qadd #(12,16) Add_u1(.a(tmp0),.b(tmp2),.c(tmp1));
+			 qadd #(12,16) Add_u3(.a(tmp4),.b(tmp6),.c(tmp3));
+			// qadd #(12,16) Add_u5(.a(tmp8),.b(tmp1),.c(tmp5));
+ 			 qadd #(12,16) Add_u7(.a(tmp1),.b(tmp3),.c(tmp7));*/
+									
+  
+endmodule
 
 
 
@@ -959,6 +1055,153 @@ module vecmat_mul_x #(parameter varraysize=1600,vectwidth=100) //,matsize=64)   
 	signedmul mult_u99(.clk(clk),.a(vector[99*8+:8]),.b(matrix[99*8+:8]),.c(tmp[99*8+:8]));
 	
  endmodule
+
+ module vecmat_add_x #(parameter varraysize=1600,vectwidth=100) 
+ (
+ input clk,reset,
+ input [varraysize-1:0] mulout,
+ output reg [15:0] data_out
+ );
+          
+  wire [15:0] tmp0, tmp1 ,tmp2 ,tmp3 ,tmp4 ,tmp5 ,tmp6 ,tmp7 ,tmp8 ,tmp9 ,tmp10 ,tmp11 ,tmp12 ,tmp13 ,tmp14 ,tmp15 ,tmp16 ,tmp17 ,tmp18 ,tmp19 ,tmp20 ,tmp21 ,tmp22 ,tmp23 ,tmp24 ,tmp25 ,tmp26 ,tmp27 ,tmp28 ,tmp29 ,tmp30 ,tmp31 ,tmp32 ,tmp33 ,tmp34 ,tmp35 ,tmp36 ,tmp37 ,tmp38 ,tmp39 ,tmp40 ,tmp41 ,tmp42 ,tmp43 ,tmp44 ,tmp45 ,tmp46 ,tmp47 ,tmp48 ,tmp49 ,tmp50,tmp51 ,tmp52 ,tmp53,tmp54 ,tmp55 ,tmp56 ,tmp57 ,tmp58,tmp59 ,tmp60 ,tmp61 ,tmp62 ,tmp63 ,tmp64 ,tmp65 ; 
+ wire [15:0] tmp66 ,tmp67 ,tmp68 ,tmp69 ,tmp70 ,tmp71 ,tmp72 ,tmp73 ,tmp74 ,tmp75 ,tmp76 ,tmp77 ,tmp78 ,tmp79 ,tmp80 ,tmp81 ,tmp82 ,tmp83 ,tmp84, tmp85 ,tmp86, tmp87,tmp88 ,tmp89 ,tmp90 ,tmp91 ,tmp92 ,tmp93 ,tmp94 ,tmp95, tmp96, tmp97, tmp98, tmp99;
+ reg[31:0] i;
+
+ reg [15:0] ff49,ff51,ff53,ff55,ff57,ff59,ff61,ff63,ff65,ff67,ff69,ff71,ff73;
+
+ always @(posedge clk) begin
+	if(~reset) begin	
+		data_out <= tmp97;
+	//adding a flop pipeline stage
+		ff49 <= tmp49;
+		ff51 <= tmp51;
+		ff53 <= tmp53;
+		ff55 <= tmp55;
+		ff57 <= tmp57;	
+		ff59 <= tmp59;
+		ff61 <= tmp61;
+		ff63 <= tmp63;
+		ff65 <= tmp65;
+		ff67 <= tmp67;
+		ff69 <= tmp69;
+		ff71 <= tmp71;
+		ff73 <= tmp73;
+
+
+	end   
+ end     
+
+		qadd2 Add_u0(.a(mulout[8*0+:8]),.b(mulout[8*1+:8]),.c(tmp0));
+		qadd2 Add_u2(.a(mulout[8*2+:8]),.b(mulout[8*3+:8]),.c(tmp2));
+		qadd2 Add_u4(.a(mulout[8*4+:8]),.b(mulout[8*5+:8]),.c(tmp4));
+		qadd2 Add_u6(.a(mulout[8*6+:8]),.b(mulout[8*7+:8]),.c(tmp6));
+		qadd2 Add_u8(.a(mulout[8*8+:8]),.b(mulout[8*9+:8]),.c(tmp8));
+		qadd2 Add_u10(.a(mulout[8*10+:8]),.b(mulout[8*11+:8]),.c(tmp10));
+		qadd2 Add_u12(.a(mulout[8*12+:8]),.b(mulout[8*13+:8]),.c(tmp12));
+		qadd2 Add_u14(.a(mulout[8*14+:8]),.b(mulout[8*15+:8]),.c(tmp14));
+		qadd2 Add_u16(.a(mulout[8*16+:8]),.b(mulout[8*17+:8]),.c(tmp16));
+		qadd2 Add_u18(.a(mulout[8*18+:8]),.b(mulout[8*19+:8]),.c(tmp18));
+		qadd2 Add_u20(.a(mulout[8*20+:8]),.b(mulout[8*21+:8]),.c(tmp20));
+		qadd2 Add_u22(.a(mulout[8*22+:8]),.b(mulout[8*23+:8]),.c(tmp22));
+		qadd2 Add_u24(.a(mulout[8*24+:8]),.b(mulout[8*25+:8]),.c(tmp24));
+		qadd2 Add_u26(.a(mulout[8*26+:8]),.b(mulout[8*27+:8]),.c(tmp26));
+		qadd2 Add_u28(.a(mulout[8*28+:8]),.b(mulout[8*29+:8]),.c(tmp28));
+		qadd2 Add_u30(.a(mulout[8*30+:8]),.b(mulout[8*31+:8]),.c(tmp30));
+		qadd2 Add_u32(.a(mulout[8*32+:8]),.b(mulout[8*33+:8]),.c(tmp32));
+		qadd2 Add_u34(.a(mulout[8*34+:8]),.b(mulout[8*35+:8]),.c(tmp34));
+		qadd2 Add_u36(.a(mulout[8*36+:8]),.b(mulout[8*37+:8]),.c(tmp36));
+		qadd2 Add_u38(.a(mulout[8*38+:8]),.b(mulout[8*39+:8]),.c(tmp38));
+		qadd2 Add_u40(.a(mulout[8*40+:8]),.b(mulout[8*41+:8]),.c(tmp40));
+		qadd2 Add_u42(.a(mulout[8*42+:8]),.b(mulout[8*43+:8]),.c(tmp42));
+		qadd2 Add_u44(.a(mulout[8*44+:8]),.b(mulout[8*45+:8]),.c(tmp44));
+		qadd2 Add_u46(.a(mulout[8*46+:8]),.b(mulout[8*47+:8]),.c(tmp46));
+		qadd2 Add_u48(.a(mulout[8*48+:8]),.b(mulout[8*49+:8]),.c(tmp48));
+		qadd2 Add_u50(.a(mulout[8*50+:8]),.b(mulout[8*51+:8]),.c(tmp50));
+		qadd2 Add_u52(.a(mulout[8*52+:8]),.b(mulout[8*53+:8]),.c(tmp52));
+		qadd2 Add_u54(.a(mulout[8*54+:8]),.b(mulout[8*55+:8]),.c(tmp54));
+		qadd2 Add_u56(.a(mulout[8*56+:8]),.b(mulout[8*57+:8]),.c(tmp56));
+		qadd2 Add_u58(.a(mulout[8*58+:8]),.b(mulout[8*59+:8]),.c(tmp58));
+		qadd2 Add_u60(.a(mulout[8*60+:8]),.b(mulout[8*61+:8]),.c(tmp60));
+		qadd2 Add_u62(.a(mulout[8*62+:8]),.b(mulout[8*63+:8]),.c(tmp62));
+		qadd2 Add_u64(.a(mulout[8*64+:8]),.b(mulout[8*65+:8]),.c(tmp64));
+		qadd2 Add_u66(.a(mulout[8*66+:8]),.b(mulout[8*67+:8]),.c(tmp66));
+		qadd2 Add_u68(.a(mulout[8*68+:8]),.b(mulout[8*69+:8]),.c(tmp68));
+		qadd2 Add_u70(.a(mulout[8*70+:8]),.b(mulout[8*71+:8]),.c(tmp70));
+		qadd2 Add_u72(.a(mulout[8*72+:8]),.b(mulout[8*73+:8]),.c(tmp72));
+		qadd2 Add_u74(.a(mulout[8*74+:8]),.b(mulout[8*75+:8]),.c(tmp74));
+		qadd2 Add_u76(.a(mulout[8*76+:8]),.b(mulout[8*77+:8]),.c(tmp76));
+		qadd2 Add_u78(.a(mulout[8*78+:8]),.b(mulout[8*79+:8]),.c(tmp78));
+		qadd2 Add_u80(.a(mulout[8*80+:8]),.b(mulout[8*81+:8]),.c(tmp80));
+		qadd2 Add_u82(.a(mulout[8*82+:8]),.b(mulout[8*83+:8]),.c(tmp82));
+		qadd2 Add_u84(.a(mulout[8*84+:8]),.b(mulout[8*85+:8]),.c(tmp84));
+		qadd2 Add_u86(.a(mulout[8*86+:8]),.b(mulout[8*87+:8]),.c(tmp86));
+		qadd2 Add_u88(.a(mulout[8*88+:8]),.b(mulout[8*89+:8]),.c(tmp88));
+		qadd2 Add_u90(.a(mulout[8*90+:8]),.b(mulout[8*91+:8]),.c(tmp90));
+		qadd2 Add_u92(.a(mulout[8*92+:8]),.b(mulout[8*93+:8]),.c(tmp92));
+		qadd2 Add_u94(.a(mulout[8*94+:8]),.b(mulout[8*95+:8]),.c(tmp94));
+		qadd2 Add_u96(.a(mulout[8*96+:8]),.b(mulout[8*97+:8]),.c(tmp96));
+		qadd2 Add_u98(.a(mulout[8*98+:8]),.b(mulout[8*99+:8]),.c(tmp98));
+		
+		 
+			qadd2 Add_u1(.a(tmp0),.b(tmp2),.c(tmp1));
+			qadd2 Add_u3(.a(tmp4),.b(tmp6),.c(tmp3));
+			qadd2 Add_u5(.a(tmp8),.b(tmp10),.c(tmp5));
+			qadd2 Add_u7(.a(tmp12),.b(tmp14),.c(tmp7));
+			qadd2 Add_u9(.a(tmp16),.b(tmp18),.c(tmp9));
+			qadd2 Add_u11(.a(tmp20),.b(tmp22),.c(tmp11));
+			qadd2 Add_u13(.a(tmp24),.b(tmp26),.c(tmp13));
+			qadd2 Add_u15(.a(tmp28),.b(tmp30),.c(tmp15));
+			qadd2 Add_u17(.a(tmp32),.b(tmp34),.c(tmp17));
+			qadd2 Add_u19(.a(tmp36),.b(tmp38),.c(tmp19));
+			qadd2 Add_u21(.a(tmp40),.b(tmp42),.c(tmp21));
+			qadd2 Add_u23(.a(tmp44),.b(tmp46),.c(tmp23));
+			qadd2 Add_u25(.a(tmp48),.b(tmp50),.c(tmp25));
+			qadd2 Add_u27(.a(tmp52),.b(tmp54),.c(tmp27));
+			qadd2 Add_u29(.a(tmp56),.b(tmp58),.c(tmp29));
+			qadd2 Add_u31(.a(tmp60),.b(tmp62),.c(tmp31));
+			qadd2 Add_u33(.a(tmp64),.b(tmp66),.c(tmp33));
+			qadd2 Add_u35(.a(tmp68),.b(tmp70),.c(tmp35));
+			qadd2 Add_u37(.a(tmp72),.b(tmp74),.c(tmp37));
+			qadd2 Add_u39(.a(tmp76),.b(tmp78),.c(tmp39));
+			qadd2 Add_u41(.a(tmp80),.b(tmp82),.c(tmp41));
+			qadd2 Add_u43(.a(tmp84),.b(tmp86),.c(tmp43));
+			qadd2 Add_u45(.a(tmp88),.b(tmp90),.c(tmp45));
+			qadd2 Add_u47(.a(tmp92),.b(tmp94),.c(tmp47));
+			qadd2 Add_u49(.a(tmp96),.b(tmp98),.c(tmp49));
+						
+			qadd2 Add_u51(.a(tmp1),.b(tmp3),.c(tmp51));
+			qadd2 Add_u53(.a(tmp5),.b(tmp7),.c(tmp53));
+			qadd2 Add_u55(.a(tmp9),.b(tmp11),.c(tmp55));
+			qadd2 Add_u57(.a(tmp13),.b(tmp15),.c(tmp57));
+			qadd2 Add_u59(.a(tmp17),.b(tmp19),.c(tmp59));
+			qadd2 Add_u61(.a(tmp21),.b(tmp23),.c(tmp61));
+			qadd2 Add_u63(.a(tmp25),.b(tmp27),.c(tmp63));
+			qadd2 Add_u65(.a(tmp29),.b(tmp31),.c(tmp65));
+			qadd2 Add_u67(.a(tmp33),.b(tmp35),.c(tmp67));
+			qadd2 Add_u69(.a(tmp37),.b(tmp39),.c(tmp69));
+			qadd2 Add_u71(.a(tmp41),.b(tmp43),.c(tmp71));
+			qadd2 Add_u73(.a(tmp45),.b(tmp47),.c(tmp73));
+			
+			qadd2 Add_u75(.a(ff49),.b(ff51),.c(tmp75));
+			qadd2 Add_u77(.a(ff53),.b(ff55),.c(tmp77));
+			qadd2 Add_u79(.a(ff57),.b(ff59),.c(tmp79));
+			qadd2 Add_u81(.a(ff61),.b(ff63),.c(tmp81));
+			qadd2 Add_u83(.a(ff65),.b(ff67),.c(tmp83));
+			qadd2 Add_u85(.a(ff69),.b(ff71),.c(tmp85));
+
+			qadd2 Add_u87(.a(ff73),.b(tmp75),.c(tmp87));
+			qadd2 Add_u89(.a(tmp77),.b(tmp79),.c(tmp89));
+			qadd2 Add_u91(.a(tmp81),.b(tmp83),.c(tmp91));
+
+			qadd2 Add_u93(.a(tmp85),.b(tmp87),.c(tmp93));
+			qadd2 Add_u95(.a(tmp89),.b(tmp91),.c(tmp95));
+
+			qadd2 Add_u97(.a(tmp93),.b(tmp95),.c(tmp97));
+			
+		
+									
+	   
+endmodule
 
 module signedmul(
   input clk,
