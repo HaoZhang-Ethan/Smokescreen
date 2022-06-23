@@ -656,11 +656,6 @@ always @(posedge clk) begin
 
 //Pipeline Registers
 //----------- Zolid ---------------------
-		// mulout_fx_reg <= mulout_fx;
-		// mulout_fh_reg <= mulout_fh;
-		// mac_fx_reg <= macout_fx;
-		// mac_fh_reg <= macout_fh;
-
 		mac_fx_reg <= mulout_fx;
 		mac_fh_reg <= mulout_fh;
 // ------------------------------------

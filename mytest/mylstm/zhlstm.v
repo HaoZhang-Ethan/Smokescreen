@@ -50,42 +50,42 @@ reg [`DATA_WIDTH-1:0] C_in;
 //wire [`uarraysize-1:0] hdata_b_ext;
 
 reg [63:0] Ui_pimdata_in;
-reg [63:0] Ui_pimdata_out;
+wire [63:0] Ui_pimdata_out;
 reg [3:0] Ui_add_pim;
 
 
 reg [63:0] Uf_pimdata_in;
-reg [63:0] Uf_pimdata_out;
+wire [63:0] Uf_pimdata_out;
 reg [3:0] Uf_add_pim;
 
 
 reg [63:0] Uo_pimdata_in;
-reg [63:0] Uo_pimdata_out;
+wire [63:0] Uo_pimdata_out;
 reg [3:0] Uo_add_pim;
 
 
 reg [63:0] Uc_pimdata_in;
-reg [63:0] Uc_pimdata_out;
+wire [63:0] Uc_pimdata_out;
 reg [3:0] Uc_add_pim;
 
 
 reg [63:0] Wi_pimdata_in;
-reg [63:0] Wi_pimdata_out;
+wire [63:0] Wi_pimdata_out;
 reg [3:0] Wi_add_pim;
 
 
 reg [63:0] Wf_pimdata_in;
-reg [63:0] Wf_pimdata_out;
+wire [63:0] Wf_pimdata_out;
 reg [3:0] Wf_add_pim;
 
 
 reg [63:0] Wo_pimdata_in;
-reg [63:0] Wo_pimdata_out;
+wire [63:0] Wo_pimdata_out;
 reg [3:0] Wo_add_pim;
 
 
 reg [63:0] Wc_pimdata_in;
-reg [63:0] Wc_pimdata_out;
+wire [63:0] Wc_pimdata_out;
 reg [3:0] Wc_add_pim;
 
 reg [3:0] pim_read_X;
@@ -140,6 +140,51 @@ spram_b bc_mem(.clk(clk),.address_a(b_count),.wren_a(wren_a),.data_a(dummyin_b),
 
 
 always @(posedge clk) begin
+
+//Pipeline Registers
+//----------- Zolid --------------------
+		mac_fx_reg <= mulout_fx;
+		mac_fh_reg <= mulout_fh;
+// ------------------------------------
+		add_f_reg <= add_f;
+		addb_f_reg <= addbias_f; 
+		sig_fo_reg <= sig_fo;
+		elmul_fo_reg <= elmul_fo; //check if need to delay to wait for elmul_co
+
+//----------- Zolid ---------------------
+		mac_ix_reg <= mulout_ix;
+		mac_ih_reg <= mulout_ih;
+// ------------------------------------
+		add_i_reg <= add_i;
+		addb_i_reg <= addbias_i; 
+		sig_io_reg <= sig_io;
+
+//----------- Zolid ---------------------		
+		mac_ox_reg <= mulout_ox;
+		mac_oh_reg <= mulout_oh;
+// ------------------------------------
+		add_o_reg <= add_o;
+		addb_o_reg <= addbias_o; 
+		sig_oo_reg <= sig_oo;   
+
+
+		sig_oo_d1 <= sig_oo_reg; //delaying sig_oo by 5 cycles to feed to c gate
+		sig_oo_d2 <= sig_oo_d1;
+		sig_oo_d3 <= sig_oo_d2;
+	    sig_oo_d4 <= sig_oo_d3;
+		sig_oo_d5 <= sig_oo_d4;
+
+		mulout_cx_reg <= mulout_cx;
+		mulout_ch_reg <= mulout_ch;
+		mac_cx_reg <= macout_cx;
+		mac_ch_reg <= macout_ch;
+		add_c_reg <= add_c;
+		addb_c_reg <= addbias_c; 
+		tan_c_reg <= tan_c;
+		elmul_co_reg <= elmul_co;
+		add_cf_reg <= add_cf;
+		tan_h_reg <= tan_h; 
+
  if(reset == 1'b1 || start==1'b0) 
   begin      
 	   count <= 0;
@@ -182,7 +227,6 @@ always @(posedge clk) begin
 		else begin
 			inaddr <= inaddr+1;
 			h_count <= 0;
-
 		 end
 	 end
 	 else begin
@@ -194,35 +238,64 @@ always @(posedge clk) begin
 			pim_read_X <= pim_read_X + 1;
 			pim_read_H <= pim_read_H + 1;
             case(pim_read_X)
-            0: begin Ui_pimdata_in <= x_in[64*0+:64] ; Uf_pimdata_in <= x_in[64*0+:64] ; Uo_pimdata_in <= x_in[64*0+:64] ;Uc_pimdata_in <= x_in[64*0+:64] ; end
-			1: begin Ui_pimdata_in <= x_in[64*1+:64] ; Uf_pimdata_in <= x_in[64*1+:64] ; Uo_pimdata_in <= x_in[64*1+:64] ;Uc_pimdata_in <= x_in[64*1+:64] ; end
-			2: begin Ui_pimdata_in <= x_in[64*2+:64] ; Uf_pimdata_in <= x_in[64*2+:64] ; Uo_pimdata_in <= x_in[64*2+:64] ;Uc_pimdata_in <= x_in[64*2+:64] ; end
-			3: begin Ui_pimdata_in <= x_in[64*3+:64] ; Uf_pimdata_in <= x_in[64*3+:64] ; Uo_pimdata_in <= x_in[64*3+:64] ;Uc_pimdata_in <= x_in[64*3+:64] ; end
-			4: begin Ui_pimdata_in <= x_in[64*4+:64] ; Uf_pimdata_in <= x_in[64*4+:64] ; Uo_pimdata_in <= x_in[64*4+:64] ;Uc_pimdata_in <= x_in[64*4+:64] ; end
-			5: begin Ui_pimdata_in <= x_in[64*5+:64] ; Uf_pimdata_in <= x_in[64*5+:64] ; Uo_pimdata_in <= x_in[64*5+:64] ;Uc_pimdata_in <= x_in[64*5+:64] ; end
-			6: begin Ui_pimdata_in <= x_in[64*6+:64] ; Uf_pimdata_in <= x_in[64*6+:64] ; Uo_pimdata_in <= x_in[64*6+:64] ;Uc_pimdata_in <= x_in[64*6+:64] ; end
-			7: begin Ui_pimdata_in <= x_in[64*7+:64] ; Uf_pimdata_in <= x_in[64*7+:64] ; Uo_pimdata_in <= x_in[64*7+:64] ;Uc_pimdata_in <= x_in[64*7+:64] ; end
-			8: begin Ui_pimdata_in <= x_in[64*8+:64] ; Uf_pimdata_in <= x_in[64*8+:64] ; Uo_pimdata_in <= x_in[64*8+:64] ;Uc_pimdata_in <= x_in[64*8+:64] ; end
-			9: begin Ui_pimdata_in <= x_in[64*9+:64] ; Uf_pimdata_in <= x_in[64*9+:64] ; Uo_pimdata_in <= x_in[64*9+:64] ;Uc_pimdata_in <= x_in[64*9+:64] ; end
-			10: begin Ui_pimdata_in <= x_in[64*10+:64]; Uf_pimdata_in <= x_in[64*10+:64] ; Uo_pimdata_in <= x_in[64*10+:64] ;Uc_pimdata_in <= x_in[64*10+:64] ; end
-			11: begin Ui_pimdata_in <= x_in[64*11+:64]; Uf_pimdata_in <= x_in[64*11+:64] ; Uo_pimdata_in <= x_in[64*11+:64] ;Uc_pimdata_in <= x_in[64*11+:64] ; end
-			12: begin Ui_pimdata_in <= x_in[64*12+:31]; Uf_pimdata_in <= x_in[64*12+:31] ; Uo_pimdata_in <= x_in[64*12+:31] ;Uc_pimdata_in <= x_in[64*12+:31] ; end
+            0: begin Ui_pimdata_in <= x_in[64*0+:64] ; Uf_pimdata_in <= x_in[64*0+:64] ; Uo_pimdata_in <= x_in[64*0+:64] ;Uc_pimdata_in <= x_in[64*0+:64] ; Ui_add_pim <=  Ui_add_pim +1; Uf_add_pim <=  Uf_add_pim +1; Uo_add_pim <=  Uo_add_pim +1; Uc_add_pim <=  Uc_add_pim +1; end
+			1: begin Ui_pimdata_in <= x_in[64*1+:64] ; Uf_pimdata_in <= x_in[64*1+:64] ; Uo_pimdata_in <= x_in[64*1+:64] ;Uc_pimdata_in <= x_in[64*1+:64] ; Ui_add_pim <=  Ui_add_pim +1; Uf_add_pim <=  Uf_add_pim +1; Uo_add_pim <=  Uo_add_pim +1; Uc_add_pim <=  Uc_add_pim +1; end
+			2: begin Ui_pimdata_in <= x_in[64*2+:64] ; Uf_pimdata_in <= x_in[64*2+:64] ; Uo_pimdata_in <= x_in[64*2+:64] ;Uc_pimdata_in <= x_in[64*2+:64] ; Ui_add_pim <=  Ui_add_pim +1; Uf_add_pim <=  Uf_add_pim +1; Uo_add_pim <=  Uo_add_pim +1; Uc_add_pim <=  Uc_add_pim +1;  end
+			3: begin Ui_pimdata_in <= x_in[64*3+:64] ; Uf_pimdata_in <= x_in[64*3+:64] ; Uo_pimdata_in <= x_in[64*3+:64] ;Uc_pimdata_in <= x_in[64*3+:64] ; Ui_add_pim <=  Ui_add_pim +1; Uf_add_pim <=  Uf_add_pim +1; Uo_add_pim <=  Uo_add_pim +1; Uc_add_pim <=  Uc_add_pim +1;  end
+			4: begin Ui_pimdata_in <= x_in[64*4+:64] ; Uf_pimdata_in <= x_in[64*4+:64] ; Uo_pimdata_in <= x_in[64*4+:64] ;Uc_pimdata_in <= x_in[64*4+:64] ; Ui_add_pim <=  Ui_add_pim +1; Uf_add_pim <=  Uf_add_pim +1; Uo_add_pim <=  Uo_add_pim +1; Uc_add_pim <=  Uc_add_pim +1;  end
+			5: begin Ui_pimdata_in <= x_in[64*5+:64] ; Uf_pimdata_in <= x_in[64*5+:64] ; Uo_pimdata_in <= x_in[64*5+:64] ;Uc_pimdata_in <= x_in[64*5+:64] ; Ui_add_pim <=  Ui_add_pim +1; Uf_add_pim <=  Uf_add_pim +1; Uo_add_pim <=  Uo_add_pim +1; Uc_add_pim <=  Uc_add_pim +1;  end
+			6: begin Ui_pimdata_in <= x_in[64*6+:64] ; Uf_pimdata_in <= x_in[64*6+:64] ; Uo_pimdata_in <= x_in[64*6+:64] ;Uc_pimdata_in <= x_in[64*6+:64] ; Ui_add_pim <=  Ui_add_pim +1; Uf_add_pim <=  Uf_add_pim +1; Uo_add_pim <=  Uo_add_pim +1; Uc_add_pim <=  Uc_add_pim +1;  end
+			7: begin Ui_pimdata_in <= x_in[64*7+:64] ; Uf_pimdata_in <= x_in[64*7+:64] ; Uo_pimdata_in <= x_in[64*7+:64] ;Uc_pimdata_in <= x_in[64*7+:64] ; Ui_add_pim <=  Ui_add_pim +1; Uf_add_pim <=  Uf_add_pim +1; Uo_add_pim <=  Uo_add_pim +1; Uc_add_pim <=  Uc_add_pim +1;  end
+			8: begin Ui_pimdata_in <= x_in[64*8+:64] ; Uf_pimdata_in <= x_in[64*8+:64] ; Uo_pimdata_in <= x_in[64*8+:64] ;Uc_pimdata_in <= x_in[64*8+:64] ; Ui_add_pim <=  Ui_add_pim +1; Uf_add_pim <=  Uf_add_pim +1; Uo_add_pim <=  Uo_add_pim +1; Uc_add_pim <=  Uc_add_pim +1;  end
+			9: begin Ui_pimdata_in <= x_in[64*9+:64] ; Uf_pimdata_in <= x_in[64*9+:64] ; Uo_pimdata_in <= x_in[64*9+:64] ;Uc_pimdata_in <= x_in[64*9+:64] ; Ui_add_pim <=  Ui_add_pim +1; Uf_add_pim <=  Uf_add_pim +1; Uo_add_pim <=  Uo_add_pim +1; Uc_add_pim <=  Uc_add_pim +1;  end
+			10: begin Ui_pimdata_in <= x_in[64*10+:64]; Uf_pimdata_in <= x_in[64*10+:64] ; Uo_pimdata_in <= x_in[64*10+:64] ;Uc_pimdata_in <= x_in[64*10+:64] ; Ui_add_pim <=  Ui_add_pim +1; Uf_add_pim <=  Uf_add_pim +1; Uo_add_pim <=  Uo_add_pim +1; Uc_add_pim <=  Uc_add_pim +1;  end
+			11: begin Ui_pimdata_in <= x_in[64*11+:64]; Uf_pimdata_in <= x_in[64*11+:64] ; Uo_pimdata_in <= x_in[64*11+:64] ;Uc_pimdata_in <= x_in[64*11+:64] ; Ui_add_pim <=  Ui_add_pim +1; Uf_add_pim <=  Uf_add_pim +1; Uo_add_pim <=  Uo_add_pim +1; Uc_add_pim <=  Uc_add_pim +1;  end
+			12: begin Ui_pimdata_in <= x_in[64*12+:31]; Uf_pimdata_in <= x_in[64*12+:31] ; Uo_pimdata_in <= x_in[64*12+:31] ;Uc_pimdata_in <= x_in[64*12+:31] ;  end
             default : begin Ui_pimdata_in <= 0; Uf_pimdata_in <= 0 ; Uo_pimdata_in <= 0 ;Uc_pimdata_in <= 0 ; end
 			endcase	
 
 			case(pim_read_H)
-            0: begin Wi_pimdata_in <= h_in[64*0+:64] ; Wf_pimdata_in <= h_in[64*0+:64] ; Wo_pimdata_in <= h_in[64*0+:64] ;Wc_pimdata_in <= h_in[64*0+:64] ; end
-			1: begin Wi_pimdata_in <= h_in[64*1+:64] ; Wf_pimdata_in <= h_in[64*1+:64] ; Wo_pimdata_in <= h_in[64*1+:64] ;Wc_pimdata_in <= h_in[64*1+:64] ; end
-			2: begin Wi_pimdata_in <= h_in[64*2+:64] ; Wf_pimdata_in <= h_in[64*2+:64] ; Wo_pimdata_in <= h_in[64*2+:64] ;Wc_pimdata_in <= h_in[64*2+:64] ; end
-			3: begin Wi_pimdata_in <= h_in[64*3+:64] ; Wf_pimdata_in <= h_in[64*3+:64] ; Wo_pimdata_in <= h_in[64*3+:64] ;Wc_pimdata_in <= h_in[64*3+:64] ; end
-			4: begin Wi_pimdata_in <= h_in[64*4+:64] ; Wf_pimdata_in <= h_in[64*4+:64] ; Wo_pimdata_in <= h_in[64*4+:64] ;Wc_pimdata_in <= h_in[64*4+:64] ; end
-			5: begin Wi_pimdata_in <= h_in[64*5+:64] ; Wf_pimdata_in <= h_in[64*5+:64] ; Wo_pimdata_in <= h_in[64*5+:64] ;Wc_pimdata_in <= h_in[64*5+:64] ; end
-			6: begin Wi_pimdata_in <= h_in[64*6+:64] ; Wf_pimdata_in <= h_in[64*6+:64] ; Wo_pimdata_in <= h_in[64*6+:64] ;Wc_pimdata_in <= h_in[64*6+:64] ; end
+            0: begin Wi_pimdata_in <= h_in[64*0+:64] ; Wf_pimdata_in <= h_in[64*0+:64] ; Wo_pimdata_in <= h_in[64*0+:64] ;Wc_pimdata_in <= h_in[64*0+:64] ; Wi_add_pim <=  Wi_add_pim +1; Wf_add_pim <=  Wf_add_pim +1; Wo_add_pim <=  Wo_add_pim +1; Wc_add_pim <=  Wc_add_pim +1;  end
+			1: begin Wi_pimdata_in <= h_in[64*1+:64] ; Wf_pimdata_in <= h_in[64*1+:64] ; Wo_pimdata_in <= h_in[64*1+:64] ;Wc_pimdata_in <= h_in[64*1+:64] ; Wi_add_pim <=  Wi_add_pim +1; Wf_add_pim <=  Wf_add_pim +1; Wo_add_pim <=  Wo_add_pim +1; Wc_add_pim <=  Wc_add_pim +1;  end
+			2: begin Wi_pimdata_in <= h_in[64*2+:64] ; Wf_pimdata_in <= h_in[64*2+:64] ; Wo_pimdata_in <= h_in[64*2+:64] ;Wc_pimdata_in <= h_in[64*2+:64] ; Wi_add_pim <=  Wi_add_pim +1; Wf_add_pim <=  Wf_add_pim +1; Wo_add_pim <=  Wo_add_pim +1; Wc_add_pim <=  Wc_add_pim +1;  end
+			3: begin Wi_pimdata_in <= h_in[64*3+:64] ; Wf_pimdata_in <= h_in[64*3+:64] ; Wo_pimdata_in <= h_in[64*3+:64] ;Wc_pimdata_in <= h_in[64*3+:64] ; Wi_add_pim <=  Wi_add_pim +1; Wf_add_pim <=  Wf_add_pim +1; Wo_add_pim <=  Wo_add_pim +1; Wc_add_pim <=  Wc_add_pim +1;  end
+			4: begin Wi_pimdata_in <= h_in[64*4+:64] ; Wf_pimdata_in <= h_in[64*4+:64] ; Wo_pimdata_in <= h_in[64*4+:64] ;Wc_pimdata_in <= h_in[64*4+:64] ; Wi_add_pim <=  Wi_add_pim +1; Wf_add_pim <=  Wf_add_pim +1; Wo_add_pim <=  Wo_add_pim +1; Wc_add_pim <=  Wc_add_pim +1;  end
+			5: begin Wi_pimdata_in <= h_in[64*5+:64] ; Wf_pimdata_in <= h_in[64*5+:64] ; Wo_pimdata_in <= h_in[64*5+:64] ;Wc_pimdata_in <= h_in[64*5+:64] ; Wi_add_pim <=  Wi_add_pim +1; Wf_add_pim <=  Wf_add_pim +1; Wo_add_pim <=  Wo_add_pim +1; Wc_add_pim <=  Wc_add_pim +1;  end
+			6: begin Wi_pimdata_in <= h_in[64*6+:64] ; Wf_pimdata_in <= h_in[64*6+:64] ; Wo_pimdata_in <= h_in[64*6+:64] ;Wc_pimdata_in <= h_in[64*6+:64] ; Wi_add_pim <=  Wi_add_pim +1; Wf_add_pim <=  Wf_add_pim +1; Wo_add_pim <=  Wo_add_pim +1; Wc_add_pim <=  Wc_add_pim +1;  end
 			7: begin Wi_pimdata_in <= h_in[64*7+:64] ; Wf_pimdata_in <= h_in[64*7+:64] ; Wo_pimdata_in <= h_in[64*7+:64] ;Wc_pimdata_in <= h_in[64*7+:64] ; end
             default : begin Wi_pimdata_in <= 0; Wf_pimdata_in <= 0 ; Wo_pimdata_in <= 0 ;Wc_pimdata_in <= 0 ; end
 			endcase	
+		
 		if(count>7)     //delay before bias add
 			b_count <= b_count+1; 
+
+			//FORGET GATE
+			qadd2 f_gate_add(.a(mac_fx_reg),.b(mac_fh_reg),.c(add_f));
+			qadd2 f_gate_biasadd(.a(bf_in),.b(add_f),.c(addbias_f));
+			sigmoid sigf(addb_f_reg,sig_fo);
+			//qmult #(12,16) f_elmul(.i_multiplicand(sig_fo_reg),.i_multiplier(C_in),.o_result(elmul_fo),.ovr(overflow0));
+			signedmul f_elmul(.clk(clk),.a(sig_fo_reg),.b(C_in),.c(elmul_fo));
+
+			//INPUT GATE
+			qadd2 i_gate_add(.a(mac_ix_reg),.b(mac_ih_reg),.c(add_i));
+			qadd2 i_gate_biasadd(.a(bi_in),.b(add_i),.c(addbias_i));
+			sigmoid sigi(addb_i_reg,sig_io);
+
+			//OUTPUT GATE
+			qadd2 o_gate_add(.a(mac_ox_reg),.b(mac_oh_reg),.c(add_o));
+			qadd2 o_gate_biasadd(.a(bo_in),.b(add_o),.c(addbias_o));
+			sigmoid sigo(addb_o_reg,sig_oo);
+
+			//CELL STATE GATE
+			qadd2 c_gate_add(.a(mac_cx_reg),.b(mac_ch_reg),.c(add_c));
+			qadd2 c_gate_biasadd(.a(bc_in),.b(add_c),.c(addbias_c)); 
+			tanh tan_c1(addb_c_reg,tan_c);
+			//qmult #(12,16) c_elmul(.i_multiplicand(tan_c_reg),.i_multiplier(sig_io_reg),.o_result(elmul_co),.ovr(overflow0));
+			signedmul c_elmul(.clk(clk),.a(tan_c_reg),.b(sig_io_reg),.c(elmul_co));	  
+			qadd2 cf_gate_add(.a(elmul_co_reg),.b(elmul_fo_reg),.c(add_cf));
+			tanh tan_c2(add_cf_reg,tan_h);
+			//qmult #(12,16) h_elmul(.i_multiplicand(tan_h_reg),.i_multiplier(sig_oo_d3),.o_result(ht),.ovr(overflow0));
+			signedmul h_elmul(.clk(clk),.a(tan_h_reg),.b(sig_oo_d5),.c(ht));
 
 
 		if(count >8)  begin //delay before Cin elmul
