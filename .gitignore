@@ -146,3 +146,4 @@ cmake-build-debug
 
 /mytest/MVM_benchmark
 /mytest/*.blif
+/Tools/vtr/vtr_flow/scripts/temp/*

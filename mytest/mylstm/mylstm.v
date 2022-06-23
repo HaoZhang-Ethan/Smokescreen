@@ -76,6 +76,46 @@ reg [`DATA_WIDTH-1:0] C_in;
 //wire [`varraysize-1:0] xdata_b_ext;
 //wire [`uarraysize-1:0] hdata_b_ext;
 
+reg [63:0] Ui_pimdata_in;
+reg [63:0] Ui_pimdata_out;
+reg [3:0] Ui_add_pim;
+
+
+reg [63:0] Uf_pimdata_in;
+reg [63:0] Uf_pimdata_out;
+reg [3:0] Uf_add_pim;
+
+
+reg [63:0] Uo_pimdata_in;
+reg [63:0] Uo_pimdata_out;
+reg [3:0] Uo_add_pim;
+
+
+reg [63:0] Uc_pimdata_in;
+reg [63:0] Uc_pimdata_out;
+reg [3:0] Uc_add_pim;
+
+
+reg [63:0] Wi_pimdata_in;
+reg [63:0] Wi_pimdata_out;
+reg [3:0] Wi_add_pim;
+
+
+reg [63:0] Wf_pimdata_in;
+reg [63:0] Wf_pimdata_out;
+reg [3:0] Wf_add_pim;
+
+
+reg [63:0] Wo_pimdata_in;
+reg [63:0] Wo_pimdata_out;
+reg [3:0] Wo_add_pim;
+
+
+reg [63:0] Wc_pimdata_in;
+reg [63:0] Wc_pimdata_out;
+reg [3:0] Wc_add_pim;
+
+
 //keeping an additional bit so that the counters don't get reset to 0 automatically after 63 
 //and start repeating access to elements prematurely
 reg [6:0] inaddr; 
@@ -103,15 +143,28 @@ assign ht_valid = (count>16)?1:0;
 
 //BRAMs storing the input and hidden weights of each of the gates
 //Hidden weights are represented by U and Input weights by W
-spram_u Ui_mem(.clk(clk),.address_a(waddr),.wren_a(wren_a),.data_a(dummyin_u),.out_a(Ui_in));
-spram_u Uf_mem(.clk(clk),.address_a(waddr),.wren_a(wren_a),.data_a(dummyin_u),.out_a(Uf_in));
-spram_u Uo_mem(.clk(clk),.address_a(waddr),.wren_a(wren_a),.data_a(dummyin_u),.out_a(Uo_in));
-spram_u Uc_mem(.clk(clk),.address_a(waddr),.wren_a(wren_a),.data_a(dummyin_u),.out_a(Uc_in));
-spram_v Wi_mem(.clk(clk),.address_a(waddr),.wren_a(wren_a),.data_a(dummyin_v),.out_a(Wi_in));
-spram_v Wf_mem(.clk(clk),.address_a(waddr),.wren_a(wren_a),.data_a(dummyin_v),.out_a(Wf_in));
-spram_v Wo_mem(.clk(clk),.address_a(waddr),.wren_a(wren_a),.data_a(dummyin_v),.out_a(Wo_in));
-spram_v Wc_mem(.clk(clk),.address_a(waddr),.wren_a(wren_a),.data_a(dummyin_v),.out_a(Wc_in));
+// spram_u Ui_mem(.clk(clk),.address_a(waddr),.wren_a(wren_a),.data_a(dummyin_u),.out_a(Ui_in));
+// spram_u Uf_mem(.clk(clk),.address_a(waddr),.wren_a(wren_a),.data_a(dummyin_u),.out_a(Uf_in));
+// spram_u Uo_mem(.clk(clk),.address_a(waddr),.wren_a(wren_a),.data_a(dummyin_u),.out_a(Uo_in));
+// spram_u Uc_mem(.clk(clk),.address_a(waddr),.wren_a(wren_a),.data_a(dummyin_u),.out_a(Uc_in));
+// spram_v Wi_mem(.clk(clk),.address_a(waddr),.wren_a(wren_a),.data_a(dummyin_v),.out_a(Wi_in));
+// spram_v Wf_mem(.clk(clk),.address_a(waddr),.wren_a(wren_a),.data_a(dummyin_v),.out_a(Wf_in));
+// spram_v Wo_mem(.clk(clk),.address_a(waddr),.wren_a(wren_a),.data_a(dummyin_v),.out_a(Wo_in));
+// spram_v Wc_mem(.clk(clk),.address_a(waddr),.wren_a(wren_a),.data_a(dummyin_v),.out_a(Wc_in));
 
+single_port_ram Ui_PIM(.addr(Ui_add_pim),.we(wren_a),.data(Ui_pimdata_in),.out(Ui_pimdata_out),.clk(clk));
+single_port_ram Uf_PIM(.addr(Uf_add_pim),.we(wren_a),.data(Uf_pimdata_in),.out(Uf_pimdata_out),.clk(clk));
+single_port_ram Uo_PIM(.addr(Uo_add_pim),.we(wren_a),.data(Uo_pimdata_in),.out(Uo_pimdata_out),.clk(clk));
+single_port_ram Uc_PIM(.addr(Uc_add_pim),.we(wren_a),.data(Uc_pimdata_in),.out(Uc_pimdata_out),.clk(clk));
+single_port_ram Wi_PIM(.addr(Wi_add_pim),.we(wren_a),.data(Wi_pimdata_in),.out(Wi_pimdata_out),.clk(clk));
+single_port_ram Wf_PIM(.addr(Wf_add_pim),.we(wren_a),.data(Wf_pimdata_in),.out(Wf_pimdata_out),.clk(clk));
+single_port_ram Wo_PIM(.addr(Wo_add_pim),.we(wren_a),.data(Wo_pimdata_in),.out(Wo_pimdata_out),.clk(clk));
+single_port_ram Wc_PIM(.addr(Wc_add_pim),.we(wren_a),.data(Wc_pimdata_in),.out(Wc_pimdata_out),.clk(clk));
+
+
+
+// single_port_ram Ui_PIM(.Add_in(waddr),.We(wren_a),.Data_in(dummyin_v),.CoM(wren_a),.Data_out(Wc_in),.clk(clk));
+// single_port_ram Ui_PIM(.addr(waddr),.we(wren_a),.data(dummyin_v),.out(Wc_in),.clk(clk));
 //BRAM of the input vectors to LSTM
 spram_v Xi_mem(.clk(clk),.address_a(inaddr),.wren_a(wren_a),.data_a(dummyin_v),.out_a(x_in));
 
@@ -405,8 +458,6 @@ always @(posedge clk) begin
 
 
 endmodule
-
-
 
 
 

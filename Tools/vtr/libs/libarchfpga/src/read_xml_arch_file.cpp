@@ -3407,9 +3407,9 @@ static void ProcessSubTiles(pugi::xml_node Node,
         SubTile.num_phy_pins = pin_counts.total() * capacity;
 
         /* Assign pin counts to the Physical Tile Type */
-        PhysicalTileType->num_input_pins += pin_counts.input;
-        PhysicalTileType->num_output_pins += pin_counts.output;
-        PhysicalTileType->num_clock_pins += pin_counts.clock;
+        PhysicalTileType->num_input_pins += capacity * pin_counts.input;
+        PhysicalTileType->num_output_pins += capacity * pin_counts.output;
+        PhysicalTileType->num_clock_pins += capacity * pin_counts.clock;
         PhysicalTileType->num_pins += capacity * pin_counts.total();
         PhysicalTileType->num_inst_pins += pin_counts.total();
 
@@ -3702,6 +3702,8 @@ static void ProcessSegments(pugi::xml_node Parent,
             ProcessCB_SB(SubElem, Segs[i].sb, loc_data);
         }
 
+        /*Store the index of this segment in Segs vector*/
+        Segs[i].seg_index = i;
         /* Get next Node */
         Node = Node.next_sibling(Node.name());
     }
