@@ -49,44 +49,44 @@ reg [`DATA_WIDTH-1:0] C_in;
 //wire [`varraysize-1:0] xdata_b_ext;
 //wire [`uarraysize-1:0] hdata_b_ext;
 
-reg [63:0] Ui_pimdata_in;
+wire [63:0] Ui_pimdata_in;
 wire [63:0] Ui_pimdata_out;
-reg [3:0] Ui_add_pim;
+wire [3:0] Ui_add_pim;
 
 
-reg [63:0] Uf_pimdata_in;
+wire [63:0] Uf_pimdata_in;
 wire [63:0] Uf_pimdata_out;
-reg [3:0] Uf_add_pim;
+wire [3:0] Uf_add_pim;
 
 
-reg [63:0] Uo_pimdata_in;
+wire [63:0] Uo_pimdata_in;
 wire [63:0] Uo_pimdata_out;
-reg [3:0] Uo_add_pim;
+wire [3:0] Uo_add_pim;
 
 
-reg [63:0] Uc_pimdata_in;
+wire [63:0] Uc_pimdata_in;
 wire [63:0] Uc_pimdata_out;
-reg [3:0] Uc_add_pim;
+wire [3:0] Uc_add_pim;
 
 
-reg [63:0] Wi_pimdata_in;
+wire [63:0] Wi_pimdata_in;
 wire [63:0] Wi_pimdata_out;
-reg [3:0] Wi_add_pim;
+wire [3:0] Wi_add_pim;
 
 
-reg [63:0] Wf_pimdata_in;
+wire [63:0] Wf_pimdata_in;
 wire [63:0] Wf_pimdata_out;
-reg [3:0] Wf_add_pim;
+wire [3:0] Wf_add_pim;
 
 
-reg [63:0] Wo_pimdata_in;
+wire [63:0] Wo_pimdata_in;
 wire [63:0] Wo_pimdata_out;
-reg [3:0] Wo_add_pim;
+wire [3:0] Wo_add_pim;
 
 
-reg [63:0] Wc_pimdata_in;
+wire [63:0] Wc_pimdata_in;
 wire [63:0] Wc_pimdata_out;
-reg [3:0] Wc_add_pim;
+wire [3:0] Wc_add_pim;
 
 reg [3:0] pim_read_X;
 reg [2:0] pim_read_H;
@@ -103,11 +103,27 @@ reg [6:0] count;
 reg [6:0] i,j;
 reg [5:0] h_count;
 
-wire [`DATA_WIDTH-1:0] ht;
+wire [`DATA_WIDTH-1:0] ht_0;
+wire [`DATA_WIDTH-1:0] ht_1;
+wire [`DATA_WIDTH-1:0] ht_2;
+wire [`DATA_WIDTH-1:0] ht_3;
+wire [`DATA_WIDTH-1:0] ht_4;
+wire [`DATA_WIDTH-1:0] ht_5;
+wire [`DATA_WIDTH-1:0] ht_6;
+wire [`DATA_WIDTH-1:0] ht_7;
 reg [`uarraysize-1:0] ht_prev;
 reg [`uarraysize-1:0] Ct;
-wire [`DATA_WIDTH-1:0] add_cf;
+wire [`DATA_WIDTH-1:0] add_cf_0;
+wire [`DATA_WIDTH-1:0] add_cf_1;
+wire [`DATA_WIDTH-1:0] add_cf_2;
+wire [`DATA_WIDTH-1:0] add_cf_3;
+wire [`DATA_WIDTH-1:0] add_cf_4;
+wire [`DATA_WIDTH-1:0] add_cf_5;
+wire [`DATA_WIDTH-1:0] add_cf_6;
+wire [`DATA_WIDTH-1:0] add_cf_7;
 reg wren_a_ct, wren_b_cin;
+
+reg [15:0] tmp;
 
 assign ht_out = ht;
 
@@ -127,6 +143,16 @@ single_port_ram Wi_PIM(.addr(Wi_add_pim),.we(wren_a),.data(Wi_pimdata_in),.out(W
 single_port_ram Wf_PIM(.addr(Wf_add_pim),.we(wren_a),.data(Wf_pimdata_in),.out(Wf_pimdata_out),.clk(clk));
 single_port_ram Wo_PIM(.addr(Wo_add_pim),.we(wren_a),.data(Wo_pimdata_in),.out(Wo_pimdata_out),.clk(clk));
 single_port_ram Wc_PIM(.addr(Wc_add_pim),.we(wren_a),.data(Wc_pimdata_in),.out(Wc_pimdata_out),.clk(clk));
+lstm_top mylstm_0(.clk(clk),.mac_fx_reg(Wf_pimdata_out[7:0]),.mac_fh_reg(Uf_pimdata_out[7:0]),.mac_ox_reg(Wo_pimdata_out[7:0]),.mac_oh_reg(Uo_pimdata_out[7:0]),.mac_ix_reg(Wi_pimdata_out[7:0]),.mac_ih_reg(Ui_pimdata_out[7:0]),.mac_cx_reg(Wc_pimdata_out[7:0]),.mac_ch_reg(Uc_pimdata_out[7:0]),.bi_in(bi_in),.bf_in(bf_in),.bo_in(bo_in),.bc_in(bc_in),.ht_out(ht_0),.add_cf(add_cf_0));
+lstm_top mylstm_1(.clk(clk),.mac_fx_reg(Wf_pimdata_out[15:8]),.mac_fh_reg(Uf_pimdata_out[15:8]),.mac_ox_reg(Wo_pimdata_out[15:8]),.mac_oh_reg(Uo_pimdata_out[15:8]),.mac_ix_reg(Wi_pimdata_out[15:8]),.mac_ih_reg(Ui_pimdata_out[15:8]),.mac_cx_reg(Wc_pimdata_out[15:8]),.mac_ch_reg(Uc_pimdata_out[15:8]),.bi_in(bi_in),.bf_in(bf_in),.bo_in(bo_in),.bc_in(bc_in),.ht_out(ht_1),.add_cf(add_cf_1));
+lstm_top mylstm_2(.clk(clk),.mac_fx_reg(Wf_pimdata_out[23:16]),.mac_fh_reg(Uf_pimdata_out[23:16]),.mac_ox_reg(Wo_pimdata_out[23:16]),.mac_oh_reg(Uo_pimdata_out[23:16]),.mac_ix_reg(Wi_pimdata_out[23:16]),.mac_ih_reg(Ui_pimdata_out[23:16]),.mac_cx_reg(Wc_pimdata_out[23:16]),.mac_ch_reg(Uc_pimdata_out[23:16]),.bi_in(bi_in),.bf_in(bf_in),.bo_in(bo_in),.bc_in(bc_in),.ht_out(ht_2),.add_cf(add_cf_2));
+lstm_top mylstm_3(.clk(clk),.mac_fx_reg(Wf_pimdata_out[31:24]),.mac_fh_reg(Uf_pimdata_out[31:24]),.mac_ox_reg(Wo_pimdata_out[31:24]),.mac_oh_reg(Uo_pimdata_out[31:24]),.mac_ix_reg(Wi_pimdata_out[31:24]),.mac_ih_reg(Ui_pimdata_out[31:24]),.mac_cx_reg(Wc_pimdata_out[31:24]),.mac_ch_reg(Uc_pimdata_out[31:24]),.bi_in(bi_in),.bf_in(bf_in),.bo_in(bo_in),.bc_in(bc_in),.ht_out(ht_3),.add_cf(add_cf_3));
+lstm_top mylstm_4(.clk(clk),.mac_fx_reg(Wf_pimdata_out[39:32]),.mac_fh_reg(Uf_pimdata_out[39:32]),.mac_ox_reg(Wo_pimdata_out[39:32]),.mac_oh_reg(Uo_pimdata_out[39:32]),.mac_ix_reg(Wi_pimdata_out[39:32]),.mac_ih_reg(Ui_pimdata_out[39:32]),.mac_cx_reg(Wc_pimdata_out[39:32]),.mac_ch_reg(Uc_pimdata_out[39:32]),.bi_in(bi_in),.bf_in(bf_in),.bo_in(bo_in),.bc_in(bc_in),.ht_out(ht_4),.add_cf(add_cf_4));
+lstm_top mylstm_5(.clk(clk),.mac_fx_reg(Wf_pimdata_out[47:40]),.mac_fh_reg(Uf_pimdata_out[47:40]),.mac_ox_reg(Wo_pimdata_out[47:40]),.mac_oh_reg(Uo_pimdata_out[47:40]),.mac_ix_reg(Wi_pimdata_out[47:40]),.mac_ih_reg(Ui_pimdata_out[47:40]),.mac_cx_reg(Wc_pimdata_out[47:40]),.mac_ch_reg(Uc_pimdata_out[47:40]),.bi_in(bi_in),.bf_in(bf_in),.bo_in(bo_in),.bc_in(bc_in),.ht_out(ht_5),.add_cf(add_cf_5));
+lstm_top mylstm_6(.clk(clk),.mac_fx_reg(Wf_pimdata_out[55:48]),.mac_fh_reg(Uf_pimdata_out[55:48]),.mac_ox_reg(Wo_pimdata_out[55:48]),.mac_oh_reg(Uo_pimdata_out[55:48]),.mac_ix_reg(Wi_pimdata_out[55:48]),.mac_ih_reg(Ui_pimdata_out[55:48]),.mac_cx_reg(Wc_pimdata_out[55:48]),.mac_ch_reg(Uc_pimdata_out[55:48]),.bi_in(bi_in),.bf_in(bf_in),.bo_in(bo_in),.bc_in(bc_in),.ht_out(ht_6),.add_cf(add_cf_6));
+lstm_top mylstm_7(.clk(clk),.mac_fx_reg(Wf_pimdata_out[63:56]),.mac_fh_reg(Uf_pimdata_out[63:56]),.mac_ox_reg(Wo_pimdata_out[63:56]),.mac_oh_reg(Uo_pimdata_out[63:56]),.mac_ix_reg(Wi_pimdata_out[63:56]),.mac_ih_reg(Ui_pimdata_out[63:56]),.mac_cx_reg(Wc_pimdata_out[63:56]),.mac_ch_reg(Uc_pimdata_out[63:56]),.bi_in(bi_in),.bf_in(bf_in),.bo_in(bo_in),.bc_in(bc_in),.ht_out(ht_7),.add_cf(add_cf_7));
+
+
 
 
 //BRAM of the input vectors to LSTM
@@ -139,51 +165,9 @@ spram_b bo_mem(.clk(clk),.address_a(b_count),.wren_a(wren_a),.data_a(dummyin_b),
 spram_b bc_mem(.clk(clk),.address_a(b_count),.wren_a(wren_a),.data_a(dummyin_b),.out_a(bc_in));
 
 
+
 always @(posedge clk) begin
 
-//Pipeline Registers
-//----------- Zolid --------------------
-		mac_fx_reg <= mulout_fx;
-		mac_fh_reg <= mulout_fh;
-// ------------------------------------
-		add_f_reg <= add_f;
-		addb_f_reg <= addbias_f; 
-		sig_fo_reg <= sig_fo;
-		elmul_fo_reg <= elmul_fo; //check if need to delay to wait for elmul_co
-
-//----------- Zolid ---------------------
-		mac_ix_reg <= mulout_ix;
-		mac_ih_reg <= mulout_ih;
-// ------------------------------------
-		add_i_reg <= add_i;
-		addb_i_reg <= addbias_i; 
-		sig_io_reg <= sig_io;
-
-//----------- Zolid ---------------------		
-		mac_ox_reg <= mulout_ox;
-		mac_oh_reg <= mulout_oh;
-// ------------------------------------
-		add_o_reg <= add_o;
-		addb_o_reg <= addbias_o; 
-		sig_oo_reg <= sig_oo;   
-
-
-		sig_oo_d1 <= sig_oo_reg; //delaying sig_oo by 5 cycles to feed to c gate
-		sig_oo_d2 <= sig_oo_d1;
-		sig_oo_d3 <= sig_oo_d2;
-	    sig_oo_d4 <= sig_oo_d3;
-		sig_oo_d5 <= sig_oo_d4;
-
-		mulout_cx_reg <= mulout_cx;
-		mulout_ch_reg <= mulout_ch;
-		mac_cx_reg <= macout_cx;
-		mac_ch_reg <= macout_ch;
-		add_c_reg <= add_c;
-		addb_c_reg <= addbias_c; 
-		tan_c_reg <= tan_c;
-		elmul_co_reg <= elmul_co;
-		add_cf_reg <= add_cf;
-		tan_h_reg <= tan_h; 
 
  if(reset == 1'b1 || start==1'b0) 
   begin      
@@ -251,7 +235,7 @@ always @(posedge clk) begin
 			10: begin Ui_pimdata_in <= x_in[64*10+:64]; Uf_pimdata_in <= x_in[64*10+:64] ; Uo_pimdata_in <= x_in[64*10+:64] ;Uc_pimdata_in <= x_in[64*10+:64] ; Ui_add_pim <=  Ui_add_pim +1; Uf_add_pim <=  Uf_add_pim +1; Uo_add_pim <=  Uo_add_pim +1; Uc_add_pim <=  Uc_add_pim +1;  end
 			11: begin Ui_pimdata_in <= x_in[64*11+:64]; Uf_pimdata_in <= x_in[64*11+:64] ; Uo_pimdata_in <= x_in[64*11+:64] ;Uc_pimdata_in <= x_in[64*11+:64] ; Ui_add_pim <=  Ui_add_pim +1; Uf_add_pim <=  Uf_add_pim +1; Uo_add_pim <=  Uo_add_pim +1; Uc_add_pim <=  Uc_add_pim +1;  end
 			12: begin Ui_pimdata_in <= x_in[64*12+:31]; Uf_pimdata_in <= x_in[64*12+:31] ; Uo_pimdata_in <= x_in[64*12+:31] ;Uc_pimdata_in <= x_in[64*12+:31] ;  end
-            default : begin Ui_pimdata_in <= 0; Uf_pimdata_in <= 0 ; Uo_pimdata_in <= 0 ;Uc_pimdata_in <= 0 ; end
+            default : begin Ui_pimdata_in <= 0; Uf_pimdata_in <= 0 ; Uo_pimdata_in <= 0 ; Uc_pimdata_in <= 0 ; end
 			endcase	
 
 			case(pim_read_H)
@@ -268,35 +252,6 @@ always @(posedge clk) begin
 		
 		if(count>7)     //delay before bias add
 			b_count <= b_count+1; 
-
-			//FORGET GATE
-			qadd2 f_gate_add(.a(mac_fx_reg),.b(mac_fh_reg),.c(add_f));
-			qadd2 f_gate_biasadd(.a(bf_in),.b(add_f),.c(addbias_f));
-			sigmoid sigf(addb_f_reg,sig_fo);
-			//qmult #(12,16) f_elmul(.i_multiplicand(sig_fo_reg),.i_multiplier(C_in),.o_result(elmul_fo),.ovr(overflow0));
-			signedmul f_elmul(.clk(clk),.a(sig_fo_reg),.b(C_in),.c(elmul_fo));
-
-			//INPUT GATE
-			qadd2 i_gate_add(.a(mac_ix_reg),.b(mac_ih_reg),.c(add_i));
-			qadd2 i_gate_biasadd(.a(bi_in),.b(add_i),.c(addbias_i));
-			sigmoid sigi(addb_i_reg,sig_io);
-
-			//OUTPUT GATE
-			qadd2 o_gate_add(.a(mac_ox_reg),.b(mac_oh_reg),.c(add_o));
-			qadd2 o_gate_biasadd(.a(bo_in),.b(add_o),.c(addbias_o));
-			sigmoid sigo(addb_o_reg,sig_oo);
-
-			//CELL STATE GATE
-			qadd2 c_gate_add(.a(mac_cx_reg),.b(mac_ch_reg),.c(add_c));
-			qadd2 c_gate_biasadd(.a(bc_in),.b(add_c),.c(addbias_c)); 
-			tanh tan_c1(addb_c_reg,tan_c);
-			//qmult #(12,16) c_elmul(.i_multiplicand(tan_c_reg),.i_multiplier(sig_io_reg),.o_result(elmul_co),.ovr(overflow0));
-			signedmul c_elmul(.clk(clk),.a(tan_c_reg),.b(sig_io_reg),.c(elmul_co));	  
-			qadd2 cf_gate_add(.a(elmul_co_reg),.b(elmul_fo_reg),.c(add_cf));
-			tanh tan_c2(add_cf_reg,tan_h);
-			//qmult #(12,16) h_elmul(.i_multiplicand(tan_h_reg),.i_multiplier(sig_oo_d3),.o_result(ht),.ovr(overflow0));
-			signedmul h_elmul(.clk(clk),.a(tan_h_reg),.b(sig_oo_d5),.c(ht));
-
 
 		if(count >8)  begin //delay before Cin elmul
 			c_count <=c_count+1;
@@ -510,11 +465,10 @@ always @(posedge clk) begin
 			default: ht_prev <= 0;
 			endcase
 		 end
+
 			
 	end
 		
-
-
 	if(cycle_complete==1) begin
 		  h_in <= ht_prev; 
 	end
@@ -603,3 +557,569 @@ single_port_ram u_single_port_ram(
 `endif
 
 endmodule
+
+module lstm_top(
+input clk,
+input [7:0] mac_fx_reg,
+input [7:0] mac_fh_reg,
+input [7:0] mac_ox_reg,
+input [7:0] mac_oh_reg,
+input [7:0] mac_ix_reg,
+input [7:0] mac_ih_reg,
+input [7:0] mac_cx_reg,
+input [7:0] mac_ch_reg,
+input [`DATA_WIDTH-1:0] bi_in,
+input [`DATA_WIDTH-1:0] bf_in,
+input [`DATA_WIDTH-1:0] bo_in,
+input [`DATA_WIDTH-1:0] bc_in,
+output  [15:0] ht_out,
+output [`DATA_WIDTH-1:0] add_cf);
+
+
+
+wire [`DATA_WIDTH-1:0] add_i;
+
+wire [`DATA_WIDTH-1:0] add_f;
+
+wire [`DATA_WIDTH-1:0] add_c;
+
+wire [`DATA_WIDTH-1:0] add_o;
+//wire [`DATA_WIDTH-1:0] add_cf;
+
+
+wire [`DATA_WIDTH-1:0] addbias_i;
+wire [`DATA_WIDTH-1:0] addbias_f;
+wire [`DATA_WIDTH-1:0] addbias_o;
+wire [`DATA_WIDTH-1:0] addbias_c;
+
+wire [`DATA_WIDTH-1:0] sig_io;
+wire [`DATA_WIDTH-1:0] sig_fo;
+wire [`DATA_WIDTH-1:0] sig_oo;
+
+
+wire [`DATA_WIDTH-1:0] elmul_fo;
+wire [`DATA_WIDTH-1:0] elmul_co;
+wire [`DATA_WIDTH-1:0] tan_c;
+wire [`DATA_WIDTH-1:0] tan_h;
+
+
+wire [15:0] ht;
+
+
+assign ht_out = ht;
+
+reg [15:0] add_f_reg,addb_f_reg,sig_fo_reg;
+reg [15:0] add_i_reg,addb_i_reg,sig_io_reg;
+reg [15:0] add_o_reg,addb_o_reg,sig_oo_reg;
+reg [15:0] add_c_reg,addb_c_reg,sig_co_reg;
+reg [15:0] tan_c_reg,elmul_co_reg,add_cf_reg,tan_h_reg,elmul_fo_reg;
+
+
+reg [15:0] sig_oo_d1,sig_oo_d2,sig_oo_d3,sig_oo_d4,sig_oo_d5;
+
+always @(posedge clk) begin
+
+//Pipeline Registers
+
+		addb_f_reg <= addbias_f; 
+		sig_fo_reg <= sig_fo;
+		elmul_fo_reg <= elmul_fo; //check if need to delay to wait for elmul_co
+
+
+		add_i_reg <= add_i;
+		addb_i_reg <= addbias_i; 
+		sig_io_reg <= sig_io;
+		
+
+		add_o_reg <= add_o;
+		addb_o_reg <= addbias_o; 
+		sig_oo_reg <= sig_oo;   
+
+
+		sig_oo_d1 <= sig_oo_reg; //delaying sig_oo by 5 cycles to feed to c gate
+		sig_oo_d2 <= sig_oo_d1;
+		sig_oo_d3 <= sig_oo_d2;
+	    sig_oo_d4 <= sig_oo_d3;
+		sig_oo_d5 <= sig_oo_d4;
+
+
+		add_c_reg <= add_c;
+		addb_c_reg <= addbias_c; 
+		tan_c_reg <= tan_c;
+		elmul_co_reg <= elmul_co;
+		add_cf_reg <= add_cf;
+		tan_h_reg <= tan_h; 
+
+end
+
+
+qadd2 f_gate_add(.a(mac_fx_reg),.b(mac_fh_reg),.c(add_f));
+qadd2 f_gate_biasadd(.a(bf_in),.b(add_f),.c(addbias_f));
+sigmoid sigf(addb_f_reg,sig_fo);
+//qmult #(12,16) f_elmul(.i_multiplicand(sig_fo_reg),.i_multiplier(C_in),.o_result(elmul_fo),.ovr(overflow0));
+signedmul f_elmul(.clk(clk),.a(sig_fo_reg),.b(C_in),.c(elmul_fo));
+
+qadd2 o_gate_add(.a(mac_ox_reg),.b(mac_oh_reg),.c(add_o));
+qadd2 o_gate_biasadd(.a(bo_in),.b(add_o),.c(addbias_o));
+sigmoid sigo(addb_o_reg,sig_oo);
+
+qadd2 i_gate_add(.a(mac_ix_reg),.b(mac_ih_reg),.c(add_i));
+qadd2 i_gate_biasadd(.a(bi_in),.b(add_i),.c(addbias_i));
+sigmoid sigi(addb_i_reg,sig_io);
+
+
+qadd2 c_gate_add(.a(mac_cx_reg),.b(mac_ch_reg),.c(add_c));
+qadd2 c_gate_biasadd(.a(bc_in),.b(add_c),.c(addbias_c)); 
+tanh tan_c1(addb_c_reg,tan_c);
+//qmult #(12,16) c_elmul(.i_multiplicand(tan_c_reg),.i_multiplier(sig_io_reg),.o_result(elmul_co),.ovr(overflow0));
+signedmul c_elmul(.clk(clk),.a(tan_c_reg),.b(sig_io_reg),.c(elmul_co));	  
+qadd2 cf_gate_add(.a(elmul_co_reg),.b(elmul_fo_reg),.c(add_cf));
+tanh tan_c2(add_cf_reg,tan_h);
+//qmult #(12,16) h_elmul(.i_multiplicand(tan_h_reg),.i_multiplier(sig_oo_d3),.o_result(ht),.ovr(overflow0));
+signedmul h_elmul(.clk(clk),.a(tan_h_reg),.b(sig_oo_d5),.c(ht));
+
+endmodule
+
+
+
+
+module qadd2(
+ input [7:0] a,
+ input [7:0] b,
+ output [7:0] c
+    );
+    
+assign c = a + b;
+
+
+endmodule
+
+
+module sigmoid(
+input [7:0] x,
+output [15:0] sig_out
+);
+
+
+wire [15:0] myx;
+
+reg [15:0] lut;
+reg [5:0] address;
+
+assign sig_out = lut;
+
+assign myx=x;
+
+always @(address)
+begin
+
+       case(address)
+       6'd0: lut = 16'b0000000000101101; //sig(-4.5)
+       6'd1: lut = 16'b0000000000110110; //sig(-4.3)
+       6'd2: lut = 16'b0000000001000010; //sig(-4.1)
+       6'd3: lut = 16'b0000000001010001; //sig(-3.9)
+       6'd4:  lut = 16'b0000000001100010; //sig(-3.7)
+       6'd5 :  lut = 16'b0000000001111000; //sig(-3.5)
+       6'd6 :  lut= 16'b0000000010010001; //sig(-3.3)
+       6'd7 :  lut= 16'b0000000010110000; //sig(-3.1)
+       6'd8:  lut= 16'b0000000011010101; //sig(-2.9)
+       6'd9 :  lut= 16'b0000000100000010; //sig(-2.7)
+       6'd10 :  lut= 16'b0000000100110110; //sig(-2.5)
+       6'd11 :  lut= 16'b0000000101110101; //sig(-2.3)
+       6'd12 :  lut= 16'b0000000110111110; //sig(-2.1)
+       6'd13 :  lut= 16'b0000001000010100; //sig(-1.9)
+       6'd14 :  lut= 16'b0000001001111000; //sig(-1.7)
+       6'd15 :  lut= 16'b0000001011101011; //sig(-1.5)
+       6'd16 :  lut= 16'b0000001101101101; //sig(-1.3)
+       6'd17:  lut= 16'b0000001111111110; //sig(-1.1) 
+       6'd18 :  lut= 16'b0000010010100000; //sig(-0.9)
+       6'd19 :  lut= 16'b0000010101001111; //sig(-0.7)
+       6'd20 :  lut= 16'b0000011000001010; //sig(-0.5)
+       6'd21 :  lut= 16'b0000011011001111; //sig(-0.3)
+       6'd22 :  lut= 16'b0000011110011001; //sig(-0.1)
+       6'd23 :  lut= 16'b0000100001100110; //sig(0.1)
+       6'd24 :  lut= 16'b0000100100110000; //sig(0.3)
+       6'd25 :  lut= 16'b0000100111110101; //sig(0.5)
+       6'd26 :  lut= 16'b0000101010110000; //sig(0.7)
+       6'd27 :  lut= 16'b0000101101100000; //sig(0.9)
+       6'd28 :  lut= 16'b0000110000000001; //sig(1.1)
+       6'd29 :  lut= 16'b0000110010010010; //sig(1.3)
+       6'd30 :  lut= 16'b0000110100010100; //sig(1.5)
+       6'd31 :  lut= 16'b0000110110000111; //sig(1.7)
+       6'd32 :  lut= 16'b0000110111101011; //sig(1.9)
+       6'd33 :  lut= 16'b0000111001000001; //sig(2.1)
+       6'd34 :  lut= 16'b0000111010001010; //sig(2.3)
+       6'd35 :  lut= 16'b0000111011001001; //sig(2.5)
+       6'd36 :  lut= 16'b0000111011111110; //sig(2.7)
+       6'd37 :  lut= 16'b0000111100101010; //sig(2.9)
+       6'd38 :  lut= 16'b0000111101001111; //sig(3.1)
+       6'd39 :  lut= 16'b0000111101101110; //sig(3.3)
+       6'd40 :  lut= 16'b0000111110000111; //sig(3.5)
+       6'd41 :  lut= 16'b0000111110011101; //sig(3.7)
+       6'd42 :  lut= 16'b0000111110101110; //sig(3.9)
+       6'd43 :  lut= 16'b0000111110111101; //sig(4.1)
+       6'd44 :  lut= 16'b0000111111001001; //sig(4.3)
+       6'd45 :  lut= 16'b0000111111010011; //sig(4.5) 
+       6'd46 :  lut= 16'b0000111111011011; //sig(4.7) 
+       6'd47 :  lut= 16'b0000000000100100; //sig(-4.7)
+       6'd48:	lut= 16'b0000000000000000; //0  
+       6'd49:	lut= 16'b0001000000000000; //1 
+       default: lut=0;
+	endcase
+end
+
+
+always@(myx)
+begin
+ 
+    case({myx[15:12]})
+	4'b1000:address = 6'd48; 
+	4'b1001:address = 6'd48; 
+	4'b1010:address = 6'd48; 
+	4'b1011:address = 6'd48; 
+	4'b1100:address = 6'd48;  
+        4'b1101:if((myx[11:0] >= 12'h000) && (myx[11:0] <= 12'h333)) // -3
+                    begin
+                       address = 6'd8;                 
+                    end 
+                else if((myx[11:0] > 12'h333) && (myx[11:0] <= 12'h666))
+                    begin
+                        address = 6'd9;
+                    end
+                 else if((myx[11:0] > 12'h666) && (myx[11:0] <= 12'h99a))
+                    begin
+                        address = 6'd10;                                        
+                    end
+                 else if((myx[11:0] > 12'h99a) && (myx[11:0] <= 12'hccd))
+                    begin
+                        address =  6'd11;                                                          
+                    end
+                 else if(myx[11:0] > 12'hccd)
+                    begin
+                        address =  6'd12;                                    
+                    end   
+        4'b1110:if((myx[11:0] >= 12'h000) && (myx[11:0] <= 12'h333)) // -2
+                    begin
+                        address =  6'd13;              
+                    end 
+                else if((myx[11:0] > 12'h333) && (myx[11:0] <= 12'h666))
+                    begin
+                        address =  6'd14;                
+                    end
+                 else if((myx[11:0] > 12'h666) && (myx[11:0] <= 12'h99a))
+                    begin
+                        address = 6'd15;                                                         
+                    end
+                 else if((myx[11:0] > 12'h99a) && (myx[11:0] <= 12'hccd))
+                    begin
+                        address =  6'd16;                                                                           
+                    end
+                 else if(myx[11:0] > 12'hccd)
+                    begin
+                        address =  6'd17;                                                        
+                    end 
+        4'b1111:if((myx[11:0] >= 12'h000) && (myx[11:0] <= 12'h333))  // -1
+                    begin
+                        address =  6'd18;                
+                    end 
+                else if((myx[11:0] > 12'h333) && (myx[11:0] <= 12'h666))
+                    begin
+                        address =  6'd19;                                    
+                    end
+                 else if((myx[11:0] > 12'h666) && (myx[11:0] <= 12'h99a))
+                    begin
+                        address =  6'd20;                                                                         
+                    end
+                 else if((myx[11:0] > 12'h99a) && (myx[11:0] <= 12'hccd))
+                    begin
+                        address =  6'd21;                                                                                                
+                    end
+                 else if(myx[11:0] > 12'hccd)
+                    begin
+                        address =  6'd22;                                                                            
+                    end 
+        4'b0000:if((myx[11:0] >= 12'h000) && (myx[11:0] <= 12'h333)) // 0
+                    begin
+                        address =  6'd23;                
+                    end 
+                else if((myx[11:0] > 12'h333) && (myx[11:0] <= 12'h666))
+                    begin
+                        address =  6'd24;                
+                    end
+                 else if((myx[11:0] > 12'h666) && (myx[11:0] <= 12'h99a))
+                    begin
+                        address =  6'd25;                                                        
+                    end
+                 else if((myx[11:0] > 12'h99a) && (myx[11:0] <= 12'hccd))
+                    begin
+                        address =  6'd26;                                                                            
+                    end
+                 else if(myx[11:0] > 12'hccd)
+                    begin
+                        address =  6'd27;                                                        
+                    end 
+        4'b0001:if((myx[11:0] >= 12'h000) && (myx[11:0] <= 12'h333)) // 1
+                    begin
+                        address =  6'd28;                
+                    end 
+                else if((myx[11:0] > 12'h333) && (myx[11:0] <= 12'h666))
+                    begin
+                        address =  6'd29;                
+                    end
+                else if((myx[11:0] > 12'h666) && (myx[11:0] <= 12'h99a))
+                    begin
+                        address =  6'd30;                                                        
+                    end
+                else if((myx[11:0] > 12'h99a) && (myx[11:0] <= 12'hccd))
+                    begin
+                        address =  6'd31;                                                                            
+                    end
+                else if(myx[11:0] > 12'hccd)
+                    begin
+                       address =  6'd32;                                                         
+                    end 
+        4'b0010:if((myx[11:0] >= 12'h000) && (myx[11:0] <= 12'h333))  // 2
+                    begin
+                      address =  6'd33;                  
+                    end 
+                else if((myx[11:0] > 12'h333) && (myx[11:0] <= 12'h666))
+                    begin
+                      address =  6'd34;                   
+                    end
+                 else if((myx[11:0] > 12'h666) && (myx[11:0] <= 12'h99a))
+                    begin
+                       address =  6'd35;                                                          
+                    end
+                 else if((myx[11:0] > 12'h99a) && (myx[11:0] <= 12'hccd))
+                    begin
+                       address =  6'd36;                                                                               
+                    end
+                 else if(myx[11:0] > 12'hccd)
+                    begin
+                       address =  6'd37;                                                          
+                    end 
+        4'b0011:if((myx[11:0] >= 12'h000) && (myx[11:0] <= 12'h333)) // 3
+                    begin
+                       address =  6'd38;                  
+                    end 
+                else if((myx[11:0] > 12'h333) && (myx[11:0] <= 12'h666))
+                    begin
+                      address =  6'd39;                  
+                    end
+                else if((myx[11:0] > 12'h666) && (myx[11:0] <= 12'h99a))
+                    begin
+                      address =  6'd40;                                                          
+                    end
+                else if((myx[11:0] > 12'h99a) && (myx[11:0] <= 12'hccd))
+                    begin
+                      address = 6'd41;                                                                              
+                    end
+               else if(myx[11:0] > 12'hccd)
+                    begin
+                       address = 6'd42;                                                        
+                    end 
+	4'b0100:address = 6'd49;  
+	4'b0101:address = 6'd49;  
+	4'b0110:address = 6'd49;  
+	4'b0111:address = 6'd49;  
+       /* 4'b0100:if((myx[11:0] >= 12'h000) && (myx[11:0] <= 12'h333)) //4
+                    begin
+                      address = lut[43];                 
+                    end 
+                else if((myx[11:0] > 12'h333) && (myx[11:0] <= 12'h666))
+                    begin
+                       address = lut[44];                 
+                    end
+                else if((myx[11:0] > 12'h666) && (myx[11:0] <= 12'h99a))
+                    begin
+                       address = lut[45];                                                   
+                    end
+                else if(myx[11:0] > 12'h99a) 
+                    begin
+                        address = lut[46];                                                                            
+                    end
+	4'b0101: address = lut[46];    
+	4'b0110: address = lut[46];   
+	4'b0111: address = lut[46];  */ 
+	/*default:begin
+			address = 16'h1000;
+		end*/
+        endcase
+
+end
+
+endmodule
+
+module tanh(
+input [15:0] x,
+output [15:0] tanh_out);
+
+reg [15:0] lut;
+wire [15:0] x_comp;
+reg [15:0] tanh_comp;
+//reg [15:0] tanh;
+reg [4:0] address;
+
+
+assign x_comp = x[15]? {1'b0,~(myx[14:0])}+1'b1:x; // first take 2's complement if x is negative
+assign tanh_out = x[15]?(~lut+1'b1):lut; // take 2's complement of tanh if x was negative
+
+always @(address)
+begin
+  case(address) 	    
+  5'd0:  lut =16'b0000100000000010; //address(0.55)
+  5'd1:  lut=16'b0000100100100101; //address(0.65)
+  5'd2:  lut=16'b0000101000101001; //address(0.75)
+  5'd3:  lut=16'b0000101100001110; //address(0.85)
+  5'd4:  lut=16'b0000101111010110; //address(0.95)
+  5'd5:  lut=16'b0000110010000010; //address(1.05)
+  5'd6:  lut=16'b0000110100010101; //address(1.15)
+  5'd7:  lut=16'b0000110110010010; //address(1.25)
+  5'd8:  lut=16'b0000110111111100; //address(1.35)
+  5'd9:  lut=16'b0000111001010100; //address(1.45)
+  5'd10:  lut=16'b0000111010011110; //address(1.55)
+  5'd11:  lut=16'b0000111011011100; //address(1.65)
+  5'd12:  lut=16'b0000111100001111; //address(1.75)
+  5'd13:  lut=16'b0000111100111010; //address(1.85)
+  5'd14:  lut=16'b0000111101011101; //address(1.95)
+  5'd15:  lut=16'b0000111101111010; //address(2.05)
+  5'd16:  lut=16'b0000111110010010; //address(2.15)
+  5'd17:  lut=16'b0000111110100110; //address(2.25)
+  5'd18:  lut=16'b0000111110110110; //address(2.35)
+  5'd19:  lut=16'b0000111111000011; //address(2.45)
+  5'd20:  lut=16'b0000111111001110; //address(2.55)
+  5'd21:  lut=16'b0000111111101011; //address(3.0)
+  5'd22:  lut=16'b0001000000000000; //1
+  5'd23:  lut=x_comp;
+  default: lut=0;
+  endcase
+end
+
+always@(x)
+begin
+  /*if(rst == 0)
+        tanh_out = 0;
+  else
+    begin*/
+    // first take 2's complement if x is negative
+    /*if(myx[15] == 1'b1)
+        begin
+            x_comp = {1'b0,~(myx[14:0])}+1'b1;
+        end
+    else
+        begin
+            x_comp = x;
+    end*/
+    
+    // next find the address
+   
+    if((x_comp >= 16'h0800) && (x_comp < 16'h3000))
+    begin
+    case(x_comp[15:12])
+        4'b0000:begin
+                if((x_comp[11:0] >= 16'h800) && (x_comp[11:0] < 16'h99a))
+                    address = 5'd0;
+                else if((x_comp[11:0] >= 16'h99a) && (x_comp[11:0] < 16'hb33))
+                    address = 5'd1;
+                else if((x_comp[11:0] >= 16'hb33) && (x_comp[11:0] < 16'hccd))
+                    address = 5'd2;
+                else if((x_comp[11:0] >= 16'hccd) && (x_comp[11:0] < 16'he66))
+                    address = 5'd3;
+                else if(x_comp[11:0] >= 16'he66)
+                    address = 5'd4;
+                end
+        4'b0001:begin
+                if((x_comp[11:0] >= 16'h000) && (x_comp[11:0] < 16'h19a))
+                    address = 5'd5;
+                else if((x_comp[11:0] >= 16'h19a) && (x_comp[11:0] < 16'h333))
+                    address = 5'd6;
+                else if((x_comp[11:0] >= 16'h333) && (x_comp[11:0] < 16'h4cd))
+                    address = 5'd7;
+                else if((x_comp[11:0] >= 16'h4cd) && (x_comp[11:0] < 16'h666))
+                    address = 5'd8;
+                else if((x_comp[11:0] >= 16'h666) && (x_comp[11:0] < 16'h800))
+                    address = 5'd9;
+                else if((x_comp[11:0] >= 16'h800) && (x_comp[11:0] < 16'h99a))
+                    address = 5'd10;
+                else if((x_comp[11:0] >= 16'h99a) && (x_comp[11:0] < 16'hb33))
+                    address = 5'd11;
+                else if((x_comp[11:0] >= 16'hb33) && (x_comp[11:0] < 16'hccd))
+                    address = 5'd12;
+                else if((x_comp[11:0] >= 16'hccd) && (x_comp[11:0] < 16'he66))
+                    address = 5'd13;
+                else if(x_comp[11:0] >= 16'he66)
+                    address = 5'd14;
+                end
+        4'b0010:begin
+                if((x_comp[11:0] >= 16'h000) && (x_comp[11:0] < 16'h19a))
+                    address = 5'd15;
+                else if((x_comp[11:0] >= 16'h19a) && (x_comp[11:0] < 16'h333))
+                    address = 5'd16;
+                else if((x_comp[11:0] >= 16'h333) && (x_comp[11:0] < 16'h4cd))
+                    address = 5'd17;
+                else if((x_comp[11:0] >= 16'h4cd) && (x_comp[11:0] < 16'h666))
+                    address = 5'd18;
+                else if((x_comp[11:0] >= 16'h666) && (x_comp[11:0] < 16'h800))
+                    address = 5'd19;
+                else if((x_comp[11:0] >= 16'h800) && (x_comp[11:0] < 16'h99a))
+                    address = 5'd20;
+                else if(x_comp[11:0] >= 16'h99a)
+                    address = 5'd21;
+                end
+	default: address = 0;
+    endcase
+    end
+    
+    else if((x_comp >= 16'h0000) && (x_comp < 16'h0800))
+           begin
+               address = 5'd23;
+           end
+    else if(x_comp >= 16'h3000)
+           begin
+               address = 5'd22;
+           end               
+   //end
+    
+end
+
+
+endmodule
+
+
+
+module signedmul(
+  input clk,
+  input [7:0] a,
+  input [7:0] b,
+  output [7:0] c
+);
+
+wire [16:0] result;
+wire [7:0] a_new;
+wire [7:0] b_new;
+
+reg [7:0] a_ff;
+reg [7:0] b_ff;
+reg [15:0] result_ff;
+reg a_sign,b_sign,a_sign_ff,b_sign_ff;
+
+assign c = (b_sign_ff==a_sign_ff)?result_ff[13:6]:(~result_ff[13:6]+1'b1);
+assign a_new = a[7]?(~a + 1'b1):a;
+assign b_new = b[7]?(~b + 1'b1):b;
+assign result = a_ff*b_ff;
+
+always@(posedge clk) begin
+	a_ff <= a_new;
+	b_ff <= b_new; 
+
+	a_sign <= a[7];
+	b_sign <= b[7];
+	a_sign_ff <= a_sign;
+	b_sign_ff <= b_sign;
+    result_ff <= result;
+    
+end
+
+
+endmodule
+
