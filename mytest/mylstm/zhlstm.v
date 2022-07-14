@@ -51,42 +51,42 @@ reg [`DATA_WIDTH-1:0] C_in;
 
 wire [63:0] Ui_pimdata_in;
 wire [63:0] Ui_pimdata_out;
-wire [3:0] Ui_add_pim;
+reg [3:0] Ui_add_pim;
 
 
 wire [63:0] Uf_pimdata_in;
 wire [63:0] Uf_pimdata_out;
-wire [3:0] Uf_add_pim;
+reg [3:0] Uf_add_pim;
 
 
 wire [63:0] Uo_pimdata_in;
 wire [63:0] Uo_pimdata_out;
-wire [3:0] Uo_add_pim;
+reg [3:0] Uo_add_pim;
 
 
 wire [63:0] Uc_pimdata_in;
 wire [63:0] Uc_pimdata_out;
-wire [3:0] Uc_add_pim;
+reg [3:0] Uc_add_pim;
 
 
 wire [63:0] Wi_pimdata_in;
 wire [63:0] Wi_pimdata_out;
-wire [3:0] Wi_add_pim;
+reg [3:0] Wi_add_pim;
 
 
 wire [63:0] Wf_pimdata_in;
 wire [63:0] Wf_pimdata_out;
-wire [3:0] Wf_add_pim;
+reg [3:0] Wf_add_pim;
 
 
 wire [63:0] Wo_pimdata_in;
 wire [63:0] Wo_pimdata_out;
-wire [3:0] Wo_add_pim;
+reg [3:0] Wo_add_pim;
 
 
 wire [63:0] Wc_pimdata_in;
 wire [63:0] Wc_pimdata_out;
-wire [3:0] Wc_add_pim;
+reg [3:0] Wc_add_pim;
 
 reg [3:0] pim_read_X;
 reg [2:0] pim_read_H;
@@ -96,6 +96,14 @@ reg [2:0] pim_read_H;
 reg [6:0] inaddr; 
 reg [6:0] waddr;
 reg wren_a;
+reg wren_a_0;
+reg wren_a_1;
+reg wren_a_2;
+reg wren_a_3;
+reg wren_a_4;
+reg wren_a_5;
+reg wren_a_6;
+reg wren_a_7;
 reg [6:0] c_count;
 reg [6:0] b_count;
 reg [6:0] ct_count;
@@ -103,24 +111,11 @@ reg [6:0] count;
 reg [6:0] i,j;
 reg [5:0] h_count;
 
-wire [`DATA_WIDTH-1:0] ht_0;
-wire [`DATA_WIDTH-1:0] ht_1;
-wire [`DATA_WIDTH-1:0] ht_2;
-wire [`DATA_WIDTH-1:0] ht_3;
-wire [`DATA_WIDTH-1:0] ht_4;
-wire [`DATA_WIDTH-1:0] ht_5;
-wire [`DATA_WIDTH-1:0] ht_6;
-wire [`DATA_WIDTH-1:0] ht_7;
+wire [63:0] ht;
 reg [`uarraysize-1:0] ht_prev;
 reg [`uarraysize-1:0] Ct;
-wire [`DATA_WIDTH-1:0] add_cf_0;
-wire [`DATA_WIDTH-1:0] add_cf_1;
-wire [`DATA_WIDTH-1:0] add_cf_2;
-wire [`DATA_WIDTH-1:0] add_cf_3;
-wire [`DATA_WIDTH-1:0] add_cf_4;
-wire [`DATA_WIDTH-1:0] add_cf_5;
-wire [`DATA_WIDTH-1:0] add_cf_6;
-wire [`DATA_WIDTH-1:0] add_cf_7;
+wire [63:0] add_cf;
+
 reg wren_a_ct, wren_b_cin;
 
 reg [15:0] tmp;
@@ -135,22 +130,22 @@ assign ht_valid = (count>16)?1:0;
 //BRAMs storing the input and hidden weights of each of the gates
 //Hidden weights are represented by U and Input weights by W
 
-single_port_ram Ui_PIM(.addr(Ui_add_pim),.we(wren_a),.data(Ui_pimdata_in),.out(Ui_pimdata_out),.clk(clk));
-single_port_ram Uf_PIM(.addr(Uf_add_pim),.we(wren_a),.data(Uf_pimdata_in),.out(Uf_pimdata_out),.clk(clk));
-single_port_ram Uo_PIM(.addr(Uo_add_pim),.we(wren_a),.data(Uo_pimdata_in),.out(Uo_pimdata_out),.clk(clk));
-single_port_ram Uc_PIM(.addr(Uc_add_pim),.we(wren_a),.data(Uc_pimdata_in),.out(Uc_pimdata_out),.clk(clk));
-single_port_ram Wi_PIM(.addr(Wi_add_pim),.we(wren_a),.data(Wi_pimdata_in),.out(Wi_pimdata_out),.clk(clk));
-single_port_ram Wf_PIM(.addr(Wf_add_pim),.we(wren_a),.data(Wf_pimdata_in),.out(Wf_pimdata_out),.clk(clk));
-single_port_ram Wo_PIM(.addr(Wo_add_pim),.we(wren_a),.data(Wo_pimdata_in),.out(Wo_pimdata_out),.clk(clk));
-single_port_ram Wc_PIM(.addr(Wc_add_pim),.we(wren_a),.data(Wc_pimdata_in),.out(Wc_pimdata_out),.clk(clk));
-lstm_top mylstm_0(.clk(clk),.mac_fx_reg(Wf_pimdata_out[7:0]),.mac_fh_reg(Uf_pimdata_out[7:0]),.mac_ox_reg(Wo_pimdata_out[7:0]),.mac_oh_reg(Uo_pimdata_out[7:0]),.mac_ix_reg(Wi_pimdata_out[7:0]),.mac_ih_reg(Ui_pimdata_out[7:0]),.mac_cx_reg(Wc_pimdata_out[7:0]),.mac_ch_reg(Uc_pimdata_out[7:0]),.bi_in(bi_in),.bf_in(bf_in),.bo_in(bo_in),.bc_in(bc_in),.ht_out(ht_0),.add_cf(add_cf_0));
-lstm_top mylstm_1(.clk(clk),.mac_fx_reg(Wf_pimdata_out[15:8]),.mac_fh_reg(Uf_pimdata_out[15:8]),.mac_ox_reg(Wo_pimdata_out[15:8]),.mac_oh_reg(Uo_pimdata_out[15:8]),.mac_ix_reg(Wi_pimdata_out[15:8]),.mac_ih_reg(Ui_pimdata_out[15:8]),.mac_cx_reg(Wc_pimdata_out[15:8]),.mac_ch_reg(Uc_pimdata_out[15:8]),.bi_in(bi_in),.bf_in(bf_in),.bo_in(bo_in),.bc_in(bc_in),.ht_out(ht_1),.add_cf(add_cf_1));
-lstm_top mylstm_2(.clk(clk),.mac_fx_reg(Wf_pimdata_out[23:16]),.mac_fh_reg(Uf_pimdata_out[23:16]),.mac_ox_reg(Wo_pimdata_out[23:16]),.mac_oh_reg(Uo_pimdata_out[23:16]),.mac_ix_reg(Wi_pimdata_out[23:16]),.mac_ih_reg(Ui_pimdata_out[23:16]),.mac_cx_reg(Wc_pimdata_out[23:16]),.mac_ch_reg(Uc_pimdata_out[23:16]),.bi_in(bi_in),.bf_in(bf_in),.bo_in(bo_in),.bc_in(bc_in),.ht_out(ht_2),.add_cf(add_cf_2));
-lstm_top mylstm_3(.clk(clk),.mac_fx_reg(Wf_pimdata_out[31:24]),.mac_fh_reg(Uf_pimdata_out[31:24]),.mac_ox_reg(Wo_pimdata_out[31:24]),.mac_oh_reg(Uo_pimdata_out[31:24]),.mac_ix_reg(Wi_pimdata_out[31:24]),.mac_ih_reg(Ui_pimdata_out[31:24]),.mac_cx_reg(Wc_pimdata_out[31:24]),.mac_ch_reg(Uc_pimdata_out[31:24]),.bi_in(bi_in),.bf_in(bf_in),.bo_in(bo_in),.bc_in(bc_in),.ht_out(ht_3),.add_cf(add_cf_3));
-lstm_top mylstm_4(.clk(clk),.mac_fx_reg(Wf_pimdata_out[39:32]),.mac_fh_reg(Uf_pimdata_out[39:32]),.mac_ox_reg(Wo_pimdata_out[39:32]),.mac_oh_reg(Uo_pimdata_out[39:32]),.mac_ix_reg(Wi_pimdata_out[39:32]),.mac_ih_reg(Ui_pimdata_out[39:32]),.mac_cx_reg(Wc_pimdata_out[39:32]),.mac_ch_reg(Uc_pimdata_out[39:32]),.bi_in(bi_in),.bf_in(bf_in),.bo_in(bo_in),.bc_in(bc_in),.ht_out(ht_4),.add_cf(add_cf_4));
-lstm_top mylstm_5(.clk(clk),.mac_fx_reg(Wf_pimdata_out[47:40]),.mac_fh_reg(Uf_pimdata_out[47:40]),.mac_ox_reg(Wo_pimdata_out[47:40]),.mac_oh_reg(Uo_pimdata_out[47:40]),.mac_ix_reg(Wi_pimdata_out[47:40]),.mac_ih_reg(Ui_pimdata_out[47:40]),.mac_cx_reg(Wc_pimdata_out[47:40]),.mac_ch_reg(Uc_pimdata_out[47:40]),.bi_in(bi_in),.bf_in(bf_in),.bo_in(bo_in),.bc_in(bc_in),.ht_out(ht_5),.add_cf(add_cf_5));
-lstm_top mylstm_6(.clk(clk),.mac_fx_reg(Wf_pimdata_out[55:48]),.mac_fh_reg(Uf_pimdata_out[55:48]),.mac_ox_reg(Wo_pimdata_out[55:48]),.mac_oh_reg(Uo_pimdata_out[55:48]),.mac_ix_reg(Wi_pimdata_out[55:48]),.mac_ih_reg(Ui_pimdata_out[55:48]),.mac_cx_reg(Wc_pimdata_out[55:48]),.mac_ch_reg(Uc_pimdata_out[55:48]),.bi_in(bi_in),.bf_in(bf_in),.bo_in(bo_in),.bc_in(bc_in),.ht_out(ht_6),.add_cf(add_cf_6));
-lstm_top mylstm_7(.clk(clk),.mac_fx_reg(Wf_pimdata_out[63:56]),.mac_fh_reg(Uf_pimdata_out[63:56]),.mac_ox_reg(Wo_pimdata_out[63:56]),.mac_oh_reg(Uo_pimdata_out[63:56]),.mac_ix_reg(Wi_pimdata_out[63:56]),.mac_ih_reg(Ui_pimdata_out[63:56]),.mac_cx_reg(Wc_pimdata_out[63:56]),.mac_ch_reg(Uc_pimdata_out[63:56]),.bi_in(bi_in),.bf_in(bf_in),.bo_in(bo_in),.bc_in(bc_in),.ht_out(ht_7),.add_cf(add_cf_7));
+single_port_ram Ui_PIM(.addr(Ui_add_pim),.we(wren_a_0),.data(Ui_pimdata_in),.out(Ui_pimdata_out),.clk(clk));
+single_port_ram Uf_PIM(.addr(Uf_add_pim),.we(wren_a_1),.data(Uf_pimdata_in),.out(Uf_pimdata_out),.clk(clk));
+single_port_ram Uo_PIM(.addr(Uo_add_pim),.we(wren_a_2),.data(Uo_pimdata_in),.out(Uo_pimdata_out),.clk(clk));
+single_port_ram Uc_PIM(.addr(Uc_add_pim),.we(wren_a_3),.data(Uc_pimdata_in),.out(Uc_pimdata_out),.clk(clk));
+single_port_ram Wi_PIM(.addr(Wi_add_pim),.we(wren_a_4),.data(Wi_pimdata_in),.out(Wi_pimdata_out),.clk(clk));
+single_port_ram Wf_PIM(.addr(Wf_add_pim),.we(wren_a_5),.data(Wf_pimdata_in),.out(Wf_pimdata_out),.clk(clk));
+single_port_ram Wo_PIM(.addr(Wo_add_pim),.we(wren_a_6),.data(Wo_pimdata_in),.out(Wo_pimdata_out),.clk(clk));
+single_port_ram Wc_PIM(.addr(Wc_add_pim),.we(wren_a_7),.data(Wc_pimdata_in),.out(Wc_pimdata_out),.clk(clk));
+lstm_top mylstm_0(.clk(clk),.mac_fx_reg(Wf_pimdata_out[7:0]),.mac_fh_reg(Uf_pimdata_out[7:0]),.mac_ox_reg(Wo_pimdata_out[7:0]),.mac_oh_reg(Uo_pimdata_out[7:0]),.mac_ix_reg(Wi_pimdata_out[7:0]),.mac_ih_reg(Ui_pimdata_out[7:0]),.mac_cx_reg(Wc_pimdata_out[7:0]),.mac_ch_reg(Uc_pimdata_out[7:0]),.bi_in(bi_in),.bf_in(bf_in),.bo_in(bo_in),.bc_in(bc_in),.C_in(C_in[7:0]),.ht_out(ht[7:0]),.add_cf(add_cf[7:0]));
+lstm_top mylstm_1(.clk(clk),.mac_fx_reg(Wf_pimdata_out[15:8]),.mac_fh_reg(Uf_pimdata_out[15:8]),.mac_ox_reg(Wo_pimdata_out[15:8]),.mac_oh_reg(Uo_pimdata_out[15:8]),.mac_ix_reg(Wi_pimdata_out[15:8]),.mac_ih_reg(Ui_pimdata_out[15:8]),.mac_cx_reg(Wc_pimdata_out[15:8]),.mac_ch_reg(Uc_pimdata_out[15:8]),.bi_in(bi_in),.bf_in(bf_in),.bo_in(bo_in),.bc_in(bc_in),.C_in(C_in[15:8]),.ht_out(ht[15:8]),.add_cf(add_cf[15:8]));
+lstm_top mylstm_2(.clk(clk),.mac_fx_reg(Wf_pimdata_out[23:16]),.mac_fh_reg(Uf_pimdata_out[23:16]),.mac_ox_reg(Wo_pimdata_out[23:16]),.mac_oh_reg(Uo_pimdata_out[23:16]),.mac_ix_reg(Wi_pimdata_out[23:16]),.mac_ih_reg(Ui_pimdata_out[23:16]),.mac_cx_reg(Wc_pimdata_out[23:16]),.mac_ch_reg(Uc_pimdata_out[23:16]),.bi_in(bi_in),.bf_in(bf_in),.bo_in(bo_in),.bc_in(bc_in),.C_in(C_in[23:16]),.ht_out(ht[23:16]),.add_cf(add_cf[23:16]));
+lstm_top mylstm_3(.clk(clk),.mac_fx_reg(Wf_pimdata_out[31:24]),.mac_fh_reg(Uf_pimdata_out[31:24]),.mac_ox_reg(Wo_pimdata_out[31:24]),.mac_oh_reg(Uo_pimdata_out[31:24]),.mac_ix_reg(Wi_pimdata_out[31:24]),.mac_ih_reg(Ui_pimdata_out[31:24]),.mac_cx_reg(Wc_pimdata_out[31:24]),.mac_ch_reg(Uc_pimdata_out[31:24]),.bi_in(bi_in),.bf_in(bf_in),.bo_in(bo_in),.bc_in(bc_in),.C_in(C_in[31:24]),.ht_out(ht[31:24]),.add_cf(add_cf[31:24]));
+lstm_top mylstm_4(.clk(clk),.mac_fx_reg(Wf_pimdata_out[39:32]),.mac_fh_reg(Uf_pimdata_out[39:32]),.mac_ox_reg(Wo_pimdata_out[39:32]),.mac_oh_reg(Uo_pimdata_out[39:32]),.mac_ix_reg(Wi_pimdata_out[39:32]),.mac_ih_reg(Ui_pimdata_out[39:32]),.mac_cx_reg(Wc_pimdata_out[39:32]),.mac_ch_reg(Uc_pimdata_out[39:32]),.bi_in(bi_in),.bf_in(bf_in),.bo_in(bo_in),.bc_in(bc_in),.C_in(C_in[39:32]),.ht_out(ht[39:32]),.add_cf(add_cf[39:32]));
+lstm_top mylstm_5(.clk(clk),.mac_fx_reg(Wf_pimdata_out[47:40]),.mac_fh_reg(Uf_pimdata_out[47:40]),.mac_ox_reg(Wo_pimdata_out[47:40]),.mac_oh_reg(Uo_pimdata_out[47:40]),.mac_ix_reg(Wi_pimdata_out[47:40]),.mac_ih_reg(Ui_pimdata_out[47:40]),.mac_cx_reg(Wc_pimdata_out[47:40]),.mac_ch_reg(Uc_pimdata_out[47:40]),.bi_in(bi_in),.bf_in(bf_in),.bo_in(bo_in),.bc_in(bc_in),.C_in(C_in[47:40]),.ht_out(ht[47:40]),.add_cf(add_cf[47:40]));
+lstm_top mylstm_6(.clk(clk),.mac_fx_reg(Wf_pimdata_out[55:48]),.mac_fh_reg(Uf_pimdata_out[55:48]),.mac_ox_reg(Wo_pimdata_out[55:48]),.mac_oh_reg(Uo_pimdata_out[55:48]),.mac_ix_reg(Wi_pimdata_out[55:48]),.mac_ih_reg(Ui_pimdata_out[55:48]),.mac_cx_reg(Wc_pimdata_out[55:48]),.mac_ch_reg(Uc_pimdata_out[55:48]),.bi_in(bi_in),.bf_in(bf_in),.bo_in(bo_in),.bc_in(bc_in),.C_in(C_in[55:48]),.ht_out(ht[55:48]),.add_cf(add_cf[55:48]));
+lstm_top mylstm_7(.clk(clk),.mac_fx_reg(Wf_pimdata_out[63:56]),.mac_fh_reg(Uf_pimdata_out[63:56]),.mac_ox_reg(Wo_pimdata_out[63:56]),.mac_oh_reg(Uo_pimdata_out[63:56]),.mac_ix_reg(Wi_pimdata_out[63:56]),.mac_ih_reg(Ui_pimdata_out[63:56]),.mac_cx_reg(Wc_pimdata_out[63:56]),.mac_ch_reg(Uc_pimdata_out[63:56]),.bi_in(bi_in),.bf_in(bf_in),.bo_in(bo_in),.bc_in(bc_in),.C_in(C_in[63:56]),.ht_out(ht[63:56]),.add_cf(add_cf[63:56]));
 
 
 
@@ -181,6 +176,14 @@ always @(posedge clk) begin
 	   h_in <= 0;
 	   ht_prev <= 0;
 	   wren_a <= 0;
+       wren_a_0 <= 0;
+       wren_a_1 <= 0;
+       wren_a_2 <= 0;
+       wren_a_3 <= 0;
+       wren_a_4 <= 0;
+       wren_a_5 <= 0;
+       wren_a_6 <= 0;
+       wren_a_7 <= 0;
 	   wren_a_ct <= 1;
 	   wren_b_cin <= 0;
 	   cycle_complete <=0;
@@ -221,6 +224,15 @@ always @(posedge clk) begin
         if(count>6)     //delay before bias add
 			pim_read_X <= pim_read_X + 1;
 			pim_read_H <= pim_read_H + 1;
+
+            wren_a_0 <= 1;
+            wren_a_1 <= 1;
+            wren_a_2 <= 1;
+            wren_a_3 <= 1;
+            wren_a_4 <= 1;
+            wren_a_5 <= 1;
+            wren_a_6 <= 1;
+            wren_a_7 <= 1;
             case(pim_read_X)
             0: begin Ui_pimdata_in <= x_in[64*0+:64] ; Uf_pimdata_in <= x_in[64*0+:64] ; Uo_pimdata_in <= x_in[64*0+:64] ;Uc_pimdata_in <= x_in[64*0+:64] ; Ui_add_pim <=  Ui_add_pim +1; Uf_add_pim <=  Uf_add_pim +1; Uo_add_pim <=  Uo_add_pim +1; Uc_add_pim <=  Uc_add_pim +1; end
 			1: begin Ui_pimdata_in <= x_in[64*1+:64] ; Uf_pimdata_in <= x_in[64*1+:64] ; Uo_pimdata_in <= x_in[64*1+:64] ;Uc_pimdata_in <= x_in[64*1+:64] ; Ui_add_pim <=  Ui_add_pim +1; Uf_add_pim <=  Uf_add_pim +1; Uo_add_pim <=  Uo_add_pim +1; Uc_add_pim <=  Uc_add_pim +1; end
@@ -256,70 +268,14 @@ always @(posedge clk) begin
 		if(count >8)  begin //delay before Cin elmul
 			c_count <=c_count+1;
 			case(c_count)
-			0: C_in<=Ct[8*0+:8] ;
-			1: C_in<=Ct[8*1+:8] ;
-			2: C_in<=Ct[8*2+:8] ;
-			3: C_in<=Ct[8*3+:8] ;
-			4: C_in<=Ct[8*4+:8] ;
-			5: C_in<=Ct[8*5+:8] ;
-			6: C_in<=Ct[8*6+:8] ;
-			7: C_in<=Ct[8*7+:8] ;
-			8: C_in<=Ct[8*8+:8] ;
-			9: C_in<=Ct[8*9+:8] ;
-			10: C_in <=Ct[8*10+:8];
-			11: C_in <=Ct[8*11+:8];
-			12: C_in <=Ct[8*12+:8];
-			13: C_in <=Ct[8*13+:8];
-			14: C_in <=Ct[8*14+:8];
-			15: C_in <=Ct[8*15+:8];
-			16: C_in <=Ct[8*16+:8];
-			17: C_in <=Ct[8*17+:8];
-			18: C_in <=Ct[8*18+:8];
-			19: C_in <=Ct[8*19+:8];
-			20: C_in <=Ct[8*20+:8];
-			21: C_in <=Ct[8*21+:8];
-			22: C_in <=Ct[8*22+:8];
-			23: C_in <=Ct[8*23+:8];
-			24: C_in <=Ct[8*24+:8];
-			25: C_in <=Ct[8*25+:8];
-			26: C_in <=Ct[8*26+:8];
-			27: C_in <=Ct[8*27+:8];
-			28: C_in <=Ct[8*28+:8];
-			29: C_in <=Ct[8*29+:8];
-			30: C_in <=Ct[8*30+:8];
-			31: C_in <=Ct[8*31+:8];
-			32: C_in <=Ct[8*32+:8];
-			33: C_in <=Ct[8*33+:8];
-			34: C_in <=Ct[8*34+:8];
-			35: C_in <=Ct[8*35+:8];
-			36: C_in <=Ct[8*36+:8];
-			37: C_in <=Ct[8*37+:8];
-			38: C_in <=Ct[8*38+:8];
-			39: C_in <=Ct[8*39+:8];
-			40: C_in <=Ct[8*40+:8];
-			41: C_in <=Ct[8*41+:8];
-			42: C_in <=Ct[8*42+:8];
-			43: C_in <=Ct[8*43+:8];
-			44: C_in <=Ct[8*44+:8];
-			45: C_in <=Ct[8*45+:8];
-			46: C_in <=Ct[8*46+:8];
-			47: C_in <=Ct[8*47+:8];
-			48: C_in <=Ct[8*48+:8];
-			49: C_in <=Ct[8*49+:8];
-			50: C_in <=Ct[8*50+:8];
-			51: C_in <=Ct[8*51+:8];
-			52: C_in <=Ct[8*52+:8];
-			53: C_in <=Ct[8*53+:8];
-			54: C_in <=Ct[8*54+:8];
-			55: C_in <=Ct[8*55+:8];
-			56: C_in <=Ct[8*56+:8];
-			57: C_in <=Ct[8*57+:8];
-			58: C_in <=Ct[8*58+:8];
-			59: C_in <=Ct[8*59+:8];
-			60: C_in <=Ct[8*60+:8];
-			61: C_in <=Ct[8*61+:8];
-			62: C_in <=Ct[8*62+:8];
-			63: C_in <=Ct[8*63+:8];
+			0: C_in<=Ct[8*0+:64] ;
+			1: C_in<=Ct[8*1+:64] ;
+			2: C_in<=Ct[8*2+:64] ;
+			3: C_in<=Ct[8*3+:64] ;
+			4: C_in<=Ct[8*4+:64] ;
+			5: C_in<=Ct[8*5+:64] ;
+			6: C_in<=Ct[8*6+:64] ;
+			7: C_in<=Ct[8*7+:64] ;
 			default : C_in <= 0;
 		endcase	
 		end
@@ -328,140 +284,28 @@ always @(posedge clk) begin
 			ct_count <= ct_count+1;
 		 //storing cell state
 			case(ct_count)
-			0:	Ct[8*0+:8] <= add_cf;
-			1:	Ct[8*1+:8] <= add_cf;
-			2:	Ct[8*2+:8] <= add_cf;
-			3:	Ct[8*3+:8] <= add_cf;
-			4:	Ct[8*4+:8] <= add_cf;
-			5:	Ct[8*5+:8] <= add_cf;
-			6:	Ct[8*6+:8] <= add_cf;
-			7:	Ct[8*7+:8] <= add_cf;
-			8:	Ct[8*8+:8] <= add_cf;
-			9:	Ct[8*9+:8] <= add_cf;
-			10:	Ct[8*10+:8] <=add_cf;
-			11:	Ct[8*11+:8] <=add_cf;
-			12:	Ct[8*12+:8] <=add_cf;
-			13:	Ct[8*13+:8] <=add_cf;
-			14:	Ct[8*14+:8] <=add_cf;
-			15:	Ct[8*15+:8] <=add_cf;
-			16:	Ct[8*16+:8] <=add_cf;
-			17:	Ct[8*17+:8] <=add_cf;
-			18:	Ct[8*18+:8] <=add_cf;
-			19:	Ct[8*19+:8] <=add_cf;
-			20:	Ct[8*20+:8] <=add_cf;
-			21:	Ct[8*21+:8] <=add_cf;
-			22:	Ct[8*22+:8] <=add_cf;
-			23:	Ct[8*23+:8] <=add_cf;
-			24:	Ct[8*24+:8] <=add_cf;
-			25:	Ct[8*25+:8] <=add_cf;
-			26:	Ct[8*26+:8] <=add_cf;
-			27:	Ct[8*27+:8] <=add_cf;
-			28:	Ct[8*28+:8] <=add_cf;
-			29:	Ct[8*29+:8] <=add_cf;
-			30:	Ct[8*30+:8] <=add_cf;
-			31:	Ct[8*31+:8] <=add_cf;
-			32:	Ct[8*32+:8] <=add_cf;
-			33:	Ct[8*33+:8] <=add_cf;
-			34:	Ct[8*34+:8] <=add_cf;
-			35:	Ct[8*35+:8] <=add_cf;
-			36:	Ct[8*36+:8] <=add_cf;
-			37:	Ct[8*37+:8] <=add_cf;
-			38:	Ct[8*38+:8] <=add_cf;
-			39:	Ct[8*39+:8] <=add_cf;
-			40:	Ct[8*40+:8] <=add_cf;
-			41:	Ct[8*41+:8] <=add_cf;
-			42:	Ct[8*42+:8] <=add_cf;
-			43:	Ct[8*43+:8] <=add_cf;
-			44:	Ct[8*44+:8] <=add_cf;
-			45:	Ct[8*45+:8] <=add_cf;
-			46:	Ct[8*46+:8] <=add_cf;
-			47:	Ct[8*47+:8] <=add_cf;
-			48:	Ct[8*48+:8] <=add_cf;
-			49:	Ct[8*49+:8] <=add_cf;
-			50:	Ct[8*50+:8] <=add_cf;
-			51:	Ct[8*51+:8] <=add_cf;
-			52:	Ct[8*52+:8] <=add_cf;
-			53:	Ct[8*53+:8] <=add_cf;
-			54:	Ct[8*54+:8] <=add_cf;
-			55:	Ct[8*55+:8] <=add_cf;
-			56:	Ct[8*56+:8] <=add_cf;
-			57:	Ct[8*57+:8] <=add_cf;
-			58:	Ct[8*58+:8] <=add_cf;
-			59:	Ct[8*59+:8] <=add_cf;
-			60:	Ct[8*60+:8] <=add_cf;
-			61:	Ct[8*61+:8] <=add_cf;
-			62:	Ct[8*62+:8] <=add_cf;
-			63:	Ct[8*63+:8] <=add_cf;
+			0:	Ct[8*0+:64] <= add_cf;
+			1:	Ct[8*1+:64] <= add_cf;
+			2:	Ct[8*2+:64] <= add_cf;
+			3:	Ct[8*3+:64] <= add_cf;
+			4:	Ct[8*4+:64] <= add_cf;
+			5:	Ct[8*5+:64] <= add_cf;
+			6:	Ct[8*6+:64] <= add_cf;
+			7:	Ct[8*7+:64] <= add_cf;
 			default : Ct <= 0;
 		 endcase
 		end
 		if(count >16) begin
 			h_count <= h_count + 1;
 			case(h_count)
-			0:	ht_prev[8*0+:8] <= ht;
-			1:	ht_prev[8*1+:8] <= ht;
-			2:	ht_prev[8*2+:8] <= ht;
-			3:	ht_prev[8*3+:8] <= ht;
-			4:	ht_prev[8*4+:8] <= ht;
-			5:	ht_prev[8*5+:8] <= ht;
-			6:	ht_prev[8*6+:8] <= ht;
-			7:	ht_prev[8*7+:8] <= ht;
-			8:	ht_prev[8*8+:8] <= ht;
-			9:	ht_prev[8*9+:8] <= ht;
-			10:	ht_prev[8*10+:8] <= ht;
-			11:	ht_prev[8*11+:8] <= ht;
-			12:	ht_prev[8*12+:8] <= ht;
-			13:	ht_prev[8*13+:8] <= ht;
-			14:	ht_prev[8*14+:8] <= ht;
-			15:	ht_prev[8*15+:8] <= ht;
-			16:	ht_prev[8*16+:8] <= ht;
-			17:	ht_prev[8*17+:8] <= ht;
-			18:	ht_prev[8*18+:8] <= ht;
-			19:	ht_prev[8*19+:8] <= ht;
-			20:	ht_prev[8*20+:8] <= ht;
-			21:	ht_prev[8*21+:8] <= ht;
-			22:	ht_prev[8*22+:8] <= ht;
-			23:	ht_prev[8*23+:8] <= ht;
-			24:	ht_prev[8*24+:8] <= ht;
-			25:	ht_prev[8*25+:8] <= ht;
-			26:	ht_prev[8*26+:8] <= ht;
-			27:	ht_prev[8*27+:8] <= ht;
-			28:	ht_prev[8*28+:8] <= ht;
-			29:	ht_prev[8*29+:8] <= ht;
-			30:	ht_prev[8*30+:8] <= ht;
-			31:	ht_prev[8*31+:8] <= ht;
-			32:	ht_prev[8*32+:8] <= ht;
-			33:	ht_prev[8*33+:8] <= ht;
-			34:	ht_prev[8*34+:8] <= ht;
-			35:	ht_prev[8*35+:8] <= ht;
-			36:	ht_prev[8*36+:8] <= ht;
-			37:	ht_prev[8*37+:8] <= ht;
-			38:	ht_prev[8*38+:8] <= ht;
-			39:	ht_prev[8*39+:8] <= ht;
-			40:	ht_prev[8*40+:8] <= ht;
-			41:	ht_prev[8*41+:8] <= ht;
-			42:	ht_prev[8*42+:8] <= ht;
-			43:	ht_prev[8*43+:8] <= ht;
-			44:	ht_prev[8*44+:8] <= ht;
-			45:	ht_prev[8*45+:8] <= ht;
-			46:	ht_prev[8*46+:8] <= ht;
-			47:	ht_prev[8*47+:8] <= ht;
-			48:	ht_prev[8*48+:8] <= ht;
-			49:	ht_prev[8*49+:8] <= ht;
-			50:	ht_prev[8*50+:8] <= ht;
-			51:	ht_prev[8*51+:8] <= ht;
-			52:	ht_prev[8*52+:8] <= ht;
-			53:	ht_prev[8*53+:8] <= ht;
-			54:	ht_prev[8*54+:8] <= ht;
-			55:	ht_prev[8*55+:8] <= ht;
-			56:	ht_prev[8*56+:8] <= ht;
-			57:	ht_prev[8*57+:8] <= ht;
-			58:	ht_prev[8*58+:8] <= ht;
-			59:	ht_prev[8*59+:8] <= ht;
-			60:	ht_prev[8*60+:8] <= ht;
-			61:	ht_prev[8*61+:8] <= ht;
-			62:	ht_prev[8*62+:8] <= ht;
-			63:	ht_prev[8*63+:8] <= ht;
+			0:	ht_prev[8*0+:64] <= ht[8*0+:64];
+			1:	ht_prev[8*1+:64] <= ht[8*1+:64];
+			2:	ht_prev[8*2+:64] <= ht[8*2+:64];
+			3:	ht_prev[8*3+:64] <= ht[8*3+:64];
+			4:	ht_prev[8*4+:64] <= ht[8*4+:64];
+			5:	ht_prev[8*5+:64] <= ht[8*5+:64];
+			6:	ht_prev[8*6+:64] <= ht[8*6+:64];
+			7:	ht_prev[8*7+:64] <= ht[8*7+:64];
 			default: ht_prev <= 0;
 			endcase
 		 end
@@ -572,7 +416,8 @@ input [`DATA_WIDTH-1:0] bi_in,
 input [`DATA_WIDTH-1:0] bf_in,
 input [`DATA_WIDTH-1:0] bo_in,
 input [`DATA_WIDTH-1:0] bc_in,
-output  [15:0] ht_out,
+input [`DATA_WIDTH-1:0] C_in,
+output  [7:0] ht_out,
 output [`DATA_WIDTH-1:0] add_cf);
 
 
@@ -606,7 +451,7 @@ wire [`DATA_WIDTH-1:0] tan_h;
 wire [15:0] ht;
 
 
-assign ht_out = ht;
+assign ht_out = ht[7:0] + ht[15:8];
 
 reg [15:0] add_f_reg,addb_f_reg,sig_fo_reg;
 reg [15:0] add_i_reg,addb_i_reg,sig_io_reg;
