@@ -67,8 +67,6 @@ opt -fast
 # as blackboxes
 read_verilog -lib TTT/adder.v
 read_verilog -lib TTT/multiply.v
-read_verilog -lib TTT/multiply_fp.v
-read_verilog -lib TTT/memory_pim.v
 read_verilog -lib SSS     #(SSS) will be replaced by single_port_ram.v by python script
 read_verilog -lib DDD     #(DDD) will be replaced by dual_port_ram.v by python script
 

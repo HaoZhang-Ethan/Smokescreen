@@ -53,8 +53,8 @@ option(ODIN_TIDY "Enable building odin with clang tidy" OFF)
 option(ODIN_SANITIZE "Enable building odin with sanitize flags" OFF)
 
 # Allow the user to enable building Yosys
-option(WITH_YOSYS "Enable building Yosys" OFF)
-option(ODIN_USE_YOSYS "Enable building Yosys" OFF)
+option(WITH_YOSYS "Enable building Yosys" ON)
+option(ODIN_USE_YOSYS "Enable building Yosys" ON)
 
 set(VTR_VERSION_MAJOR 8)
 set(VTR_VERSION_MINOR 1)

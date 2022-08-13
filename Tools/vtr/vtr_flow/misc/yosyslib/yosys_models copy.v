@@ -458,7 +458,7 @@ module \$__mul_gen (A, B, Y);
 			wire Asign, Bsign;
 			assign Asign = (A_SIGNED ? A[A_WIDTH-1] : 1'b0);
 			assign Bsign = (B_SIGNED ? B[B_WIDTH-1] : 1'b0);
-			multiply_fp _TECHMAP_REPLACE_ (
+			multiply _TECHMAP_REPLACE_ (
 				.a({ {{`DSP_A_MAXWIDTH-A_WIDTH}{Asign}}, A }),
 				.b({ {{`DSP_B_MAXWIDTH-B_WIDTH}{Bsign}}, B }),
 				.out({dummy, out})

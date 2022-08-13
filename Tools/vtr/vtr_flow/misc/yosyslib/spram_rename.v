@@ -13,7 +13,7 @@
 `define MEM_MAXDATA 36
 
 // depth and data may need to be splited
-module singlePortRam(clk, we, addr, data, out);
+module singlePortRam (clk, we, addr, data, out);
 
     parameter ADDR_WIDTH = `MEM_MAXADDR;
     parameter DATA_WIDTH = 1;
@@ -36,7 +36,7 @@ module singlePortRam(clk, we, addr, data, out);
 endmodule
 
 (* blackbox *)
-module single_port_ram(clk, data, addr, we, out);
+module single_port_ram (clk, data, addr, we, out);
 
     localparam ADDR_WIDTH = `MEM_MAXADDR;
     localparam DATA_WIDTH = 1;
