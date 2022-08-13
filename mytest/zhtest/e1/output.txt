@@ -1,0 +1,5 @@
+vpr_status=exited with return code 1
+vpr_seconds=0
+rundir=/home/zolid/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_flow/scripts
+hostname=zolid-lab
+error=
