@@ -3,15 +3,11 @@
 
 .model top 
 
-.inputs we addr[0] addr[1] addr[2] addr[3] addr[4] addr[5] addr[6] addr[7] addr[8] addr[9] datain[0] datain[1] datain[2] \
- datain[3] datain[4] datain[5] datain[6] datain[7] datain[8] datain[9] datain[10] datain[11] datain[12] datain[13] datain[14] \
- datain[15] datain[16] datain[17] datain[18] datain[19] datain[20] datain[21] datain[22] datain[23] datain[24] datain[25] \
- datain[26] datain[27] datain[28] datain[29] datain[30] datain[31] clk 
+.inputs clk data[0] data[1] data[2] data[3] data[4] data[5] data[6] data[7] data[8] data[9] data[10] data[11] data[12] \
+ data[13] data[14] data[15] data[16] addr[0] addr[1] addr[2] addr[3] addr[4] addr[5] addr[6] addr[7] addr[8] we 
 
-.outputs dataout[0] dataout[1] dataout[2] dataout[3] dataout[4] dataout[5] dataout[6] dataout[7] dataout[8] dataout[9] \
- dataout[10] dataout[11] dataout[12] dataout[13] dataout[14] dataout[15] dataout[16] dataout[17] dataout[18] dataout[19] \
- dataout[20] dataout[21] dataout[22] dataout[23] dataout[24] dataout[25] dataout[26] dataout[27] dataout[28] dataout[29] \
- dataout[30] dataout[31] 
+.outputs out[0] out[1] out[2] out[3] out[4] out[5] out[6] out[7] out[8] out[9] out[10] out[11] out[12] out[13] out[14] \
+ out[15] out[16] 
 
 .names gnd 
 
@@ -20,106 +16,141 @@
 
 .names unconn 
 
-.subckt memory_pim addr[0]=addr[0] addr[1]=addr[1] addr[2]=addr[2] addr[3]=addr[3] addr[4]=addr[4] addr[5]=addr[5] \
- addr[6]=addr[6] addr[7]=addr[7] addr[8]=addr[8] clk=clk data[0]=datain[0] data[1]=datain[1] data[2]=datain[2] \
- data[3]=datain[3] data[4]=datain[4] data[5]=datain[5] data[6]=datain[6] data[7]=datain[7] data[8]=datain[8] data[9]=datain[9] \
- data[10]=datain[10] data[11]=datain[11] data[12]=datain[12] data[13]=datain[13] data[14]=datain[14] data[15]=datain[15] \
- data[16]=datain[16] data[17]=datain[17] data[18]=datain[18] data[19]=datain[19] data[20]=datain[20] data[21]=datain[21] \
- data[22]=datain[22] data[23]=datain[23] data[24]=datain[24] data[25]=datain[25] data[26]=datain[26] data[27]=datain[27] \
- data[28]=datain[28] data[29]=datain[29] data[30]=datain[30] data[31]=datain[31] data[32]=gnd data[33]=gnd data[34]=gnd \
- data[35]=gnd data[36]=gnd data[37]=gnd data[38]=gnd data[39]=gnd out=dataout[0] we=we 
+.subckt memory_pim clk=clk myaddr[0]=addr[0] myaddr[1]=addr[1] myaddr[2]=addr[2] myaddr[3]=addr[3] myaddr[4]=addr[4] \
+ myaddr[5]=gnd myaddr[6]=gnd myaddr[7]=gnd myaddr[8]=gnd mydata[0]=data[0] mydata[1]=data[1] mydata[2]=data[2] \
+ mydata[3]=data[3] mydata[4]=data[4] mydata[5]=data[5] mydata[6]=data[6] mydata[7]=data[7] mydata[8]=data[8] mydata[9]=data[9] \
+ mydata[10]=data[10] mydata[11]=data[11] mydata[12]=data[12] mydata[13]=data[13] mydata[14]=data[14] mydata[15]=data[15] \
+ mydata[16]=data[16] mydata[17]=gnd mydata[18]=gnd mydata[19]=gnd mydata[20]=gnd mydata[21]=gnd mydata[22]=gnd mydata[23]=gnd \
+ mydata[24]=gnd mydata[25]=gnd mydata[26]=gnd mydata[27]=gnd mydata[28]=gnd mydata[29]=gnd mydata[30]=gnd mydata[31]=gnd \
+ mydata[32]=gnd mydata[33]=gnd mydata[34]=gnd mydata[35]=gnd mydata[36]=gnd mydata[37]=gnd mydata[38]=gnd mydata[39]=gnd \
+ myout[0]=tmp_out[0] myout[1]=tmp_out[1] myout[2]=tmp_out[2] myout[3]=tmp_out[3] myout[4]=tmp_out[4] myout[5]=tmp_out[5] \
+ myout[6]=tmp_out[6] myout[7]=tmp_out[7] myout[8]=tmp_out[8] myout[9]=tmp_out[9] myout[10]=tmp_out[10] myout[11]=tmp_out[11] \
+ myout[12]=tmp_out[12] myout[13]=tmp_out[13] myout[14]=tmp_out[14] myout[15]=tmp_out[15] myout[16]=tmp_out[16] \
+ myout[17]=new_ram_myout[0] myout[18]=new_ram_myout[1] myout[19]=new_ram_myout[2] myout[20]=new_ram_myout[3] \
+ myout[21]=new_ram_myout[4] myout[22]=new_ram_myout[5] myout[23]=new_ram_myout[6] myout[24]=new_ram_myout[7] \
+ myout[25]=new_ram_myout[8] myout[26]=new_ram_myout[9] myout[27]=new_ram_myout[10] myout[28]=new_ram_myout[11] \
+ myout[29]=new_ram_myout[12] myout[30]=new_ram_myout[13] myout[31]=new_ram_myout[14] myout[32]=new_ram_myout[15] \
+ myout[33]=new_ram_myout[16] myout[34]=new_ram_myout[17] myout[35]=new_ram_myout[18] myout[36]=new_ram_myout[19] \
+ myout[37]=new_ram_myout[20] myout[38]=new_ram_myout[21] myout[39]=new_ram_myout[22] mywe=we 
 
-.names gnd dataout[1] 
+.names tmp_out[0] out[0] 
 1 1 
 
-.names gnd dataout[2] 
+.names tmp_out[1] out[1] 
 1 1 
 
-.names gnd dataout[3] 
+.names tmp_out[2] out[2] 
 1 1 
 
-.names gnd dataout[4] 
+.names tmp_out[3] out[3] 
 1 1 
 
-.names gnd dataout[5] 
+.names tmp_out[4] out[4] 
 1 1 
 
-.names gnd dataout[6] 
+.names tmp_out[5] out[5] 
 1 1 
 
-.names gnd dataout[7] 
+.names tmp_out[6] out[6] 
 1 1 
 
-.names gnd dataout[8] 
+.names tmp_out[7] out[7] 
 1 1 
 
-.names gnd dataout[9] 
+.names tmp_out[8] out[8] 
 1 1 
 
-.names gnd dataout[10] 
+.names tmp_out[9] out[9] 
 1 1 
 
-.names gnd dataout[11] 
+.names tmp_out[10] out[10] 
 1 1 
 
-.names gnd dataout[12] 
+.names tmp_out[11] out[11] 
 1 1 
 
-.names gnd dataout[13] 
+.names tmp_out[12] out[12] 
 1 1 
 
-.names gnd dataout[14] 
+.names tmp_out[13] out[13] 
 1 1 
 
-.names gnd dataout[15] 
+.names tmp_out[14] out[14] 
 1 1 
 
-.names gnd dataout[16] 
+.names tmp_out[15] out[15] 
 1 1 
 
-.names gnd dataout[17] 
+.names tmp_out[16] out[16] 
 1 1 
 
-.names gnd dataout[18] 
+.names addr[0] tmp_addr[0] 
 1 1 
 
-.names gnd dataout[19] 
+.names addr[1] tmp_addr[1] 
 1 1 
 
-.names gnd dataout[20] 
+.names addr[2] tmp_addr[2] 
 1 1 
 
-.names gnd dataout[21] 
+.names addr[3] tmp_addr[3] 
 1 1 
 
-.names gnd dataout[22] 
+.names addr[4] tmp_addr[4] 
 1 1 
 
-.names gnd dataout[23] 
+.names data[0] tmp_data[0] 
 1 1 
 
-.names gnd dataout[24] 
+.names data[1] tmp_data[1] 
 1 1 
 
-.names gnd dataout[25] 
+.names data[2] tmp_data[2] 
 1 1 
 
-.names gnd dataout[26] 
+.names data[3] tmp_data[3] 
 1 1 
 
-.names gnd dataout[27] 
+.names data[4] tmp_data[4] 
 1 1 
 
-.names gnd dataout[28] 
+.names data[5] tmp_data[5] 
 1 1 
 
-.names gnd dataout[29] 
+.names data[6] tmp_data[6] 
 1 1 
 
-.names gnd dataout[30] 
+.names data[7] tmp_data[7] 
 1 1 
 
-.names gnd dataout[31] 
+.names data[8] tmp_data[8] 
+1 1 
+
+.names data[9] tmp_data[9] 
+1 1 
+
+.names data[10] tmp_data[10] 
+1 1 
+
+.names data[11] tmp_data[11] 
+1 1 
+
+.names data[12] tmp_data[12] 
+1 1 
+
+.names data[13] tmp_data[13] 
+1 1 
+
+.names data[14] tmp_data[14] 
+1 1 
+
+.names data[15] tmp_data[15] 
+1 1 
+
+.names data[16] tmp_data[16] 
+1 1 
+
+.names we tmp_we 
 1 1 
 
 
@@ -128,12 +159,16 @@
 
 .model memory_pim 
 
-.inputs clk data[0] data[1] data[2] data[3] data[4] data[5] data[6] data[7] data[8] data[9] data[10] data[11] data[12] \
- data[13] data[14] data[15] data[16] data[17] data[18] data[19] data[20] data[21] data[22] data[23] data[24] data[25] data[26] \
- data[27] data[28] data[29] data[30] data[31] data[32] data[33] data[34] data[35] data[36] data[37] data[38] data[39] addr[0] \
- addr[1] addr[2] addr[3] addr[4] addr[5] addr[6] addr[7] addr[8] we 
+.inputs clk mydata[0] mydata[1] mydata[2] mydata[3] mydata[4] mydata[5] mydata[6] mydata[7] mydata[8] mydata[9] mydata[10] \
+ mydata[11] mydata[12] mydata[13] mydata[14] mydata[15] mydata[16] mydata[17] mydata[18] mydata[19] mydata[20] mydata[21] \
+ mydata[22] mydata[23] mydata[24] mydata[25] mydata[26] mydata[27] mydata[28] mydata[29] mydata[30] mydata[31] mydata[32] \
+ mydata[33] mydata[34] mydata[35] mydata[36] mydata[37] mydata[38] mydata[39] myaddr[0] myaddr[1] myaddr[2] myaddr[3] \
+ myaddr[4] myaddr[5] myaddr[6] myaddr[7] myaddr[8] mywe 
 
-.outputs out 
+.outputs myout[0] myout[1] myout[2] myout[3] myout[4] myout[5] myout[6] myout[7] myout[8] myout[9] myout[10] myout[11] \
+ myout[12] myout[13] myout[14] myout[15] myout[16] myout[17] myout[18] myout[19] myout[20] myout[21] myout[22] myout[23] \
+ myout[24] myout[25] myout[26] myout[27] myout[28] myout[29] myout[30] myout[31] myout[32] myout[33] myout[34] myout[35] \
+ myout[36] myout[37] myout[38] myout[39] 
 
 .blackbox 
 

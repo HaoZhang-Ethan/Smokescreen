@@ -178,17 +178,17 @@
   <models>
       <model name="memory_pim">
       <input_ports>
-        <port name="we" clock="clk" combinational_sink_ports="out"/>
+        <port name="mywe" clock="clk" combinational_sink_ports="myout"/>
         <!-- control -->
-        <port name="addr" clock="clk" combinational_sink_ports="out"/>
+        <port name="myaddr" clock="clk" combinational_sink_ports="myout"/>
         <!-- address lines -->
-        <port name="data" clock="clk" combinational_sink_ports="out"/>
+        <port name="mydata" clock="clk" combinational_sink_ports="myout"/>
         <!-- data lines can be broken down into smaller bit widths minimum size 1 -->
         <port name="clk" is_clock="1"/>
         <!-- memories are often clocked -->
       </input_ports>
       <output_ports>
-        <port name="out" clock="clk"/>
+        <port name="myout" clock="clk"/>
         <!-- output can be broken down into smaller bit widths minimum size 1 -->
       </output_ports>
     </model>
@@ -2649,25 +2649,25 @@
       <!-- Specify single port mode first -->
       <mode name="mem_pim">
         <pb_type name="mem_pim" blif_model=".subckt memory_pim" class="memory" num_pb="1">
-          <input name="addr" num_pins="9" port_class="address"/>
-          <input name="data" num_pins="40" port_class="zhlab"/>
-          <input name="we" num_pins="1" port_class="write_en"/>
-          <output name="out" num_pins="40" port_class="zhlab1"/>
+          <input name="myaddr" num_pins="9" port_class="address"/>
+          <input name="mydata" num_pins="40" port_class="data_in"/>
+          <input name="mywe" num_pins="1" port_class="write_en"/>
+          <output name="myout" num_pins="40" port_class="data_out"/>
           <clock name="clk" num_pins="1" port_class="clock"/>
 
-          <T_setup value="51.12e-12" port="mem_pim.addr" clock="clk"/>
-          <T_setup value="51.12e-12" port="mem_pim.data" clock="clk"/>
-          <T_setup value="51.12e-12" port="mem_pim.we" clock="clk"/>
-          <T_setup value="18.91e-12" port="mem_pim.out" clock="clk"/>
+          <T_setup value="51.12e-12" port="mem_pim.myaddr" clock="clk"/>
+          <T_setup value="51.12e-12" port="mem_pim.mydata" clock="clk"/>
+          <T_setup value="51.12e-12" port="mem_pim.mywe" clock="clk"/>
+          <T_setup value="18.91e-12" port="mem_pim.myout" clock="clk"/>
 
-          <T_clock_to_Q max="60.32e-12" port="mem_pim.addr" clock="clk"/>
-          <T_clock_to_Q max="60.32e-12" port="mem_pim.data" clock="clk"/>
-          <T_clock_to_Q max="60.32e-12" port="mem_pim.we" clock="clk"/>
-          <T_clock_to_Q max="60.32e-12" port="mem_pim.out" clock="clk"/>
+          <T_clock_to_Q max="60.32e-12" port="mem_pim.myaddr" clock="clk"/>
+          <T_clock_to_Q max="60.32e-12" port="mem_pim.mydata" clock="clk"/>
+          <T_clock_to_Q max="60.32e-12" port="mem_pim.mywe" clock="clk"/>
+          <T_clock_to_Q max="60.32e-12" port="mem_pim.myout" clock="clk"/>
 
-          <delay_constant max="0.852e-9" in_port="mem_pim.addr" out_port="mem_pim.out"/>
-          <delay_constant max="0.852e-9" in_port="mem_pim.data" out_port="mem_pim.out"/>
-          <delay_constant max="0.852e-9" in_port="mem_pim.we"   out_port="mem_pim.out"/>
+          <delay_constant max="0.852e-9" in_port="mem_pim.myaddr" out_port="mem_pim.myout"/>
+          <delay_constant max="0.852e-9" in_port="mem_pim.mydata" out_port="mem_pim.myout"/>
+          <delay_constant max="0.852e-9" in_port="mem_pim.mywe"   out_port="mem_pim.myout"/>
 
           <power method="pin-toggle">
             <port name="clk" energy_per_toggle="9.0e-12"/>
@@ -2675,13 +2675,13 @@
           </power>
         </pb_type>
         <interconnect>
-          <direct name="address1" input="memory.addr1[8:0]" output="mem_pim.addr">
+          <direct name="address1" input="memory.addr1[8:0]" output="mem_pim.myaddr">
           </direct>
-          <direct name="data1" input="memory.data[39:0]" output="mem_pim.data">
+          <direct name="data1" input="memory.data[39:0]" output="mem_pim.mydata">
           </direct>
-          <direct name="writeen1" input="memory.we1" output="mem_pim.we">
+          <direct name="writeen1" input="memory.we1" output="mem_pim.mywe">
           </direct>
-          <direct name="dataout1" input="mem_pim.out[39:0]" output="memory.out">
+          <direct name="dataout1" input="mem_pim.myout[39:0]" output="memory.out">
           </direct>
           <direct name="clk" input="memory.clk" output="mem_pim.clk">
           </direct>
