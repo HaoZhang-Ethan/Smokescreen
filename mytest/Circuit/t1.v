@@ -1,15 +1,16 @@
-`define WIDTH_BIT 5
+`define WIDTH_BIT 16
+`define ADD_BIT 20
  
  module top(clk, data, addr, we, out);
     input	clk;
     input	[`WIDTH_BIT-1:0]	data;
-    input	[4:0]	addr;
+    input	[`ADD_BIT:0]	addr;
     input	we;
     output	[`WIDTH_BIT-1:0]	out;
 
 
     wire	[`WIDTH_BIT-1:0]	tmp_data;
-    wire	[4:0]	tmp_addr;
+    wire	[`ADD_BIT:0]	tmp_addr;
     wire	tmp_we;
     wire	[`WIDTH_BIT-1:0]	tmp_out;
 
@@ -28,8 +29,9 @@
 //   .out(tmp_out),
 //   .clk(clk)
 //   );
-
-  single_port_ram new_ram(
+  defparam new_ram.ADDR_WIDTH = `ADD_BIT;
+  defparam new_ram.DATA_WIDTH = `WIDTH_BIT;
+  memory_pim new_ram(
     .data(tmp_data),
     .addr(tmp_addr),
     .we(tmp_we),

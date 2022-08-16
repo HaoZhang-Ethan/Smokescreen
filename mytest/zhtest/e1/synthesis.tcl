@@ -148,6 +148,8 @@ read_verilog -lib /home/zolid/Project/Smokescreen/Tools/vtr-verilog-to-routing/v
 
 read_verilog -lib /home/zolid/Project/Smokescreen/mytest/zhtest/e1/single_port_ram.v
 
+read_verilog -lib /home/zolid/Project/Smokescreen/mytest/zhtest/e1/memory_pim.v
+
 #(/home/zolid/Project/Smokescreen/mytest/zhtest/e1/dual_port_ram.v) will be replaced by dual_port_ram.v by python script
 
 read_verilog -lib /home/zolid/Project/Smokescreen/mytest/zhtest/e1/dual_port_ram.v
@@ -165,6 +167,8 @@ read_verilog -lib /home/zolid/Project/Smokescreen/mytest/zhtest/e1/dual_port_ram
 #(/home/zolid/Project/Smokescreen/mytest/zhtest/e1/spram_rename.v) will be replaced by spram_rename.v by python script
 
 read_verilog /home/zolid/Project/Smokescreen/mytest/zhtest/e1/spram_rename.v
+
+read_verilog /home/zolid/Project/Smokescreen/mytest/zhtest/e1/pimram_rename.v
 
 #(/home/zolid/Project/Smokescreen/mytest/zhtest/e1/dpram_rename.v) will be replaced by dpram_rename.v by python script
 
@@ -209,3 +213,4 @@ autoname
 # t1.yosys.blif will be replaced by run_vtr_flow.pl
 
 write_blif -true + vcc -false + gnd -undef + unconn -blackbox t1.yosys.blif
+
