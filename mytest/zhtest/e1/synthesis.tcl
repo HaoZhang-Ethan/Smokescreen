@@ -209,4 +209,3 @@ autoname
 # t1.yosys.blif will be replaced by run_vtr_flow.pl
 
 write_blif -true + vcc -false + gnd -undef + unconn -blackbox t1.yosys.blif
-
