@@ -1,3 +1,15 @@
+/*
+ * @Author: haozhang haozhang@mail.sdu.edu.cn
+ * @Date: 2022-08-16 21:47:09
+ * @LastEditors: haozhang haozhang@mail.sdu.edu.cn
+ * @LastEditTime: 2022-08-17 22:11:40
+ * @FilePath: /Smokescreen/mytest/Circuit/t2.v
+ * @Description: Test Pim lib by using a some autom atom opeartions
+ *
+ * 
+ * Copyright (c) 2022 by haozhang haozhang@mail.sdu.edu.cn, All Rights Reserved. 
+ */
+ 
 `define WIDTH_BIT 16
 `define ADD_BIT 10
  

@@ -1,3 +1,15 @@
+/*
+ * @Author: haozhang haozhang@mail.sdu.edu.cn
+ * @Date: 2022-08-13 19:34:15
+ * @LastEditors: haozhang haozhang@mail.sdu.edu.cn
+ * @LastEditTime: 2022-08-17 22:09:07
+ * @FilePath: /Smokescreen/mytest/Circuit/t1.v
+ * @Description: used for debug yosys flow 
+ * 
+ * Copyright (c) 2022 by haozhang haozhang@mail.sdu.edu.cn, All Rights Reserved. 
+ */
+
+
 `define WIDTH_BIT 16
 `define ADD_BIT 20
  
