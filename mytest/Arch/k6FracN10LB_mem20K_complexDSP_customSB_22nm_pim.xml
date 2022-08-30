@@ -176,7 +176,7 @@
          that describe them.
     -->
   <models>
-      <model name="memory_pim">
+      <model name="bram_pim">
       <input_ports>
         <port name="we" clock="clk" combinational_sink_ports="out"/>
         <!-- control -->
@@ -2647,12 +2647,12 @@
       <output name="out" num_pins="40"/>
       <clock name="clk" num_pins="1"/>
       <!-- Specify single port mode first -->
-      <mode name="mem_pim">
-        <pb_type name="mem_pim" blif_model=".subckt memory_pim" class="memory" num_pb="1">
+      <mode name="mem_pim" >
+        <pb_type name="mem_pim" blif_model=".subckt bram_pim" num_pb="1">
           <input name="addr" num_pins="9" port_class="address"/>
           <input name="data" num_pins="40" port_class="data_in"/>
           <input name="we" num_pins="1" port_class="write_en"/>
-          <output name="out" num_pins="40" port_class="data_out"/>
+          <output name="out" num_pins="8" port_class="data_out"/>
           <clock name="clk" num_pins="1" port_class="clock"/>
 
           <T_setup value="51.12e-12" port="mem_pim.addr" clock="clk"/>
@@ -2681,7 +2681,7 @@
           </direct>
           <direct name="writeen1" input="memory.we1" output="mem_pim.we">
           </direct>
-          <direct name="dataout1" input="mem_pim.out[39:0]" output="memory.out">
+          <direct name="dataout1" input="mem_pim.out[7:0]" output="memory.out[7:0]">
           </direct>
           <direct name="clk" input="memory.clk" output="mem_pim.clk">
           </direct>

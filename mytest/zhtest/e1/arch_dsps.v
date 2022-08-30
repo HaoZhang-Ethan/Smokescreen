@@ -232,3 +232,13 @@ module multiply_fp(
 /* the body of the complex block module is empty since it should be seen as a black box */
 endmodule
 
+module my_pim(
+	input	[0:0]	clk,
+	input	[39:0]	data,
+	input	[8:0]	addr,
+	input	[0:0]	we,
+	output	[7:0]	out,
+);
+/* the body of the complex block module is empty since it should be seen as a black box */
+endmodule
+

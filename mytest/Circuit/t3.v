@@ -77,7 +77,7 @@ module splitter(clk, data, addr, we, out);
 endmodule
 
 
-module top(clk, data, addr, we, out);
+module top_splitter(clk, data, addr, we, out);
     parameter ADDR_WIDTH = `ADD_BIT;
     parameter IN_WIDTH = `WIDTH_BIT;
     parameter OUT_WIDTH = `WIDTH_BIT;
@@ -99,12 +99,57 @@ module top(clk, data, addr, we, out);
         .out(out),
         .clk(clk)
     );
-	
-
 endmodule
 
 
 
+
+module top(clk, data, addr, we, out);
+    parameter ADDR_WIDTH = `ADD_BIT;
+    parameter IN_WIDTH = `WIDTH_BIT;
+    parameter OUT_WIDTH = `WIDTH_BIT;
+
+    input clk;
+    input we;
+    input [ADDR_WIDTH - 1:0] addr;
+    input [IN_WIDTH - 1:0] data;
+    
+    output reg [OUT_WIDTH - 1:0] out;    
+
+    
+    if (ADDR_WIDTH>1)
+    begin
+    wire [OUT_WIDTH-1:0] out_h, out_l;
+    defparam pim_h.ADDR_WIDTH = ADDR_WIDTH-1;
+    defparam pim_h.IN_WIDTH = IN_WIDTH;
+    defparam pim_h.OUT_WIDTH = OUT_WIDTH;
+    top_splitter pim_h(
+        .data(data),
+        .addr(addr),
+        .we(we),
+        .out(out_h),
+        .clk(clk)
+    );
+
+    defparam pim_h.ADDR_WIDTH = ADDR_WIDTH-1;
+    defparam pim_h.IN_WIDTH = IN_WIDTH;
+    defparam pim_h.OUT_WIDTH = OUT_WIDTH;
+    top_splitter pim_l(
+        .data(data),
+        .addr(addr),
+        .we(we),
+        .out(out_l),
+        .clk(clk)
+    );
+    assign out = (data[0]) ? out_h : out_l;
+
+    end
+    
+
+
+
+
+endmodule
 
 
 
