@@ -232,7 +232,7 @@ module multiply_fp(
 /* the body of the complex block module is empty since it should be seen as a black box */
 endmodule
 
-module my_pim(
+module bram_pim(
 	input	[0:0]	clk,
 	input	[39:0]	data,
 	input	[8:0]	addr,
