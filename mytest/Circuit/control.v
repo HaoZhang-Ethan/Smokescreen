@@ -34,7 +34,8 @@ reg c5_begin = 0;
 reg first_cycle = 1;
 
 assign read = first_cycle;
-
+// wire tmp[4:0];
+// assign tmp 
 always @ (posedge clk) begin
 	// whether to read from rom
 	first_cycle <= 0;
@@ -44,6 +45,7 @@ always @ (posedge clk) begin
 		c1_count <= 0;	// wrap counter
 	end 
 	else begin	
+
 		c1_count <= c1_count + 1;
 	end
 
@@ -52,7 +54,8 @@ always @ (posedge clk) begin
 	s2_begin <= s2_begin | (enable_s2_count == 8'b1);	// calculate condition one cycle before
 
 	// determine if layer S2 should read inputs of layer C1
-	S2_en =  (c1_count < C1_LEN);
+	S2_en = s2_begin;
+	// (s2_begin & (c1_count < C1_LEN));
 
 	// count inputs to layer S2
 	if (S2_en) begin
@@ -60,7 +63,7 @@ always @ (posedge clk) begin
 			s2_count <= 0;
 			s2_dontskip <= ~s2_dontskip;
 		end
-		else	s2_count <= s2_count + 1;
+		else	s2_count <= s2_count + 1'b1;
 	end
 
 	// check if layer C3 can begin
