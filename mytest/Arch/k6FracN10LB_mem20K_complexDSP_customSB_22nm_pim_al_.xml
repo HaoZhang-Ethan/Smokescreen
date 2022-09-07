@@ -599,7 +599,7 @@
         </equivalent_sites>
       <input name="addr1" num_pins="11"/>
       <input name="addr2" num_pins="11"/>
-      <input name="data" num_pins="128"/>
+      <input name="data" num_pins="40"/>
       <input name="we1" num_pins="1"/>
       <input name="we2" num_pins="1"/>
       <output name="out" num_pins="40"/>
@@ -2643,7 +2643,7 @@
     <pb_type name="memory">
       <input name="addr1" num_pins="11"/>
       <input name="addr2" num_pins="11"/>
-      <input name="data" num_pins="128"/>
+      <input name="data" num_pins="40"/>
       <input name="we1" num_pins="1"/>
       <input name="we2" num_pins="1"/>
       <output name="out" num_pins="40"/>
@@ -2652,7 +2652,7 @@
       <mode name="mem_pim" >
         <pb_type name="mem_pim" blif_model=".subckt bram_pim" num_pb="1">
           <input name="addr" num_pins="9" port_class="address"/>
-          <input name="data" num_pins="128" port_class="data_in"/>
+          <input name="data" num_pins="40" port_class="data_in"/>
           <input name="we" num_pins="1" port_class="write_en"/>
           <output name="out" num_pins="8" port_class="data_out"/>
           <clock name="clk" num_pins="1" port_class="clock"/>
@@ -2679,7 +2679,7 @@
         <interconnect>
           <direct name="address1" input="memory.addr1[8:0]" output="mem_pim.addr">
           </direct>
-          <direct name="data1" input="memory.data" output="mem_pim.data">
+          <direct name="data1" input="memory.data[39:0]" output="mem_pim.data">
           </direct>
           <direct name="writeen1" input="memory.we1" output="mem_pim.we">
           </direct>
