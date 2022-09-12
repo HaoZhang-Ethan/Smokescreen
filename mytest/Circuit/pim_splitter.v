@@ -13,6 +13,10 @@
 `define MAX_CXB_COL 7       //The max column of the crossbar 2^MAX_CXB_COL 
 `define MAX_CXB_ROW 128     //The max row of the crossbar
 
+
+
+
+
 // INPUT_SIZE 128      // The input size of the pim-mac operation
 // ADDRS_WIDTH 9       // The address line width of the application's pim-mac operation, that means the clomn of the pim-mac operation is 2^ADDRS_WIDTH 
 // OUT_WIDTH 8         // The out width of a single pim-mac operation
@@ -122,9 +126,9 @@ module pim_mac_row #(parameter INPUT_SIZE = 128, ADDRS_WIDTH = 9, OUT_WIDTH = 8)
     end
 endmodule
 
-module pim_splitter #(parameter INPUT_SIZE = 256, ADDRS_WIDTH = 8, OUT_WIDTH = 8) (
+module pim_splitter #(parameter INPUT_SIZE = 128, ADDRS_WIDTH = 7, OUT_WIDTH = 8) (
     input clk,
-    input we,
+    input weorca,   // 0: we, 1: caculate
     input [ADDRS_WIDTH - 1:0] addr,
     input [INPUT_SIZE - 1:0] data,
     output [OUT_WIDTH - 1:0] out
@@ -132,7 +136,7 @@ module pim_splitter #(parameter INPUT_SIZE = 256, ADDRS_WIDTH = 8, OUT_WIDTH = 8
     
     pim_mac_row #(.INPUT_SIZE(INPUT_SIZE), .ADDRS_WIDTH(ADDRS_WIDTH), .OUT_WIDTH(OUT_WIDTH)) pim_mac(
         .clk(clk),
-        .we(we),
+        .we(weorca),
         .addr(addr),
         .data(data),
         .out(out)

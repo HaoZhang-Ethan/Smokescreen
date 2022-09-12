@@ -9,7 +9,8 @@ module conv #(parameter KERNEL_SIZE = 5, CHANNEL = 6, DEPTH = 16, BIT_WIDTH = 8,
 		output signed[8:0] convValue	// size should increase to hold the sum of products
 		);
 pim_conv_line_s #(.SIZE(KERNEL_SIZE*KERNEL_SIZE*CHANNEL)) conv1(
-		.clk(clk), .rst(rst),
+		.clk(clk), 
+		.rst(rst),
 		.en(en),
 		.convValue(convValue)
 		);
