@@ -18,14 +18,16 @@ module lenet5 #(parameter IN_WIDTH = 8, OUT_WIDTH = 8, IMAGE = 32, SP_BRAM = 4, 
     output reg done,
     input   bram_select_en,
     input   [clogb2(IMAGE)-1:0] bram_addr_f,
-    input   [KERNEL_SIZE*KERNEL_SIZE*IN_WIDTH-1:0] bram_data_f,
+    input   [KERNEL_SIZE*IN_WIDTH-1:0] bram_data_f,
     input   [BRAM_NUM_C-1:0]  bram_select_c,
     input   [8:0] bram_addr_c,
     input   [KERNEL_SIZE*KERNEL_SIZE-1:0] bram_data_c,
+    input S2_en,
     // input  [`MAT_MUL_SIZE*`DWIDTH-1:0] bram_wdata_ext,
     // input  [`MAT_MUL_SIZE-1:0] bram_we_ext,
     // output [3:0] out	// the predicted digit
-    output  [128:0] out
+    output  [128:0] out,
+    output  [8-1:0] tmp_out,
     );
  
 /*/----parameters----/*/
@@ -52,9 +54,9 @@ module lenet5 #(parameter IN_WIDTH = 8, OUT_WIDTH = 8, IMAGE = 32, SP_BRAM = 4, 
 
 /*/------------------ LOAD FEATURE MAP AND WEIGHT TO BRAM  ------------------/*/
     // load the feature map to bram
-    wire [KERNEL_SIZE*KERNEL_SIZE*IN_WIDTH-1:0] read_feature_out_1;
-    wire [KERNEL_SIZE*KERNEL_SIZE*IN_WIDTH-1:0] read_feature_out_2;
-    dual_port_ram #(.ADDR_WIDTH(clogb2(IMAGE)), .DATA_WIDTH(KERNEL_SIZE*KERNEL_SIZE*IN_WIDTH)) ram_input_feature (
+    wire [KERNEL_SIZE*IN_WIDTH-1:0] read_feature_out_1;
+    wire [KERNEL_SIZE*IN_WIDTH-1:0] read_feature_out_2;
+    dual_port_ram #(.ADDR_WIDTH(clogb2(IMAGE)), .DATA_WIDTH(KERNEL_SIZE*IN_WIDTH)) ram_input_feature (
         .clk(clk_mem),
         .we1(bram_select_en),
         .we2(bram_select_en),
@@ -85,7 +87,7 @@ module lenet5 #(parameter IN_WIDTH = 8, OUT_WIDTH = 8, IMAGE = 32, SP_BRAM = 4, 
 
     // KERNEL C1 551 6
     wire [CONV_SIZE*IN_WIDTH-1:0] tmp_out_551_6;
-    rom_params #(.BIT_WIDTH(IN_WIDTH), .SIZE(CONV_SIZE)) rom_kernel_551_6 (
+    rom_params_bram #(.BIT_WIDTH(IN_WIDTH), .SIZE(CONV_SIZE)) rom_kernel_551_6 (
         .clk(clk),
         .addr(bram_addr_f[2:0]),
         .out(tmp_out_551_6)
@@ -93,7 +95,7 @@ module lenet5 #(parameter IN_WIDTH = 8, OUT_WIDTH = 8, IMAGE = 32, SP_BRAM = 4, 
 
     // KERNEL C3 553 6 
     wire [CONV_SIZE_3*IN_WIDTH-1:0] tmp_out_553_6;
-    rom_params #(.BIT_WIDTH(IN_WIDTH), .SIZE(CONV_SIZE_3)) rom_kernel_553_6 (
+    rom_params_bram #(.BIT_WIDTH(IN_WIDTH), .SIZE(CONV_SIZE_3)) rom_kernel_553_6 (
         .clk(clk),
         .addr(bram_addr_f[2:0]),
         .out(tmp_out_553_6)
@@ -101,7 +103,7 @@ module lenet5 #(parameter IN_WIDTH = 8, OUT_WIDTH = 8, IMAGE = 32, SP_BRAM = 4, 
 
     // KERNEL C3 554 3
     wire [CONV_SIZE_3*IN_WIDTH-1:0] tmp_out_554_3;
-    rom_params #(.BIT_WIDTH(IN_WIDTH), .SIZE(CONV_SIZE_4)) rom_kernel_554_3 (
+    rom_params_bram #(.BIT_WIDTH(IN_WIDTH), .SIZE(CONV_SIZE_4)) rom_kernel_554_3 (
         .clk(clk),
         .addr(bram_addr_f[2:0]),
         .out(tmp_out_554_3)
@@ -109,7 +111,7 @@ module lenet5 #(parameter IN_WIDTH = 8, OUT_WIDTH = 8, IMAGE = 32, SP_BRAM = 4, 
 
     // KERNEL C5 554 3
     wire [CONV_SIZE_3*IN_WIDTH-1:0] tmp_out_5516_120;
-    rom_params #(.BIT_WIDTH(IN_WIDTH), .SIZE(CONV_SIZE_16)) rom_kernel_5516_120 (
+    rom_params_bram #(.BIT_WIDTH(IN_WIDTH), .SIZE(CONV_SIZE_16)) rom_kernel_5516_120 (
         .clk(clk),
         .addr(bram_addr_f[2:0]),
         .out(tmp_out_5516_120)
@@ -147,31 +149,48 @@ module lenet5 #(parameter IN_WIDTH = 8, OUT_WIDTH = 8, IMAGE = 32, SP_BRAM = 4, 
 
 
     /*/------------------ C1: 6 feature maps; convolution, stride = 1  ------------------/*/
-    wire c1_en;
-    convn #(.BIT_WIDTH(IN_WIDTH),.OUT_WIDTH(OUT_WIDTH),.KERNEL_SIZE(KERNEL_SIZE),.CHANNEL(1)) (
-        .clk(clk),
-        .en(c1_en),
+    // wire c1_en;
+    wire [IN_WIDTH-1:0] c1_out_1;
+    wire [IN_WIDTH-1:0] c1_relu_out_1;
+    convn #(.BIT_WIDTH(IN_WIDTH), .OUT_WIDTH(OUT_WIDTH), .KERNEL_SIZE(KERNEL_SIZE), .CHANNEL(1)) C1_DSP(
+        // .clk(clk),
+        // .en(c1_en),
         .input_feature(read_feature_out_2),
-        .filter(tmp_out_551_6)
-);
-    integer cyc_i;
-    reg e;
+        .filter(tmp_out_551_6),
+        .convValue(c1_out_1) 
+    );
+    // assign C1_convPlusBias[g] = C1_convOut[g] + rom_c1[IN_WIDTH*((g+1)*SIZE)-1 : IN_WIDTH*((g+1)*SIZE-1)];
+
+    // // C1 activation layer (ReLU)
+
+    relu #(.BIT_WIDTH(IN_WIDTH)) C1_RELU (
+        .in(c1_out_1), .out(tmp_out)
+    );
+
+
+    reg [IN_WIDTH-1:0] C1_relu [C1_MAPS];
+    
     always @(posedge clk) begin
-        if (start) begin
-            for (cyc_i = 0; cyc_i < C1_STAGE; cyc_i = cyc_i+1) begin
-                e = 1;
-                #1;
-                e = 0;
-                #1;
-            end
-        end
+
     end
-    // if (start == 1'b1) begin
-    //     // for (cyc_i = 0; cyc_i < BRAM_NUM_F; cyc_i = cyc_i+1) begin : genbit
-    //         e <= 1;
-    //     // we_en_f[cyc_i] = ( bram_select_f == cyc_i) ? 1 : 0;
-    //     // end
-    // end
+
+    
+    // holds output of rowbuffer for C1 -> S2
+    wire signed[HALF_WIDTH-1:0] rb_C1S2[0:C1_MAPS-1];	// 6 maps * 1 row - 1 = 5
+
+    // C1 feature map; next pixel to buffer for S2
+    generate
+        for (g = 0; g < C1_MAPS; g = g+1) begin : C1_rb	// 6 feature maps
+            rowbuffer #(.COLS(C1_SIZE), .BIT_WIDTH(HALF_WIDTH)) C1_RB (
+                .clk(clk), .rst(rst),
+                .rb_in(C1_relu[g]),
+                .en(S2_en),
+                .rb_out(rb_C1S2[g])
+            );
+        end
+    endgenerate
+
+  
 
     /*/------------------ S2: 6 feature maps; max pooling, stride = 2  ------------------/*/
 
@@ -190,19 +209,4 @@ module lenet5 #(parameter IN_WIDTH = 8, OUT_WIDTH = 8, IMAGE = 32, SP_BRAM = 4, 
 
 endmodule
 
-/*/------------------ SOME MOUDLE  ------------------/*/
-module rom_params #(parameter BIT_WIDTH = 8, SIZE = 26) (
-	input clk,
-    input [clogb2(SIZE)-1:0] addr,
-	output [BIT_WIDTH*SIZE-1:0] out
-);
-    defparam weight_single_port_ram.ADDR_WIDTH = clogb2(SIZE);
-    defparam weight_single_port_ram.DATA_WIDTH = BIT_WIDTH*SIZE;
-    single_port_ram weight_single_port_ram(
-    .addr(addr),
-    .we(1'b0),
-    .data(BIT_WIDTH*SIZE'b0),
-    .out(out),
-    .clk(clk)
-    );
-endmodule
+
