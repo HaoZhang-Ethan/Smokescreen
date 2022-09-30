@@ -2671,6 +2671,8 @@
           <delay_constant max="0.852e-9" in_port="mem_pim.data" out_port="mem_pim.out"/>
           <delay_constant max="0.852e-9" in_port="mem_pim.we"   out_port="mem_pim.out"/>
 
+
+
           <power method="pin-toggle">
             <port name="clk" energy_per_toggle="9.0e-12"/>
             <static_power power_per_instance="0.0"/>
