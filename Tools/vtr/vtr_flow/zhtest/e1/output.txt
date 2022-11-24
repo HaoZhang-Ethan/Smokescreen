@@ -1,5 +1,0 @@
-vpr_status=exited with return code 127
-vpr_seconds=0
-rundir=/home/zhlab/Smokescreen/Tools/vtr/vtr_flow/scripts
-hostname=embed
-error=
