@@ -147,7 +147,12 @@ cmake-build-debug
 
 # /mytest/*.blif
 # /Flow/Output/
-/Flow/Output/*
+# /Flow/Output/*
+/Flow/Output/**/*.blif
+/Flow/Output/**/*.rpt
+/Flow/Output/**/*.post_routing
+/Flow/Output/**/*.txt
+/Flow/Output/**/*.rc
 # /Flow/Output/
 # /Flow/Output/
 
