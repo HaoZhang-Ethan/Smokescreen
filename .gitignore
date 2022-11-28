@@ -146,4 +146,8 @@ cmake-build-debug
 *.pth
 
 # /mytest/*.blif
-/mytest/zhtest/*
+# /Flow/Output/
+/Flow/Output/*
+# /Flow/Output/
+# /Flow/Output/
+
