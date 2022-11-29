@@ -614,15 +614,13 @@
   <!-- ODIN II specific config ends -->
   <layout>
     <!-- Physical descriptions begin -->
-    <!-- <auto_layout aspect_ratio="1.0"> -->
-    <fixed_layout name="zolid" width="300" height="300">
+    <auto_layout aspect_ratio="1.0">
       <perimeter type="io" priority="101"/>
       <corners type="EMPTY" priority="102"/>
       <fill type="clb" priority="10"/>
       <col type="dsp_top" startx="6" starty="1" repeatx="16" priority="20"/>
-      <col type="memory" startx="2" starty="1" repeatx="16" priority="20"/>
-    </fixed_layout> 
-    <!-- </auto_layout> -->
+      <col type="memory" startx="2" starty="1" repeatx="5" priority="20"/>
+    </auto_layout>
     <!--
     <fixed_layout name="mylayout" width="178" height="82">
       <perimeter type="io" priority="101"/>
@@ -2670,6 +2668,8 @@
           <delay_constant max="0.852e-9" in_port="mem_pim.addr" out_port="mem_pim.out"/>
           <delay_constant max="0.852e-9" in_port="mem_pim.data" out_port="mem_pim.out"/>
           <delay_constant max="0.852e-9" in_port="mem_pim.we"   out_port="mem_pim.out"/>
+
+
 
           <power method="pin-toggle">
             <port name="clk" energy_per_toggle="9.0e-12"/>
