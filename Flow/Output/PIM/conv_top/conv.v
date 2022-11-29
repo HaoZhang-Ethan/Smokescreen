@@ -2,8 +2,8 @@
  * @Author: haozhang-hoge haozhang@mail.sdu.edu.cn
  * @Date: 2022-11-29 10:08:30
  * @LastEditors: haozhang-hoge haozhang@mail.sdu.edu.cn
- * @LastEditTime: 2022-11-29 17:02:44
- * @FilePath: /Smokescreen/Flow/Circuit/CONV/PIM/conv.v
+ * @LastEditTime: 2022-11-29 19:57:30
+ * @FilePath: /Smokescreen/Flow/Output/PIM/conv_top/conv.v
  * @Description: the basic component of PIM
  * 
  * Copyright (c) 2022 by haozhang-hoge haozhang@mail.sdu.edu.cn, All Rights Reserved. 

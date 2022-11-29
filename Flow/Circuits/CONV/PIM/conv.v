@@ -2,7 +2,7 @@
  * @Author: haozhang-hoge haozhang@mail.sdu.edu.cn
  * @Date: 2022-11-29 10:08:30
  * @LastEditors: haozhang-hoge haozhang@mail.sdu.edu.cn
- * @LastEditTime: 2022-11-29 16:23:45
+ * @LastEditTime: 2022-11-29 17:02:44
  * @FilePath: /Smokescreen/Flow/Circuit/CONV/PIM/conv.v
  * @Description: the basic component of PIM
  * 
@@ -20,22 +20,22 @@ module conv #(parameter CROSS_SIZE = 64, DEPTH = 6, ADC_P = 8) (
 	input clk, 
 	input rst,
 	input en,	// enable
-	input [CROSS_SIZE-1:0] input_feature,
-	input [DEPTH-1:0] address,
+	input [CROSS_SIZE-1:0] Input_feature,
+	input [DEPTH-1:0] Address,
 	output [ADC_P-1:0] Output	// size should increase to hold the sum of products
 	);
-	wire [CROSS_SIZE-1:0] input_pim;
-	wire [CROSS_SIZE-1:0] address_pim;
-	wire [ADC_P-1:0] resout;
-	assign input_pim = input_feature;
-	assign address_pim = address;
+	wire [CROSS_SIZE-1:0] Input_pim;
+	wire [CROSS_SIZE-1:0] Address_pim;
+	wire [ADC_P-1:0] Resout;
+	assign Input_pim = Input_feature;
+	assign Address_pim = Address;
 	bram_pim single_pim(
-		.data(input_pim),
-		.addr(address_pim),
+		.data(Input_pim),
+		.addr(Address_pim),
 		.we(en),
-		.out(resout),
+		.out(Resout),
 		.clk(clk)
 	);
-	assign Output = resout;
+	assign Output = Resout;
 
 endmodule
