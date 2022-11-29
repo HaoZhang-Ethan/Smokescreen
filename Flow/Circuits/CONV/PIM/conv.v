@@ -2,8 +2,8 @@
  * @Author: haozhang-hoge haozhang@mail.sdu.edu.cn
  * @Date: 2022-11-29 10:08:30
  * @LastEditors: haozhang-hoge haozhang@mail.sdu.edu.cn
- * @LastEditTime: 2022-11-29 17:02:44
- * @FilePath: /Smokescreen/Flow/Circuit/CONV/PIM/conv.v
+ * @LastEditTime: 2022-11-29 20:17:14
+ * @FilePath: /Smokescreen/Flow/Circuits/CONV/PIM/conv.v
  * @Description: the basic component of PIM
  * 
  * Copyright (c) 2022 by haozhang-hoge haozhang@mail.sdu.edu.cn, All Rights Reserved. 
@@ -24,6 +24,7 @@ module conv #(parameter CROSS_SIZE = 64, DEPTH = 6, ADC_P = 8) (
 	input [DEPTH-1:0] Address,
 	output [ADC_P-1:0] Output	// size should increase to hold the sum of products
 	);
+	
 	wire [CROSS_SIZE-1:0] Input_pim;
 	wire [CROSS_SIZE-1:0] Address_pim;
 	wire [ADC_P-1:0] Resout;
