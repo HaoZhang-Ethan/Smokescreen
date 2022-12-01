@@ -2,7 +2,7 @@
  * @Author: Hao Zhang haozhang@mail.sdu.edu.cn
  * @Date: 2022-08-13 15:33:31
  * @LastEditors: haozhang-hoge haozhang@mail.sdu.edu.cn
- * @LastEditTime: 2022-11-29 20:13:55
+ * @LastEditTime: 2022-12-01 17:12:25
  * @FilePath: /Smokescreen/README.md
  * @Description: 
  * 
@@ -58,4 +58,10 @@ please refer to [vtr](https://docs.verilogtorouting.org/en/latest/BUILDING/) and
 $VTR_ROOT/ make CMAKE_PARAMS="-DWITH_YOSYS=ON"
 ```
 
-### 
+### 3. run vtr scripts
+
+```bash
+$VTR_ROOT/vtr_flow/scripts ./run_vtr_flow.py  Smokescreen_ROOT/Flow/Circuits/XXXX.v  Smokescreen_ROOT/Flow/Arch/XXXXX.xml  -temp_dir Smokescreen_ROOT/Flow/Output/XXXX -start yosys
+```
+If the scripts run successfully, you will get a `vpr.out` file in `Smokescreen_ROOT/Flow/Output/XXXX`. You can use `cat vpr.out` to check the result.
+
