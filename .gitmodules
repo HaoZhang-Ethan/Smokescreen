@@ -1,6 +1,9 @@
 [submodule "Tools/vtr-verilog-to-routing"]
 	path = Tools/vtr-verilog-to-routing
 	url = git@github.com:HaoZhang-Hoge/vtr-verilog-to-routing.git
-[submodule "quantization/MNSIM-2.0"]
+[submodule "Tools/MNSIM-2.0"]
 	path = Tools/MNSIM-2.0
 	url = git@github.com:thu-nics/MNSIM-2.0.git
+[submodule "Tools/COFFE"]
+	path = Tools/COFFE
+	url = git@github.com:vaughnbetz/COFFE.git
