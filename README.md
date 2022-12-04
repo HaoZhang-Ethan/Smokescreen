@@ -2,7 +2,7 @@
  * @Author: Hao Zhang haozhang@mail.sdu.edu.cn
  * @Date: 2022-08-13 15:33:31
  * @LastEditors: haozhang-hoge haozhang@mail.sdu.edu.cn
- * @LastEditTime: 2022-12-01 17:12:25
+ * @LastEditTime: 2022-12-04 13:42:17
  * @FilePath: /Smokescreen/README.md
  * @Description: 
  * 
@@ -65,3 +65,5 @@ $VTR_ROOT/vtr_flow/scripts ./run_vtr_flow.py  Smokescreen_ROOT/Flow/Circuits/XXX
 ```
 If the scripts run successfully, you will get a `vpr.out` file in `Smokescreen_ROOT/Flow/Output/XXXX`. You can use `cat vpr.out` to check the result.
 
+## Documents
+[Documents](https://haozhang-hoge.notion.site/FPGA-PIM-MAP-85711495157249a6a1587130abea785c)
