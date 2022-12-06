@@ -2,7 +2,7 @@
  * @Author: haozhang-hoge haozhang@mail.sdu.edu.cn
  * @Date: 2022-11-29 10:08:30
  * @LastEditors: haozhang-hoge haozhang@mail.sdu.edu.cn
- * @LastEditTime: 2022-12-06 09:44:30
+ * @LastEditTime: 2022-12-06 10:57:44
  * @FilePath: /Smokescreen/Flow/Circuits/CONV/PIM/conv_mid.v
  * @Description: the basic component of PIM conv. It can caculate the output for every address.
  * 
@@ -13,7 +13,7 @@
 
 function integer clogb2 (input integer bit_depth);
     begin
-        for(clogb2 = 0; bit_depth > 0; clogb2 = clogb2+1)
+        for(clogb2 = -1; bit_depth > 0; clogb2 = clogb2+1)
             bit_depth = bit_depth>>1;
     end
 endfunction
@@ -73,7 +73,7 @@ module conv_mid #(parameter INPUT_SIZE = 32, INPUT_P = 4, DEPTH = 32, ADC_P = 4)
 		end
 	endgenerate
 	wire [ADC_P-1:0] resout;
-	conv #(.INPUT_SIZE(INPUT_SIZE), .DEPTH(DEPTH), .ADC_P(ADC_P)) single_conv(
+	conv #(.INPUT_SIZE(INPUT_SIZE), .DEPTH(clogb2(DEPTH)), .ADC_P(ADC_P)) single_conv(
 		.Input_feature(input_vector_bit),
 		.Address(add_counter),
 		.en(Compute_flag),

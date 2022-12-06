@@ -34,7 +34,7 @@ yosys -import
 
 # Read the HDL file with pre-defined parser in the run_vtr_flow script
 
-# conv_top.v (input circuit) is replaced with filename by the run_vtr_flow script
+# conv_mid.v (input circuit) is replaced with filename by the run_vtr_flow script
 
 if {$env(PARSER) == "surelog" } {
 
@@ -44,7 +44,7 @@ if {$env(PARSER) == "surelog" } {
 
 	yosys -import
 
-	read_uhdm -debug conv_top.v
+	read_uhdm -debug conv_mid.v
 
 } elseif {$env(PARSER) == "yosys-plugin" } {
 
@@ -54,13 +54,13 @@ if {$env(PARSER) == "surelog" } {
 
 	yosys -import
 
-	read_systemverilog -debug conv_top.v
+	read_systemverilog -debug conv_mid.v
 
 } elseif {$env(PARSER) == "yosys" } {
 
 	puts "Using Yosys read_verilog command"
 
-	read_verilog -sv -nolatches conv_top.v
+	read_verilog -sv -nolatches conv_mid.v
 
 } else {
 
@@ -72,7 +72,7 @@ if {$env(PARSER) == "surelog" } {
 
 # read the custom complex blocks in the architecture
 
-read_verilog -lib /home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_top/arch_dsps.v
+read_verilog -lib /home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_mid/arch_dsps.v
 
 
 
@@ -142,7 +142,7 @@ techmap -map /home/zolid/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_fl
 
 # Map multipliers, DSPs, and add/subtracts according to yosys_models.v
 
-techmap -map /home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_top/yosys_models.v */t:\$mul */t:\$mem */t:\$sub */t:\$add
+techmap -map /home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_mid/yosys_models.v */t:\$mul */t:\$mem */t:\$sub */t:\$add
 
 opt -fast -full
 
@@ -176,15 +176,15 @@ read_verilog -lib /home/zolid/Project/Smokescreen/Tools/vtr-verilog-to-routing/v
 
 read_verilog -lib /home/zolid/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_flow/misc/yosyslib/multiply.v
 
-#(/home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_top/single_port_ram.v) will be replaced by single_port_ram.v by python script
+#(/home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_mid/single_port_ram.v) will be replaced by single_port_ram.v by python script
 
-read_verilog -lib /home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_top/single_port_ram.v
+read_verilog -lib /home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_mid/single_port_ram.v
 
-read_verilog -lib /home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_top/memory_pim.v
+read_verilog -lib /home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_mid/memory_pim.v
 
-#(/home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_top/dual_port_ram.v) will be replaced by dual_port_ram.v by python script
+#(/home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_mid/dual_port_ram.v) will be replaced by dual_port_ram.v by python script
 
-read_verilog -lib /home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_top/dual_port_ram.v
+read_verilog -lib /home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_mid/dual_port_ram.v
 
 
 
@@ -196,15 +196,15 @@ read_verilog -lib /home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_top/dual_
 
 # since it may outcome hierarchy error
 
-#(/home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_top/spram_rename.v) will be replaced by spram_rename.v by python script
+#(/home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_mid/spram_rename.v) will be replaced by spram_rename.v by python script
 
-read_verilog /home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_top/spram_rename.v
+read_verilog /home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_mid/spram_rename.v
 
-read_verilog /home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_top/pimram_rename.v
+read_verilog /home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_mid/pimram_rename.v
 
-#(/home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_top/dpram_rename.v) will be replaced by dpram_rename.v by python script
+#(/home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_mid/dpram_rename.v) will be replaced by dpram_rename.v by python script
 
-read_verilog /home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_top/dpram_rename.v
+read_verilog /home/zolid/Project/Smokescreen/Flow/Output/PIM/conv_mid/dpram_rename.v
 
 
 
@@ -242,7 +242,7 @@ autoname
 
 # switch `-impltf' doesn't output them
 
-# conv_top.yosys.blif will be replaced by run_vtr_flow.pl
+# conv_mid.yosys.blif will be replaced by run_vtr_flow.pl
 
-write_blif -true + vcc -false + gnd -undef + unconn -blackbox conv_top.yosys.blif
+write_blif -true + vcc -false + gnd -undef + unconn -blackbox conv_mid.yosys.blif
 

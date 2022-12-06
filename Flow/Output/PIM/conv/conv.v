@@ -2,7 +2,7 @@
  * @Author: haozhang-hoge haozhang@mail.sdu.edu.cn
  * @Date: 2022-11-29 10:08:30
  * @LastEditors: haozhang-hoge haozhang@mail.sdu.edu.cn
- * @LastEditTime: 2022-12-04 14:46:52
+ * @LastEditTime: 2022-12-06 10:38:15
  * @FilePath: /Smokescreen/Flow/Circuits/CONV/PIM/conv.v
  * @Description: the basic component of PIM
  * 
@@ -18,10 +18,7 @@
 // INPUT_SIZE, the size of inpuit vector (default: 32), we use 64 for 32x32 crossbar
 // MAP_WIDTH, the column of crossbar we used (default: 5), we use log(32) for 32x32 crossbar
 // ADC_P, ADC precision, we use 8 bits ADC
-
-
-
-module conv #(parameter INPUT_SIZE = 34, DEPTH = 6, ADC_P = 8) (
+module conv #(parameter INPUT_SIZE = 32, DEPTH = 5, ADC_P = 8) (
 	input clk, 
 	input rst,
 	input en,	// enable
@@ -46,6 +43,56 @@ endmodule
 
 
 
+// split the used crossbar colunm into 2 parts, and select one of the conv_col modules
+module conv_col #(parameter INPUT_SIZE = 32, DEPTH = 5, ADC_P = 8) (
+	input clk, 
+	input rst,
+	input en,	// enable
+	input [INPUT_SIZE-1:0] Input_feature,
+	input [DEPTH-1:0] Address,
+	output [ADC_P-1:0] Output	
+	);
+	if (DEPTH > `MAX_SIZE_COL) begin
+		wire [ADC_P-1:0] Resout_1;
+		wire [ADC_P-1:0] Resout_2;
+		conv_col #(.INPUT_SIZE(INPUT_SIZE), .DEPTH(DEPTH-1), .ADC_P(ADC_P)) pim_conv_col_s_inst1(
+			.clk(clk),
+			.rst(rst),
+			.en(en),
+			.Input_feature(Input_feature),
+			.Address(Address[DEPTH-2:0]),
+			.Output(Resout_1)
+		);
+		conv_col #(.INPUT_SIZE(INPUT_SIZE), .DEPTH(DEPTH-1), .ADC_P(ADC_P)) pim_conv_col_s_inst2(
+			.clk(clk),
+			.rst(rst),
+			.en(en),
+			.Input_feature(Input_feature),
+			.Address(Address[DEPTH-2:0]),
+			.Output(Resout_2)
+		);
+		assign Output = (Address[DEPTH-1]) ? Resout_1 : Resout_2;
+	end
+	else begin
+		wire [INPUT_SIZE-1:0] input_pim;
+		wire [INPUT_SIZE-1:0] address_pim;
+		wire [ADC_P-1:0] resout;
+		assign input_pim = Input_feature;
+		assign address_pim = Address;
+		conv_row #(.INPUT_SIZE(INPUT_SIZE), .DEPTH(DEPTH), .ADC_P(ADC_P)) single_conv(
+			.Input_feature(input_pim),
+			.Address(address_pim),
+			.en(en),
+			.Output(resout),
+			.clk(clk)
+		);
+		assign Output = resout;
+	end
+
+endmodule
+
+
+// split the input vector into 2 parts, and use 2 conv_row to calculate the output
 module conv_row #(parameter INPUT_SIZE = 32, DEPTH = 5, ADC_P = 8) (
 	input clk, 
 	input rst,
@@ -97,58 +144,7 @@ module conv_row #(parameter INPUT_SIZE = 32, DEPTH = 5, ADC_P = 8) (
 		);
 		assign Output = Resout;
 	end
-
-
+	
 endmodule
-
-
-
-module conv_col #(parameter INPUT_SIZE = 32, DEPTH = 5, ADC_P = 8) (
-	input clk, 
-	input rst,
-	input en,	// enable
-	input [INPUT_SIZE-1:0] Input_feature,
-	input [DEPTH-1:0] Address,
-	output [ADC_P-1:0] Output	// size should increase to hold the sum of products
-	);
-	if (DEPTH > `MAX_SIZE_COL) begin
-		wire [ADC_P-1:0] Resout_1;
-		wire [ADC_P-1:0] Resout_2;
-		conv_col #(.INPUT_SIZE(INPUT_SIZE), .DEPTH(DEPTH-1), .ADC_P(ADC_P)) pim_conv_col_s_inst1(
-			.clk(clk),
-			.rst(rst),
-			.en(en),
-			.Input_feature(Input_feature),
-			.Address(Address[DEPTH-2:0]),
-			.Output(Resout_1)
-		);
-		conv_col #(.INPUT_SIZE(INPUT_SIZE), .DEPTH(DEPTH-1), .ADC_P(ADC_P)) pim_conv_col_s_inst2(
-			.clk(clk),
-			.rst(rst),
-			.en(en),
-			.Input_feature(Input_feature),
-			.Address(Address[DEPTH-2:0]),
-			.Output(Resout_2)
-		);
-		assign Output = (Address[DEPTH-1]) ? Resout_1 : Resout_2;
-	end
-	else begin
-		wire [INPUT_SIZE-1:0] input_pim;
-		wire [INPUT_SIZE-1:0] address_pim;
-		wire [ADC_P-1:0] resout;
-		assign input_pim = Input_feature;
-		assign address_pim = Address;
-		conv_row #(.INPUT_SIZE(INPUT_SIZE), .DEPTH(DEPTH), .ADC_P(ADC_P)) single_conv(
-			.Input_feature(input_pim),
-			.Address(address_pim),
-			.en(en),
-			.Output(resout),
-			.clk(clk)
-		);
-		assign Output = resout;
-	end
-
-endmodule
-
 
 
