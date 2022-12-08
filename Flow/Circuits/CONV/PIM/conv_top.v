@@ -2,7 +2,7 @@
  * @Author: haozhang-hoge haozhang@mail.sdu.edu.cn
  * @Date: 2022-11-29 10:08:30
  * @LastEditors: haozhang-hoge haozhang@mail.sdu.edu.cn
- * @LastEditTime: 2022-12-07 22:01:22
+ * @LastEditTime: 2022-12-08 22:42:49
  * @FilePath: /Smokescreen/Flow/Circuits/CONV/PIM/conv_top.v
  * @Description: the basic component of PIM conv. It can caculate the output for every address.
  * 
@@ -19,7 +19,7 @@ function integer clogb2 (input integer bit_depth);
 endfunction
 
 // Parameter:
-// INPUT_SIZE, the size of inpuit vector (default: 64), we use 64 for 64x64 crossbar
+// INPUT_SIZE, the size of inpuit vector (default: 32), we use 64 for 32x32 crossbar
 // DEPTH, the column of used crossbar
 // ADC_P, ADC precision, we use 8 bits ADC
 module conv_top #(parameter INPUT_SIZE = 32, INPUT_P = 8, DEPTH = 32, ADC_P = 4, OUT_P = 8) (
