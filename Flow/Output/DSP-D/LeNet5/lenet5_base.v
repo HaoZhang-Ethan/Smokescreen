@@ -127,16 +127,13 @@ module lenet5 #(parameter IN_WIDTH = 8, OUT_WIDTH = 8, IMAGE = 32, SP_BRAM = 4, 
     // wire c1_en;
     wire [IN_WIDTH-1:0] c1_out_1;
     wire [IN_WIDTH-1:0] c1_relu_out_1;
-    conv_pim #(.BIT_WIDTH(IN_WIDTH), .OUT_WIDTH(OUT_WIDTH), .KERNEL_SIZE(KERNEL_SIZE), .CHANNEL(1)) C1_DSP(
+    convn #(.BIT_WIDTH(IN_WIDTH), .OUT_WIDTH(OUT_WIDTH), .KERNEL_SIZE(KERNEL_SIZE), .CHANNEL(1)) C1_DSP(
         .clk(clk),
-        .rst(rst),
         .en(C1_en),
         .input_feature(read_feature_out_2),
-        // .filter(tmp_out_551_6),
-        .address(bram_addr_f), // TODO:
+        .filter(tmp_out_551_6),
         .convValue(c1_out_1) 
     );
-
     // assign C1_convPlusBias[g] = C1_convOut[g] + rom_c1[IN_WIDTH*((g+1)*SIZE)-1 : IN_WIDTH*((g+1)*SIZE-1)];
 
     // // C1 activation layer (ReLU)
@@ -346,19 +343,12 @@ module lenet5 #(parameter IN_WIDTH = 8, OUT_WIDTH = 8, IMAGE = 32, SP_BRAM = 4, 
             end
         end
     end
-    conv_pim #(.BIT_WIDTH(IN_WIDTH), .OUT_WIDTH(OUT_WIDTH), .KERNEL_SIZE(KERNEL_SIZE), .CHANNEL(3)) C3_DSP_5536(
-        // .clk(clk),
-        // .en(C3_en),
-        // .input_feature(read_feature_from_s2_5536),
-        // .filter(tmp_out_553_6),
-        // .convValue(c3_out_5536)
+    convn #(.BIT_WIDTH(IN_WIDTH), .OUT_WIDTH(OUT_WIDTH), .KERNEL_SIZE(KERNEL_SIZE), .CHANNEL(3)) C3_DSP_5536(
         .clk(clk),
-        .rst(rst),
         .en(C3_en),
         .input_feature(read_feature_from_s2_5536),
-        // .filter(tmp_out_551_6),
-        .address(bram_addr_f), // TODO:
-        .convValue(c3_out_5536)  
+        .filter(tmp_out_553_6),
+        .convValue(c3_out_5536) 
     );
     
     // // C3 activation layer (ReLU)
@@ -369,20 +359,12 @@ module lenet5 #(parameter IN_WIDTH = 8, OUT_WIDTH = 8, IMAGE = 32, SP_BRAM = 4, 
 
     
 
-    conv_pim #(.BIT_WIDTH(IN_WIDTH), .OUT_WIDTH(OUT_WIDTH), .KERNEL_SIZE(KERNEL_SIZE), .CHANNEL(4)) C3_DSP_5546(
-        // .clk(clk),
-        // .en(C3_en),
-        // .input_feature(read_feature_from_s2_5546),
-        // .filter(tmp_out_554_6),
-        // .convValue(c3_out_5546)
+    convn #(.BIT_WIDTH(IN_WIDTH), .OUT_WIDTH(OUT_WIDTH), .KERNEL_SIZE(KERNEL_SIZE), .CHANNEL(4)) C3_DSP_5546(
         .clk(clk),
-        .rst(rst),
         .en(C3_en),
         .input_feature(read_feature_from_s2_5546),
-        // .filter(tmp_out_551_6),
-        .address(bram_addr_f), // TODO:
-        .convValue(c3_out_5546)
-
+        .filter(tmp_out_554_6),
+        .convValue(c3_out_5546) 
     );
     
     // // C1 activation layer (ReLU)
@@ -393,19 +375,12 @@ module lenet5 #(parameter IN_WIDTH = 8, OUT_WIDTH = 8, IMAGE = 32, SP_BRAM = 4, 
 
 
 
-    conv_pim #(.BIT_WIDTH(IN_WIDTH), .OUT_WIDTH(OUT_WIDTH), .KERNEL_SIZE(KERNEL_SIZE), .CHANNEL(4)) C3_DSP_5543(
-        // .clk(clk),
-        // .en(C3_en),
-        // .input_feature(read_feature_from_s2_5543),
-        // .filter(tmp_out_554_3),
-        // .convValue(c3_out_5543) 
+    convn #(.BIT_WIDTH(IN_WIDTH), .OUT_WIDTH(OUT_WIDTH), .KERNEL_SIZE(KERNEL_SIZE), .CHANNEL(4)) C3_DSP_5543(
         .clk(clk),
-        .rst(rst),
         .en(C3_en),
         .input_feature(read_feature_from_s2_5543),
-        // .filter(tmp_out_551_6),
-        .address(bram_addr_f), // TODO:
-        .convValue(c3_out_5543)
+        .filter(tmp_out_554_3),
+        .convValue(c3_out_5543) 
     );
     
     // // C1 activation layer (ReLU)
@@ -414,20 +389,12 @@ module lenet5 #(parameter IN_WIDTH = 8, OUT_WIDTH = 8, IMAGE = 32, SP_BRAM = 4, 
         .in(c3_out_5543), .out(c3_relu_out_5543)
     );
 
-    conv_pim #(.BIT_WIDTH(IN_WIDTH), .OUT_WIDTH(OUT_WIDTH), .KERNEL_SIZE(KERNEL_SIZE), .CHANNEL(6)) C3_DSP_5561(
-        // .clk(clk),
-        // .en(C3_en),
-        // .input_feature(read_feature_from_s2_5561),
-        // .filter(tmp_out_556_1),
-        // .convValue(c3_out_5561) 
+    convn #(.BIT_WIDTH(IN_WIDTH), .OUT_WIDTH(OUT_WIDTH), .KERNEL_SIZE(KERNEL_SIZE), .CHANNEL(6)) C3_DSP_5561(
         .clk(clk),
-        .rst(rst),
         .en(C3_en),
         .input_feature(read_feature_from_s2_5561),
-        // .filter(tmp_out_551_6),
-        .address(bram_addr_f), // TODO:
-        .convValue(c3_out_5561)
-
+        .filter(tmp_out_556_1),
+        .convValue(c3_out_5561) 
     );
     
     // // C1 activation layer (ReLU)
@@ -661,20 +628,12 @@ module lenet5 #(parameter IN_WIDTH = 8, OUT_WIDTH = 8, IMAGE = 32, SP_BRAM = 4, 
                       
 
     // convolution modules
-    conv_pim #(.BIT_WIDTH(IN_WIDTH), .OUT_WIDTH(OUT_WIDTH), .KERNEL_SIZE(KERNEL_SIZE), .CHANNEL(16)) C5_DSP_5516_120(
-        // .clk(clk),
-        // .en(C5_en),
-        // .input_feature(read_feature_from_s4_55_16),
-        // .filter(tmp_out_5516_120),
-        // .convValue(c5_out_5516_120) 
+    convn #(.BIT_WIDTH(IN_WIDTH), .OUT_WIDTH(OUT_WIDTH), .KERNEL_SIZE(KERNEL_SIZE), .CHANNEL(16)) C5_DSP_5516_120(
         .clk(clk),
-        .rst(rst),
         .en(C5_en),
         .input_feature(read_feature_from_s4_55_16),
-        .address(bram_addr_f), // TODO:
-        // .filter(tmp_out_5516_120),
-        .convValue(c5_out_5516_120)
-
+        .filter(tmp_out_5516_120),
+        .convValue(c5_out_5516_120) 
     );
     
     wire [IN_WIDTH-1:0] c5_relu_out_5516_120;
