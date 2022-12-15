@@ -1,4 +1,4 @@
-module conv_pim #(parameter BIT_WIDTH = 8, OUT_WIDTH = 8, KERNEL_SIZE = 5, CHANNEL = 6, DEPTH = 8) (
+module conv_pim #(parameter BIT_WIDTH = 8, OUT_WIDTH = 8, KERNEL_SIZE = 5, CHANNEL = 4, DEPTH = 8) (
 		input clk, 
 		input rst,
 		input en,	// whether to latch or not
@@ -39,39 +39,173 @@ module conv_pim #(parameter BIT_WIDTH = 8, OUT_WIDTH = 8, KERNEL_SIZE = 5, CHANN
 	endgenerate
 
 
+	if (CHANNEL == 6) begin
+		wire [BIT_WIDTH-1:0] conv_out_tmp [4];
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_0(
+			.a(conv_out[0]),
+			.b(conv_out[1]),
+			.c(conv_out_tmp[0])
+		);
 
-	wire [BIT_WIDTH-1:0] conv_out_0;
-	wire [BIT_WIDTH-1:0] conv_out_1;
-	wire [BIT_WIDTH-1:0] conv_out_2;
-	wire [BIT_WIDTH-1:0] conv_out_3;
-	qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_0(
-		.a(conv_out[0]),
-		.b(conv_out[1]),
-		.c(conv_out_0)
-	);
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_1(
+			.a(conv_out[2]),
+			.b(conv_out[3]),
+			.c(conv_out_tmp[1])
+		);
 
-	qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_1(
-		.a(conv_out[2]),
-		.b(conv_out[3]),
-		.c(conv_out_1)
-	);
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_2(
+			.a(conv_out[4]),
+			.b(conv_out[5]),
+			.c(conv_out_tmp[2])
+		);
 
-	qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_2(
-		.a(conv_out[4]),
-		.b(conv_out[5]),
-		.c(conv_out_2)
-	);
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_3(
+			.a(conv_out_tmp[0]),
+			.b(conv_out_tmp[1]),
+			.c(conv_out_tmp[3])
+		);
 
-	qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_3(
-		.a(conv_out_0),
-		.b(conv_out_1),
-		.c(conv_out_3)
-	);
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_4(
+			.a(conv_out_tmp[2]),
+			.b(conv_out_tmp[3]),
+			.c(convValue)
+		);
+	end else if (CHANNEL == 16) begin
+		
+		wire [BIT_WIDTH-1:0] conv_out_tmp [14];
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_0(
+			.a(conv_out[0]),
+			.b(conv_out[1]),
+			.c(conv_out_tmp[0])
+		);
 
-	qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_4(
-		.a(conv_out_3),
-		.b(conv_out_2),
-		.c(convValue)
-	);
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_1(
+			.a(conv_out[2]),
+			.b(conv_out[3]),
+			.c(conv_out_tmp[1])
+		);
+
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_2(
+			.a(conv_out[4]),
+			.b(conv_out[5]),
+			.c(conv_out_tmp[2])
+		);
+
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_3(
+			.a(conv_out[6]),
+			.b(conv_out[7]),
+			.c(conv_out_tmp[3])
+		);
+
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_4(
+			.a(conv_out[8]),
+			.b(conv_out[9]),
+			.c(conv_out_tmp[4])
+		);
+
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_5(
+			.a(conv_out[10]),
+			.b(conv_out[11]),
+			.c(conv_out_tmp[5])
+		);
+
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_6(
+			.a(conv_out[12]),
+			.b(conv_out[13]),
+			.c(conv_out_tmp[6])
+		);
+
+
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_7(
+			.a(conv_out[14]),
+			.b(conv_out[15]),
+			.c(conv_out_tmp[7])
+		);
+
+
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_8(
+			.a(conv_out_tmp[0]),
+			.b(conv_out_tmp[1]),
+			.c(conv_out_tmp[8])
+		);
+
+
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_9(
+			.a(conv_out_tmp[2]),
+			.b(conv_out_tmp[3]),
+			.c(conv_out_tmp[9])
+		);
+
+
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_10(
+			.a(conv_out_tmp[4]),
+			.b(conv_out_tmp[5]),
+			.c(conv_out_tmp[10])
+		);
+
+
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_11(
+			.a(conv_out_tmp[6]),
+			.b(conv_out_tmp[7]),
+			.c(conv_out_tmp[11])
+		);
+
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_12(
+			.a(conv_out_tmp[8]),
+			.b(conv_out_tmp[9]),
+			.c(conv_out_tmp[12])
+		);
+
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_13(
+			.a(conv_out_tmp[10]),
+			.b(conv_out_tmp[11]),
+			.c(conv_out_tmp[13])
+		);
+
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_14(
+			.a(conv_out_tmp[12]),
+			.b(conv_out_tmp[13]),
+			.c(convValue)
+		);
+
+	end else if (CHANNEL == 3) begin
+		wire [BIT_WIDTH-1:0] conv_out_tmp [1];
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_0(
+			.a(conv_out[0]),
+			.b(conv_out[1]),
+			.c(conv_out_tmp[0])
+		);
+
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_1(
+			.a(conv_out[2]),
+			.b(conv_out_tmp[0]),
+			.c(convValue)
+		);
+	
+	end else if (CHANNEL == 4) begin
+		wire [BIT_WIDTH-1:0] conv_out_tmp [2];
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_0(
+			.a(conv_out[0]),
+			.b(conv_out[1]),
+			.c(conv_out_tmp[0])
+		);
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_1(
+			.a(conv_out[2]),
+			.b(conv_out[3]),
+			.c(conv_out_tmp[1])
+		);
+
+		qadd #(.BIT_WIDTH(8), .OUT_WIDTH(8)) qadd_inst_2(
+			.a(conv_out_tmp[0]),
+			.b(conv_out_tmp[1]),
+			.c(convValue)
+		);
+
+	end else if (CHANNEL == 1) begin
+		assign convValue = conv_out[0];
+	end
+		
+		
+
 
 endmodule

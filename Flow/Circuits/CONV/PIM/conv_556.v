@@ -1,4 +1,4 @@
-module conv_pim #(parameter BIT_WIDTH = 8, OUT_WIDTH = 8, KERNEL_SIZE = 5, CHANNEL = 16, DEPTH = 8) (
+module conv_pim #(parameter BIT_WIDTH = 8, OUT_WIDTH = 8, KERNEL_SIZE = 5, CHANNEL = 6, DEPTH = 8) (
 		input clk, 
 		input rst,
 		input en,	// whether to latch or not
