@@ -2,7 +2,7 @@
  * @Author: haozhang-hoge haozhang@mail.sdu.edu.cn
  * @Date: 2022-11-29 10:08:30
  * @LastEditors: haozhang haozhang@mail.sdu.edu.cn
- * @LastEditTime: 2022-12-17 12:19:03
+ * @LastEditTime: 2022-12-21 03:56:41
  * @FilePath: /Smokescreen/Flow/Circuits/CONV/PIM/conv_top.v
  * @Description: the basic component of PIM conv. It can caculate the output for every address.
  * 
@@ -13,7 +13,7 @@
 
 function integer clogb2 (input integer bit_depth);
     begin
-        for(clogb2 = -1; bit_depth > 0; clogb2 = clogb2+1)
+        for(clogb2 = 0; bit_depth > 0; clogb2 = clogb2+1)
             bit_depth = bit_depth>>1;
     end
 endfunction
@@ -22,11 +22,11 @@ endfunction
 // INPUT_SIZE, the size of inpuit vector (default: 32), we use 64 for 32x32 crossbar
 // DEPTH, the column of used crossbar
 // ADC_P, ADC precision, we use 8 bits ADC
-module conv_top #(parameter INPUT_SIZE = 32, INPUT_P = 8, DEPTH = 32, ADC_P = 4, OUT_P = 8) (
+module conv_top #(parameter INPUT_SIZE = 100, INPUT_P = 16, DEPTH = 100, ADC_P = 8, OUT_P = 16) (
 	input clk, 
 	input rst,
 	input [(INPUT_SIZE*INPUT_P)-1:0] Input_feature,
-	input [clogb2(DEPTH)-1:0] Address,
+	input [clogb2(DEPTH-1)-1:0] Address,
 	output [OUT_P-1:0] Output,	// size should increase to hold the sum of products
 	output done_flag,
 	);
@@ -46,8 +46,8 @@ module conv_top #(parameter INPUT_SIZE = 32, INPUT_P = 8, DEPTH = 32, ADC_P = 4,
 	wire [INPUT_SIZE-1:0] input_vector_bit_L;
 	wire [INPUT_SIZE-1:0] input_vector_bit_H;
 	reg done_flag;
-	reg [clogb2(INPUT_SIZE)-1:0] bit_counter;
-	reg [clogb2(DEPTH)-1:0] add_counter;
+	reg [clogb2(INPUT_SIZE-1)-1:0] bit_counter;
+	reg [clogb2(DEPTH-1)-1:0] add_counter;
 	always @ (posedge clk) begin
 		if (!rst) begin
 			bit_counter <= 0;
@@ -79,7 +79,7 @@ module conv_top #(parameter INPUT_SIZE = 32, INPUT_P = 8, DEPTH = 32, ADC_P = 4,
 
 //  HH Unit
 	wire [ADC_P-1:0] resout_HH;
-	conv #(.INPUT_SIZE(INPUT_SIZE), .DEPTH(clogb2(DEPTH)), .ADC_P(ADC_P)) single_conv_HH(
+	conv #(.INPUT_SIZE(INPUT_SIZE), .DEPTH(clogb2(DEPTH-1)), .ADC_P(ADC_P)) single_conv_HH(
 		.Input_feature(input_vector_bit_H),
 		.Address(add_counter),
 		.en(Compute_flag),
@@ -89,7 +89,7 @@ module conv_top #(parameter INPUT_SIZE = 32, INPUT_P = 8, DEPTH = 32, ADC_P = 4,
 
 //  HL Unit
 	wire [ADC_P-1:0] resout_HL;
-	conv #(.INPUT_SIZE(INPUT_SIZE), .DEPTH(clogb2(DEPTH)), .ADC_P(ADC_P)) single_conv_HL(
+	conv #(.INPUT_SIZE(INPUT_SIZE), .DEPTH(clogb2(DEPTH-1)), .ADC_P(ADC_P)) single_conv_HL(
 		.Input_feature(input_vector_bit_H),
 		.Address(add_counter),
 		.en(Compute_flag),
@@ -99,7 +99,7 @@ module conv_top #(parameter INPUT_SIZE = 32, INPUT_P = 8, DEPTH = 32, ADC_P = 4,
 
 //  LH Unit
 	wire [ADC_P-1:0] resout_LH;
-	conv #(.INPUT_SIZE(INPUT_SIZE), .DEPTH(clogb2(DEPTH)), .ADC_P(ADC_P)) single_conv_LH(
+	conv #(.INPUT_SIZE(INPUT_SIZE), .DEPTH(clogb2(DEPTH-1)), .ADC_P(ADC_P)) single_conv_LH(
 		.Input_feature(input_vector_bit_L),
 		.Address(add_counter),
 		.en(Compute_flag),
@@ -109,7 +109,7 @@ module conv_top #(parameter INPUT_SIZE = 32, INPUT_P = 8, DEPTH = 32, ADC_P = 4,
 
 //  LL Unit
 	wire [ADC_P-1:0] resout_LL;
-	conv #(.INPUT_SIZE(INPUT_SIZE), .DEPTH(clogb2(DEPTH)), .ADC_P(ADC_P)) single_conv_LL(
+	conv #(.INPUT_SIZE(INPUT_SIZE), .DEPTH(clogb2(DEPTH-1)), .ADC_P(ADC_P)) single_conv_LL(
 		.Input_feature(input_vector_bit_L),
 		.Address(add_counter),
 		.en(Compute_flag),

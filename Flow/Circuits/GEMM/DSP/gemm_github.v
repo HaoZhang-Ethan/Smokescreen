@@ -1,34 +1,33 @@
 module sysarray(
-	clk,
-	ena,
-	rst,
+	input clk,
+	input ena,
+	input rst,
 	// weight input 
-	weightvalue,
-	weigthvalid,
-	weigthend,
+	input [WL*NUM - 1:0] weightvalue,
+	input [NUM -1 :0] weigthvalid,
+	input [NUM -1 :0] weigthend,
 
 	//feature  input
-	featurevalue,
-	featurevalid,
-	featureend,
+	input [WL*NUM - 1:0] featurevalue,
+	input [NUM -1 :0] featurevalid,
+	input [NUM -1 :0] featureend,
 
 	// result out
-	resultvalid,
-	resultvalue
+	output [WL*NUM*NUM - 1:0] resultvalid,
+	output [NUM*NUM - 1:0] resultvalue
 );
 
 
 parameter WL = 32;
 parameter NUM = 16;
 
-input clk, ena, rst;
 
-input [WL*NUM - 1:0] weightvalue, featurevalue;
-input [NUM -1 :0] weigthvalid, weigthend, featurevalid, featureend;
+// input [WL*NUM - 1:0] weightvalue, featurevalue;
+// input [NUM -1 :0] weigthvalid, weigthend, featurevalid, featureend;
 
 
-output wire [WL*NUM*NUM - 1:0]  resultvalue;
-output wire [NUM*NUM - 1:0] resultvalid;
+// output wire [WL*NUM*NUM - 1:0]  resultvalue;
+// output wire [NUM*NUM - 1:0] resultvalid;
 
 wire [WL - 1:0] weightvaluewire[NUM - 1:0][NUM- 1:0], featurevaluewire[NUM - 1:0][NUM- 1:0];
 
@@ -111,33 +110,33 @@ endmodule
 
 
 module sysunit(
-	clk,
-	ena,
-	rst,
+	input clk,
+	input ena,
+	input rst,
 	// weight input 
-	weightvalue,
-	weigthvalid,
-	weigthend,
+	input [WL-1:0] weightvalue,
+	input weigthvalid,
+	input weigthend,
 
 	// weight shift 
-	weightoutvalue,
-	weigthoutvalid,
-	weigthoutend,
+	output [WL-1:0] weightoutvalue,
+	output weigthoutvalid,
+	output weigthoutend,
 
 	//feature  input
-	featurevalue,
-	featurevalid,
-	featureend,
+	input [WL-1:0] featurevalue,
+	input featurevalid,
+	input featureend,
 
 	//feature  shift
-	featureoutvalue,
-	featureoutvalid,
-	featureoutvend,
+	output [WL-1:0] featureoutvalue,
+	output featureoutvalid,
+	output featureoutvend,
 
 
 	// result out
-	resultvalid,
-	resultvalue
+	output resultvalid,
+	output [WL-1:0] resultvalue
 );
 
 
@@ -145,10 +144,10 @@ parameter WL = 32;
 parameter PIPDEP = 5;
 
 
-input clk, ena, rst;
 
-input [WL-1:0] weightvalue, featurevalue;
-input weigthvalid, featurevalid, weigthend, featureend;
+
+// input [WL-1:0] weightvalue, featurevalue;
+// input weigthvalid, featurevalid, weigthend, featureend;
 
 
 // regist for input
@@ -160,7 +159,8 @@ reg tmpweigthvalid, tmpfeaturevalid, tmpweigthend, tmpfeatureend;
 // define the output
 
 
-output reg [WL-1:0] weightoutvalue, featureoutvalue;
+// output reg [WL-1:0] weightoutvalue, featureoutvalue;
+reg [WL-1:0] weightoutvalue, featureoutvalue;
 output reg weigthoutvalid, weigthoutend, featureoutvalid, featureoutvend;
 
 
@@ -197,9 +197,9 @@ end
 
 
 
-output wire resultvalid;
-output reg [WL-1:0] resultvalue;
-
+// output wire resultvalid;
+// output reg [WL-1:0] resultvalue;
+reg [WL-1:0] resultvalue;
 
 
 wire tmpacc;

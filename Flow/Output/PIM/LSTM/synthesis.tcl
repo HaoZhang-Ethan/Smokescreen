@@ -34,7 +34,7 @@ yosys -import
 
 # Read the HDL file with pre-defined parser in the run_vtr_flow script
 
-# lstm.v (input circuit) is replaced with filename by the run_vtr_flow script
+# lstm_pim.v (input circuit) is replaced with filename by the run_vtr_flow script
 
 if {$env(PARSER) == "surelog" } {
 
@@ -44,7 +44,7 @@ if {$env(PARSER) == "surelog" } {
 
 	yosys -import
 
-	read_uhdm -debug lstm.v
+	read_uhdm -debug lstm_pim.v
 
 } elseif {$env(PARSER) == "yosys-plugin" } {
 
@@ -54,13 +54,13 @@ if {$env(PARSER) == "surelog" } {
 
 	yosys -import
 
-	read_systemverilog -debug lstm.v
+	read_systemverilog -debug lstm_pim.v
 
 } elseif {$env(PARSER) == "yosys" } {
 
 	puts "Using Yosys read_verilog command"
 
-	read_verilog -sv -nolatches lstm.v
+	read_verilog -sv -nolatches lstm_pim.v
 
 } else {
 
@@ -242,7 +242,7 @@ autoname
 
 # switch `-impltf' doesn't output them
 
-# lstm.yosys.blif will be replaced by run_vtr_flow.pl
+# lstm_pim.yosys.blif will be replaced by run_vtr_flow.pl
 
-write_blif -true + vcc -false + gnd -undef + unconn -blackbox lstm.yosys.blif
+write_blif -true + vcc -false + gnd -undef + unconn -blackbox lstm_pim.yosys.blif
 

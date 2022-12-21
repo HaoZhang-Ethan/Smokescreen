@@ -34,7 +34,7 @@ yosys -import
 
 # Read the HDL file with pre-defined parser in the run_vtr_flow script
 
-# lenet5.v (input circuit) is replaced with filename by the run_vtr_flow script
+# lenet5_bram.v (input circuit) is replaced with filename by the run_vtr_flow script
 
 if {$env(PARSER) == "surelog" } {
 
@@ -44,7 +44,7 @@ if {$env(PARSER) == "surelog" } {
 
 	yosys -import
 
-	read_uhdm -debug lenet5.v
+	read_uhdm -debug lenet5_bram.v
 
 } elseif {$env(PARSER) == "yosys-plugin" } {
 
@@ -54,13 +54,13 @@ if {$env(PARSER) == "surelog" } {
 
 	yosys -import
 
-	read_systemverilog -debug lenet5.v
+	read_systemverilog -debug lenet5_bram.v
 
 } elseif {$env(PARSER) == "yosys" } {
 
 	puts "Using Yosys read_verilog command"
 
-	read_verilog -sv -nolatches lenet5.v
+	read_verilog -sv -nolatches lenet5_bram.v
 
 } else {
 
@@ -242,7 +242,7 @@ autoname
 
 # switch `-impltf' doesn't output them
 
-# lenet5.yosys.blif will be replaced by run_vtr_flow.pl
+# lenet5_bram.yosys.blif will be replaced by run_vtr_flow.pl
 
-write_blif -true + vcc -false + gnd -undef + unconn -blackbox lenet5.yosys.blif
+write_blif -true + vcc -false + gnd -undef + unconn -blackbox lenet5_bram.yosys.blif
 

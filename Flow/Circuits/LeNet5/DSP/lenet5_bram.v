@@ -50,17 +50,16 @@ wire signed[HALF_WIDTH-1:0] C1_relu[0:C1_MAPS-1];	// outputs of ReLU function
 wire signed[IN_WIDTH*C1_MAPS*(CONV_SIZE+1)-1:0] rom_c1;	// C1 parameters stored in memory
 
 // parameters for conv filters
-rom_params #(.BIT_WIDTH(IN_WIDTH), .SIZE((CONV_SIZE+1)*C1_MAPS),	// (filters + bias) * (no. feature maps)
-		.FILE("kernel_c1.list")) ROM_C1 (
-	.clk(clk),
-	.read(read),
-	.read_out(rom_c1)
-);
-
+// rom_params #(.BIT_WIDTH(IN_WIDTH), .SIZE((CONV_SIZE+1)*C1_MAPS),	// (filters + bias) * (no. feature maps)
+// 		.FILE("kernel_c1.list")) ROM_C1 (
+// 	.clk(clk),
+// 	.read(read),
+// 	.read_out(rom_c1)
+// );
 
 rom_params_bram #(.BIT_WIDTH(IN_WIDTH), .SIZE((CONV_SIZE+1)*C1_MAPS)) ROM_C1 (
 	.clk(clk),
-	.addr()
+	.read(read),
 	.out(rom_c1)
 );
 
@@ -145,23 +144,38 @@ wire signed[HALF_WIDTH*9*(CONV_SIZE_4+1)-1:0] rom_c3_x4;	// 9 C3 maps' parameter
 wire signed[HALF_WIDTH*(CONV_SIZE_6+1)-1:0] rom_c3_x6;	// 1 C3 map's parameters stored in memory for 5x5x6 conv
 
 // parameters for conv filters
-rom_params #(.BIT_WIDTH(HALF_WIDTH), .SIZE(6*(CONV_SIZE_3+1)),	// (filters + bias) * (no. feature maps)
-		.FILE("kernel_c3_x3.list")) ROM_C3_X3 (
+// rom_params #(.BIT_WIDTH(HALF_WIDTH), .SIZE(6*(CONV_SIZE_3+1)),	// (filters + bias) * (no. feature maps)
+// 		.FILE("kernel_c3_x3.list")) ROM_C3_X3 (
+// 	.clk(clk),
+// 	.read(read),
+// 	.read_out(rom_c3_x3)
+// );
+rom_params_bram #(.BIT_WIDTH(HALF_WIDTH), .SIZE(6*(CONV_SIZE_3+1))) ROM_C3_X3 (
 	.clk(clk),
 	.read(read),
-	.read_out(rom_c3_x3)
+	.out(rom_c3_x3)
 );
-rom_params #(.BIT_WIDTH(HALF_WIDTH), .SIZE(9*(CONV_SIZE_4+1)),	// (filters + bias) * (no. feature maps)
-		.FILE("kernel_c3_x4.list")) ROM_C3_X4 (
+// rom_params #(.BIT_WIDTH(HALF_WIDTH), .SIZE(9*(CONV_SIZE_4+1)),	// (filters + bias) * (no. feature maps)
+// 		.FILE("kernel_c3_x4.list")) ROM_C3_X4 (
+// 	.clk(clk),
+// 	.read(read),
+// 	.read_out(rom_c3_x4)
+// );
+rom_params_bram #(.BIT_WIDTH(HALF_WIDTH), .SIZE(9*(CONV_SIZE_4+1))) ROM_C3_X4 (
 	.clk(clk),
 	.read(read),
-	.read_out(rom_c3_x4)
+	.out(rom_c3_x4)
 );
-rom_params #(.BIT_WIDTH(HALF_WIDTH), .SIZE(CONV_SIZE_6+1),	// (filters + bias) * (no. feature maps)
-		.FILE("kernel_c3_x6.list")) ROM_C3_X6 (
+// rom_params #(.BIT_WIDTH(HALF_WIDTH), .SIZE(CONV_SIZE_6+1),	// (filters + bias) * (no. feature maps)
+// 		.FILE("kernel_c3_x6.list")) ROM_C3_X6 (
+// 	.clk(clk),
+// 	.read(read),
+// 	.read_out(rom_c3_x6)
+// );
+rom_params_bram #(.BIT_WIDTH(HALF_WIDTH), .SIZE(CONV_SIZE_6+1)) ROM_C3_X6 (
 	.clk(clk),
 	.read(read),
-	.read_out(rom_c3_x6)
+	.out(rom_c3_x6)
 );
 
 // 1st 6 C3 feature maps (#0 to #5): take inputs from every contiguous subset of 3 feature maps
@@ -352,17 +366,27 @@ wire signed[OUT_WIDTH*C5_HALF*(CONV_SIZE_16+1)-1:0] rom_c5_0;	// 16 C5 map's par
 wire signed[OUT_WIDTH*C5_HALF*(CONV_SIZE_16+1)-1:0] rom_c5_1;	// 16 C5 map's parameters stored in memory for 5x5x16 conv
 
 // parameters for conv filters
-rom_params #(.BIT_WIDTH(OUT_WIDTH), .SIZE((CONV_SIZE_16+1)*C5_HALF),	// (filters + bias) * (no. feature maps)
-		.FILE("kernel_c5_0.list")) ROM_C5_0 (
+// rom_params #(.BIT_WIDTH(OUT_WIDTH), .SIZE((CONV_SIZE_16+1)*C5_HALF),	// (filters + bias) * (no. feature maps)
+// 		.FILE("kernel_c5_0.list")) ROM_C5_0 (
+// 	.clk(clk),
+// 	.read(read),
+// 	.read_out(rom_c5_0)
+// );
+rom_params_bram #(.BIT_WIDTH(OUT_WIDTH), .SIZE((CONV_SIZE_16+1)*C5_HALF)) ROM_C5_0 (
 	.clk(clk),
 	.read(read),
-	.read_out(rom_c5_0)
+	.out(rom_c5_0)
 );
-rom_params #(.BIT_WIDTH(OUT_WIDTH), .SIZE((CONV_SIZE_16+1)*C5_HALF),	// (filters + bias) * (no. feature maps)
-		.FILE("kernel_c5_1.list")) ROM_C5_1 (
+// rom_params #(.BIT_WIDTH(OUT_WIDTH), .SIZE((CONV_SIZE_16+1)*C5_HALF),	// (filters + bias) * (no. feature maps)
+// 		.FILE("kernel_c5_1.list")) ROM_C5_1 (
+// 	.clk(clk),
+// 	.read(read),
+// 	.read_out(rom_c5_1)
+// );
+rom_params_bram #(.BIT_WIDTH(OUT_WIDTH), .SIZE((CONV_SIZE_16+1)*C5_HALF)) ROM_C5_1 (
 	.clk(clk),
 	.read(read),
-	.read_out(rom_c5_1)
+	.out(rom_c5_1)
 );
 
 // flatten the rb_S4C5_rX arrays into vectors
@@ -431,11 +455,16 @@ wire signed[OUT_WIDTH-1:0] F6_relu[0:F6_OUT-1];	// outputs after activation func
 wire signed[OUT_WIDTH*F6_OUT*(C5_MAPS+1)-1:0] rom_f6;	// F6 parameters stored in memory
 
 // parameters for neuron weights
-rom_params #(.BIT_WIDTH(OUT_WIDTH), .SIZE(F6_OUT*(C5_MAPS+1)),	// (no. neurons) * (no. inputs + bias)
-		.FILE("weights_f6.list")) ROM_F6 (
+// rom_params #(.BIT_WIDTH(OUT_WIDTH), .SIZE(F6_OUT*(C5_MAPS+1)),	// (no. neurons) * (no. inputs + bias)
+// 		.FILE("weights_f6.list")) ROM_F6 (
+// 	.clk(clk),
+// 	.read(read),
+// 	.read_out(rom_f6)
+// );
+rom_params_bram #(.BIT_WIDTH(OUT_WIDTH), .SIZE(F6_OUT*(C5_MAPS+1))) ROM_F6 (
 	.clk(clk),
 	.read(read),
-	.read_out(rom_f6)
+	.out(rom_f6)
 );
 
 // flatten input vector
@@ -486,12 +515,18 @@ wire signed[OUT_WIDTH-1:0] LAST_fcOut[0:LAST_OUT-1];	// array of outputs
 wire signed[OUT_WIDTH*LAST_OUT*(F6_OUT+1)-1:0] rom_out7;	// layer OUT parameters stored in memory
 
 // parameters for neuron weights
-rom_params #(.BIT_WIDTH(OUT_WIDTH), .SIZE(LAST_OUT*(F6_OUT+1)),	// (no. neurons) * (no. inputs + bias)
-		.FILE("weights_out7.list")) ROM_OUT7 (
+// rom_params #(.BIT_WIDTH(OUT_WIDTH), .SIZE(LAST_OUT*(F6_OUT+1)),	// (no. neurons) * (no. inputs + bias)
+// 		.FILE("weights_out7.list")) ROM_OUT7 (
+// 	.clk(clk),
+// 	.read(read),
+// 	.read_out(rom_out7)
+// );
+rom_params_bram #(.BIT_WIDTH(OUT_WIDTH), .SIZE(LAST_OUT*(F6_OUT+1))) ROM_OUT7 (
 	.clk(clk),
 	.read(read),
-	.read_out(rom_out7)
+	.out(rom_out7)
 );
+
 
 // flatten input vector
 wire signed[F6_OUT*OUT_WIDTH-1:0] LAST_invec;	// 84 * 32-bit inputs from F6 as a flattened vector
