@@ -1,7 +1,8 @@
 module lenet5 #(parameter IMAGE_COLS = 32, IN_WIDTH = 8, OUT_WIDTH = 32) (
 	input clk, rst,
 	input signed[IN_WIDTH-1:0] nextPixel,
-	output [3:0] out	// the predicted digit
+	output [3:0] out,	// the predicted digit
+	output signed[HALF_WIDTH-1:0] tmp_out
 );
 
 parameter HALF_WIDTH = 16;	// fixed-16 precision
@@ -60,7 +61,7 @@ wire signed[IN_WIDTH*C1_MAPS*(CONV_SIZE+1)-1:0] rom_c1;	// C1 parameters stored 
 rom_params_bram #(.BIT_WIDTH(IN_WIDTH), .SIZE((CONV_SIZE+1)*C1_MAPS)) ROM_C1 (
 	.clk(clk),
 	.read(read),
-	.out(rom_c1)
+	.read_out(rom_c1)
 );
 
 
@@ -135,6 +136,7 @@ generate
 	end
 endgenerate
 
+
 // C3: 16 feature maps; convolution, stride = 1
 wire signed[OUT_WIDTH-1:0] C3_convOut[0:C3_MAPS-1];	// 16 outputs of convolution from layer C1
 wire signed[OUT_WIDTH-1:0] C3_relu[0:C3_MAPS-1];	// 16 outputs of ReLU function
@@ -153,7 +155,7 @@ wire signed[HALF_WIDTH*(CONV_SIZE_6+1)-1:0] rom_c3_x6;	// 1 C3 map's parameters 
 rom_params_bram #(.BIT_WIDTH(HALF_WIDTH), .SIZE(6*(CONV_SIZE_3+1))) ROM_C3_X3 (
 	.clk(clk),
 	.read(read),
-	.out(rom_c3_x3)
+	.read_out(rom_c3_x3)
 );
 // rom_params #(.BIT_WIDTH(HALF_WIDTH), .SIZE(9*(CONV_SIZE_4+1)),	// (filters + bias) * (no. feature maps)
 // 		.FILE("kernel_c3_x4.list")) ROM_C3_X4 (
@@ -164,7 +166,7 @@ rom_params_bram #(.BIT_WIDTH(HALF_WIDTH), .SIZE(6*(CONV_SIZE_3+1))) ROM_C3_X3 (
 rom_params_bram #(.BIT_WIDTH(HALF_WIDTH), .SIZE(9*(CONV_SIZE_4+1))) ROM_C3_X4 (
 	.clk(clk),
 	.read(read),
-	.out(rom_c3_x4)
+	.read_out(rom_c3_x4)
 );
 // rom_params #(.BIT_WIDTH(HALF_WIDTH), .SIZE(CONV_SIZE_6+1),	// (filters + bias) * (no. feature maps)
 // 		.FILE("kernel_c3_x6.list")) ROM_C3_X6 (
@@ -172,10 +174,11 @@ rom_params_bram #(.BIT_WIDTH(HALF_WIDTH), .SIZE(9*(CONV_SIZE_4+1))) ROM_C3_X4 (
 // 	.read(read),
 // 	.read_out(rom_c3_x6)
 // );
-rom_params_bram #(.BIT_WIDTH(HALF_WIDTH), .SIZE(CONV_SIZE_6+1)) ROM_C3_X6 (
+
+ rom_params_bram #(.BIT_WIDTH(HALF_WIDTH), .SIZE(CONV_SIZE_6+1)) ROM_C3_X6 (
 	.clk(clk),
 	.read(read),
-	.out(rom_c3_x6)
+	.read_out(rom_c3_x6)
 );
 
 // 1st 6 C3 feature maps (#0 to #5): take inputs from every contiguous subset of 3 feature maps
@@ -375,7 +378,7 @@ wire signed[OUT_WIDTH*C5_HALF*(CONV_SIZE_16+1)-1:0] rom_c5_1;	// 16 C5 map's par
 rom_params_bram #(.BIT_WIDTH(OUT_WIDTH), .SIZE((CONV_SIZE_16+1)*C5_HALF)) ROM_C5_0 (
 	.clk(clk),
 	.read(read),
-	.out(rom_c5_0)
+	.read_out(rom_c5_0)
 );
 // rom_params #(.BIT_WIDTH(OUT_WIDTH), .SIZE((CONV_SIZE_16+1)*C5_HALF),	// (filters + bias) * (no. feature maps)
 // 		.FILE("kernel_c5_1.list")) ROM_C5_1 (
@@ -386,7 +389,7 @@ rom_params_bram #(.BIT_WIDTH(OUT_WIDTH), .SIZE((CONV_SIZE_16+1)*C5_HALF)) ROM_C5
 rom_params_bram #(.BIT_WIDTH(OUT_WIDTH), .SIZE((CONV_SIZE_16+1)*C5_HALF)) ROM_C5_1 (
 	.clk(clk),
 	.read(read),
-	.out(rom_c5_1)
+	.read_out(rom_c5_1)
 );
 
 // flatten the rb_S4C5_rX arrays into vectors
@@ -449,135 +452,138 @@ always @ (posedge clk) begin
 		C5C6_reg[i] <= C5_relu[i];
 end
 
-// F6: fully-connected layer, 120 inputs, 84 outputs
-wire signed[OUT_WIDTH-1:0] F6_fcOut[0:F6_OUT-1];	// array of outputs
-wire signed[OUT_WIDTH-1:0] F6_relu[0:F6_OUT-1];	// outputs after activation function
-wire signed[OUT_WIDTH*F6_OUT*(C5_MAPS+1)-1:0] rom_f6;	// F6 parameters stored in memory
+assign tmp_out = C5C6_reg[0] ^~ C5C6_reg[1] ^~ C5C6_reg[2] ^~ C5C6_reg[3] ^~ C5C6_reg[4] ^~ C5C6_reg[5] ^~ C5C6_reg[6] ^~ C5C6_reg[7] ^~ C5C6_reg[8] ^~ C5C6_reg[9] ^~ C5C6_reg[10] ^~ C5C6_reg[11] ^~ C5C6_reg[12] ^~ C5C6_reg[13] ^~ C5C6_reg[14] ^~ C5C6_reg[15] ^~ C5C6_reg[16] ^~ C5C6_reg[17] ^~ C5C6_reg[18] ^~ C5C6_reg[19] ^~ C5C6_reg[20] ^~ C5C6_reg[21] ^~ C5C6_reg[22] ^~ C5C6_reg[23] ^~ C5C6_reg[24] ^~ C5C6_reg[25] ^~ C5C6_reg[26] ^~ C5C6_reg[27] ^~ C5C6_reg[28] ^~ C5C6_reg[29] ^~ C5C6_reg[30] ^~ C5C6_reg[31] ^~ C5C6_reg[32] ^~ C5C6_reg[33] ^~ C5C6_reg[34] ^~ C5C6_reg[35] ^~ C5C6_reg[36] ^~ C5C6_reg[37] ^~ C5C6_reg[38] ^~ C5C6_reg[39] ^~ C5C6_reg[40] ^~ C5C6_reg[41] ^~ C5C6_reg[42] ^~ C5C6_reg[43] ^~ C5C6_reg[44] ^~ C5C6_reg[45] ^~ C5C6_reg[46] ^~ C5C6_reg[47] ^~ C5C6_reg[48] ^~ C5C6_reg[49] ^~ C5C6_reg[50] ^~ C5C6_reg[51] ^~ C5C6_reg[52];
 
-// parameters for neuron weights
-// rom_params #(.BIT_WIDTH(OUT_WIDTH), .SIZE(F6_OUT*(C5_MAPS+1)),	// (no. neurons) * (no. inputs + bias)
-// 		.FILE("weights_f6.list")) ROM_F6 (
+
+// // F6: fully-connected layer, 120 inputs, 84 outputs
+// wire signed[OUT_WIDTH-1:0] F6_fcOut[0:F6_OUT-1];	// array of outputs
+// wire signed[OUT_WIDTH-1:0] F6_relu[0:F6_OUT-1];	// outputs after activation function
+// wire signed[OUT_WIDTH*F6_OUT*(C5_MAPS+1)-1:0] rom_f6;	// F6 parameters stored in memory
+
+// // parameters for neuron weights
+// // rom_params #(.BIT_WIDTH(OUT_WIDTH), .SIZE(F6_OUT*(C5_MAPS+1)),	// (no. neurons) * (no. inputs + bias)
+// // 		.FILE("weights_f6.list")) ROM_F6 (
+// // 	.clk(clk),
+// // 	.read(read),
+// // 	.read_out(rom_f6)
+// // );
+// rom_params_bram #(.BIT_WIDTH(OUT_WIDTH), .SIZE(F6_OUT*(C5_MAPS+1))) ROM_F6 (
 // 	.clk(clk),
 // 	.read(read),
 // 	.read_out(rom_f6)
 // );
-rom_params_bram #(.BIT_WIDTH(OUT_WIDTH), .SIZE(F6_OUT*(C5_MAPS+1))) ROM_F6 (
-	.clk(clk),
-	.read(read),
-	.out(rom_f6)
-);
 
-// flatten input vector
-wire signed[C5_MAPS*OUT_WIDTH-1:0] F6_invec;	// 120 * 32-bits; C5 feature maps as a flattened vector
-generate
-	for (g = 0; g < C5_MAPS; g = g+1) begin : flatten_F6_in
-		assign F6_invec[OUT_WIDTH*(g+1)-1 : OUT_WIDTH*g] = C5C6_reg[g]; //C5_relu[g];
-	end
-endgenerate
+// // flatten input vector
+// wire signed[C5_MAPS*OUT_WIDTH-1:0] F6_invec;	// 120 * 32-bits; C5 feature maps as a flattened vector
+// generate
+// 	for (g = 0; g < C5_MAPS; g = g+1) begin : flatten_F6_in
+// 		assign F6_invec[OUT_WIDTH*(g+1)-1 : OUT_WIDTH*g] = C5C6_reg[g]; //C5_relu[g];
+// 	end
+// endgenerate
 
-// FC modules
-generate
-	for (g = 0; g < F6_OUT; g = g+1) begin : F6_op	// 84 neurons
-		localparam SIZE = C5_MAPS + 1;	// 120 inputs + 1 bias
-		/*fc_out #(.BIT_WIDTH(OUT_WIDTH), .NUM_INPUTS(120), .OUT_WIDTH(OUT_WIDTH)) F6_FC (
-			.in(F6_invec),
-			.in_weights( rom_f6[OUT_WIDTH*((g+1)*SIZE-1)-1 : OUT_WIDTH*g*SIZE] ),
-			.bias( rom_f6[OUT_WIDTH*((g+1)*SIZE)-1 : OUT_WIDTH*((g+1)*SIZE-1)] ),
-			.out(F6_fcOut[g])
-		);*/
-		fc_120 #(.BIT_WIDTH(OUT_WIDTH), .OUT_WIDTH(OUT_WIDTH)) F6_FC (
-			.in(F6_invec),
-			.in_weights( rom_f6[OUT_WIDTH*((g+1)*SIZE-1)-1 : OUT_WIDTH*g*SIZE] ),
-			.bias( rom_f6[OUT_WIDTH*((g+1)*SIZE)-1 : OUT_WIDTH*((g+1)*SIZE-1)] ),
-			.out(F6_fcOut[g])
-		);
+// // FC modules
+// generate
+// 	for (g = 0; g < F6_OUT; g = g+1) begin : F6_op	// 84 neurons
+// 		localparam SIZE = C5_MAPS + 1;	// 120 inputs + 1 bias
+// 		/*fc_out #(.BIT_WIDTH(OUT_WIDTH), .NUM_INPUTS(120), .OUT_WIDTH(OUT_WIDTH)) F6_FC (
+// 			.in(F6_invec),
+// 			.in_weights( rom_f6[OUT_WIDTH*((g+1)*SIZE-1)-1 : OUT_WIDTH*g*SIZE] ),
+// 			.bias( rom_f6[OUT_WIDTH*((g+1)*SIZE)-1 : OUT_WIDTH*((g+1)*SIZE-1)] ),
+// 			.out(F6_fcOut[g])
+// 		);*/
+// 		fc_120 #(.BIT_WIDTH(OUT_WIDTH), .OUT_WIDTH(OUT_WIDTH)) F6_FC (
+// 			.in(F6_invec),
+// 			.in_weights( rom_f6[OUT_WIDTH*((g+1)*SIZE-1)-1 : OUT_WIDTH*g*SIZE] ),
+// 			.bias( rom_f6[OUT_WIDTH*((g+1)*SIZE)-1 : OUT_WIDTH*((g+1)*SIZE-1)] ),
+// 			.out(F6_fcOut[g])
+// 		);
 
 
-		// F6 activation layer (ReLU)
-		relu #(.BIT_WIDTH(OUT_WIDTH)) F6_RELU (
-			.in(F6_fcOut[g]), .out(F6_relu[g])
-		);
-	end
-endgenerate
+// 		// F6 activation layer (ReLU)
+// 		relu #(.BIT_WIDTH(OUT_WIDTH)) F6_RELU (
+// 			.in(F6_fcOut[g]), .out(F6_relu[g])
+// 		);
+// 	end
+// endgenerate
 
-// PIPELINE REGISTERS FOR F6->OUT
-reg signed[OUT_WIDTH-1:0] F6OUT_reg[0:F6_OUT-1];
-reg[6:0] j;	// range: 0 to 83
-// latch values for next clock cycle
-always @ (posedge clk) begin
-	for (j = 0; j < F6_OUT; j = j+1)
-		F6OUT_reg[j] <= F6_relu[j];
-end
+// // PIPELINE REGISTERS FOR F6->OUT
+// reg signed[OUT_WIDTH-1:0] F6OUT_reg[0:F6_OUT-1];
+// reg[6:0] j;	// range: 0 to 83
+// // latch values for next clock cycle
+// always @ (posedge clk) begin
+// 	for (j = 0; j < F6_OUT; j = j+1)
+// 		F6OUT_reg[j] <= F6_relu[j];
+// end
 
 
-// OUT: fully-connected layer, 84 inputs, 10 outputs
-wire signed[OUT_WIDTH-1:0] LAST_fcOut[0:LAST_OUT-1];	// array of outputs
-wire signed[OUT_WIDTH*LAST_OUT*(F6_OUT+1)-1:0] rom_out7;	// layer OUT parameters stored in memory
+// // OUT: fully-connected layer, 84 inputs, 10 outputs
+// wire signed[OUT_WIDTH-1:0] LAST_fcOut[0:LAST_OUT-1];	// array of outputs
+// wire signed[OUT_WIDTH*LAST_OUT*(F6_OUT+1)-1:0] rom_out7;	// layer OUT parameters stored in memory
 
-// parameters for neuron weights
-// rom_params #(.BIT_WIDTH(OUT_WIDTH), .SIZE(LAST_OUT*(F6_OUT+1)),	// (no. neurons) * (no. inputs + bias)
-// 		.FILE("weights_out7.list")) ROM_OUT7 (
+// // parameters for neuron weights
+// // rom_params #(.BIT_WIDTH(OUT_WIDTH), .SIZE(LAST_OUT*(F6_OUT+1)),	// (no. neurons) * (no. inputs + bias)
+// // 		.FILE("weights_out7.list")) ROM_OUT7 (
+// // 	.clk(clk),
+// // 	.read(read),
+// // 	.read_out(rom_out7)
+// // );
+// rom_params_bram #(.BIT_WIDTH(OUT_WIDTH), .SIZE(LAST_OUT*(F6_OUT+1))) ROM_OUT7 (
 // 	.clk(clk),
 // 	.read(read),
 // 	.read_out(rom_out7)
 // );
-rom_params_bram #(.BIT_WIDTH(OUT_WIDTH), .SIZE(LAST_OUT*(F6_OUT+1))) ROM_OUT7 (
-	.clk(clk),
-	.read(read),
-	.out(rom_out7)
-);
 
 
-// flatten input vector
-wire signed[F6_OUT*OUT_WIDTH-1:0] LAST_invec;	// 84 * 32-bit inputs from F6 as a flattened vector
-generate
-	for (g = 0; g < F6_OUT; g = g+1) begin : flatten_FCOUT_in	// 84 inputs
-		assign LAST_invec[OUT_WIDTH*(g+1)-1 : OUT_WIDTH*g] = F6OUT_reg[g]; //F6_relu[g];
-	end
-endgenerate
+// // flatten input vector
+// wire signed[F6_OUT*OUT_WIDTH-1:0] LAST_invec;	// 84 * 32-bit inputs from F6 as a flattened vector
+// generate
+// 	for (g = 0; g < F6_OUT; g = g+1) begin : flatten_FCOUT_in	// 84 inputs
+// 		assign LAST_invec[OUT_WIDTH*(g+1)-1 : OUT_WIDTH*g] = F6OUT_reg[g]; //F6_relu[g];
+// 	end
+// endgenerate
 
-// FC modules
-generate
-	for (g = 0; g < LAST_OUT; g = g+1) begin : OUT_op	// 10 neurons
-		localparam SIZE = F6_OUT + 1;	// 84 inputs + 1 bias
-		/*fc_out #(.BIT_WIDTH(OUT_WIDTH), .NUM_INPUTS(F6_OUT), .OUT_WIDTH(OUT_WIDTH)) LAST_FC (
-			.in(LAST_invec),
-			.in_weights( rom_out7[OUT_WIDTH*((g+1)*SIZE-1)-1 : OUT_WIDTH*g*SIZE] ),
-			.bias( rom_out7[OUT_WIDTH*((g+1)*SIZE)-1 : OUT_WIDTH*((g+1)*SIZE-1)] ),
-			.out(LAST_fcOut[g])
-		);*/
-		fc_84 #(.BIT_WIDTH(OUT_WIDTH), .OUT_WIDTH(OUT_WIDTH)) LAST_FC (
-			.in(LAST_invec),
-			.in_weights( rom_out7[OUT_WIDTH*((g+1)*SIZE-1)-1 : OUT_WIDTH*g*SIZE] ),
-			.bias( rom_out7[OUT_WIDTH*((g+1)*SIZE)-1 : OUT_WIDTH*((g+1)*SIZE-1)] ),
-			.out(LAST_fcOut[g])
-		);
-	end
-endgenerate
+// // FC modules
+// generate
+// 	for (g = 0; g < LAST_OUT; g = g+1) begin : OUT_op	// 10 neurons
+// 		localparam SIZE = F6_OUT + 1;	// 84 inputs + 1 bias
+// 		/*fc_out #(.BIT_WIDTH(OUT_WIDTH), .NUM_INPUTS(F6_OUT), .OUT_WIDTH(OUT_WIDTH)) LAST_FC (
+// 			.in(LAST_invec),
+// 			.in_weights( rom_out7[OUT_WIDTH*((g+1)*SIZE-1)-1 : OUT_WIDTH*g*SIZE] ),
+// 			.bias( rom_out7[OUT_WIDTH*((g+1)*SIZE)-1 : OUT_WIDTH*((g+1)*SIZE-1)] ),
+// 			.out(LAST_fcOut[g])
+// 		);*/
+// 		fc_84 #(.BIT_WIDTH(OUT_WIDTH), .OUT_WIDTH(OUT_WIDTH)) LAST_FC (
+// 			.in(LAST_invec),
+// 			.in_weights( rom_out7[OUT_WIDTH*((g+1)*SIZE-1)-1 : OUT_WIDTH*g*SIZE] ),
+// 			.bias( rom_out7[OUT_WIDTH*((g+1)*SIZE)-1 : OUT_WIDTH*((g+1)*SIZE-1)] ),
+// 			.out(LAST_fcOut[g])
+// 		);
+// 	end
+// endgenerate
 
 
-// PIPELINE REGISTERS FOR OUT->prediction
-reg signed[OUT_WIDTH-1:0] OUTpred_reg[0:LAST_OUT-1];
-reg[3:0] k;	// range: 0 to 9
-// latch values for next clock cycle
-always @ (posedge clk) begin
-	for (k = 0; k < LAST_OUT; k = k+1)
-	OUTpred_reg[k] <= LAST_fcOut[k];
-end
+// // PIPELINE REGISTERS FOR OUT->prediction
+// reg signed[OUT_WIDTH-1:0] OUTpred_reg[0:LAST_OUT-1];
+// reg[3:0] k;	// range: 0 to 9
+// // latch values for next clock cycle
+// always @ (posedge clk) begin
+// 	for (k = 0; k < LAST_OUT; k = k+1)
+// 	OUTpred_reg[k] <= LAST_fcOut[k];
+// end
 
-// find output (largest amongst FC outputs)
-// flatten input vectorma
-wire signed[LAST_OUT*OUT_WIDTH-1:0] OUT_invec;	// 10 * 128-bit outputs as a flattened vector
-generate
-	for (g = 0; g < LAST_OUT; g = g+1) begin : flatten_OUT10_in	// 10 outputs
-		assign OUT_invec[OUT_WIDTH*(g+1)-1 : OUT_WIDTH*g] = OUTpred_reg[g]; //LAST_fcOut[g];
-	end
-endgenerate
+// // find output (largest amongst FC outputs)
+// // flatten input vectorma
+// wire signed[LAST_OUT*OUT_WIDTH-1:0] OUT_invec;	// 10 * 128-bit outputs as a flattened vector
+// generate
+// 	for (g = 0; g < LAST_OUT; g = g+1) begin : flatten_OUT10_in	// 10 outputs
+// 		assign OUT_invec[OUT_WIDTH*(g+1)-1 : OUT_WIDTH*g] = OUTpred_reg[g]; //LAST_fcOut[g];
+// 	end
+// endgenerate
 
-// find largest output
-max_index_10 #(.BIT_WIDTH(OUT_WIDTH), .INDEX_WIDTH(4)) FIND_MAX (
-	.in(OUT_invec),
-	.max(out)	// LeNet-5 output
-);
+// // find largest output
+// max_index_10 #(.BIT_WIDTH(OUT_WIDTH), .INDEX_WIDTH(4)) FIND_MAX (
+// 	.in(OUT_invec),
+// 	.max(out)	// LeNet-5 output
+// );
 
 endmodule

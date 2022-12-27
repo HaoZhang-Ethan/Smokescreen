@@ -9,32 +9,34 @@ module rom_params_bram #(parameter BIT_WIDTH = 8, SIZE = 26) (
 	input clk,
     input read,
     // input [clogb2(SIZE)-1:0] addr,
-	output [BIT_WIDTH*SIZE-1:0] out
+	output reg[BIT_WIDTH*SIZE-1:0] read_out
 );
 
-
-	reg done_flag;
-	reg [clogb2(SIZE)-1:0] add_counter;
-	always @ (posedge clk) begin
-		if (!rst) begin
-			add_counter <= 0;
-			done_flag <= 1'b0;
-		end else if (add_counter > SIZE) begin
-			add_counter <= 0;
-			done_flag <= 1'b1;
-		end else if (add_counter < SIZE) begin
-			add_counter <= add_counter + 1'b1;
-		end
-	end
-
-
-    defparam weight_single_port_ram.ADDR_WIDTH = clogb2(SIZE);
-    defparam weight_single_port_ram.DATA_WIDTH = BIT_WIDTH*SIZE;
+    wire [BIT_WIDTH-1:0] bram_out;
+    reg [clogb2(SIZE-1)-1:0] add_counter;
+    defparam weight_single_port_ram.ADDR_WIDTH = clogb2(SIZE-1);
+    defparam weight_single_port_ram.DATA_WIDTH = BIT_WIDTH;
     single_port_ram weight_single_port_ram(
     .addr(add_counter),
     .we(!read),
-    .data(BIT_WIDTH*SIZE),
-    .out(out),
+    .data(BIT_WIDTH'b0),
+    .out(bram_out),
     .clk(clk)
     );
+    
+
+
+    reg[clogb2(SIZE)-1:0] i;	// 2^16 = 65536
+    always @ (posedge clk) begin
+        for (i = 0; i < SIZE; i = i+1) begin
+            if (read)
+                add_counter <= i;
+                //read_out[BIT_WIDTH*(i+1)-1 : BIT_WIDTH*i] <= weights[i];
+                read_out[i*BIT_WIDTH +: BIT_WIDTH] <= bram_out;
+        end
+    end
+
+
+
+
 endmodule
