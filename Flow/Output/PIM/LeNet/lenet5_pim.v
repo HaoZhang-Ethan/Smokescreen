@@ -76,48 +76,48 @@ module lenet5 #(parameter IN_WIDTH = 8, OUT_WIDTH = 8, IMAGE = 32, SP_BRAM = 4, 
     wire [CONV_SIZE*IN_WIDTH-1:0] tmp_out_551_6;
     rom_params_bram #(.BIT_WIDTH(IN_WIDTH), .SIZE(CONV_SIZE)) rom_kernel_551_6 (
         .clk(clk),
-        .addr(bram_addr_f[2:0]),
-        .out(tmp_out_551_6)
+        .read(bram_addr_f[2:0]),
+        .read_out(tmp_out_551_6)
     );
 
     // KERNEL C3 553 6 
     wire [CONV_SIZE_3*IN_WIDTH-1:0] tmp_out_553_6;
     rom_params_bram #(.BIT_WIDTH(IN_WIDTH), .SIZE(CONV_SIZE_3)) rom_kernel_553_6 (
         .clk(clk),
-        .addr(bram_addr_f[2:0]),
-        .out(tmp_out_553_6)
+        .read(bram_addr_f[2:0]),
+        .read_out(tmp_out_553_6)
     );
 
     // KERNEL C3 554 6
     wire [CONV_SIZE_4*IN_WIDTH-1:0] tmp_out_554_6;
     rom_params_bram #(.BIT_WIDTH(IN_WIDTH), .SIZE(CONV_SIZE_4)) rom_kernel_554_6 (
         .clk(clk),
-        .addr(bram_addr_f[2:0]),
-        .out(tmp_out_554_6)
+        .read(bram_addr_f[2:0]),
+        .read_out(tmp_out_554_6)
     );
 
     // KERNEL C3 554 3
     wire [CONV_SIZE_4*IN_WIDTH-1:0] tmp_out_554_3;
     rom_params_bram #(.BIT_WIDTH(IN_WIDTH), .SIZE(CONV_SIZE_4)) rom_kernel_554_3 (
         .clk(clk),
-        .addr(bram_addr_f[2:0]),
-        .out(tmp_out_554_3)
+        .read(bram_addr_f[2:0]),
+        .read_out(tmp_out_554_3)
     );
 
     // KERNEL C3 556 1
     wire [CONV_SIZE_6*IN_WIDTH-1:0] tmp_out_556_1;
     rom_params_bram #(.BIT_WIDTH(IN_WIDTH), .SIZE(CONV_SIZE_6)) rom_kernel_556_1 (
         .clk(clk),
-        .addr(bram_addr_f[2:0]),
-        .out(tmp_out_556_1)
+        .read(bram_addr_f[2:0]),
+        .read_out(tmp_out_556_1)
     );
 
     // KERNEL C5 5516 120
     wire [CONV_SIZE_16*IN_WIDTH-1:0] tmp_out_5516_120;
     rom_params_bram #(.BIT_WIDTH(IN_WIDTH), .SIZE(CONV_SIZE_16)) rom_kernel_5516_120 (
         .clk(clk),
-        .addr(bram_addr_f[2:0]),
-        .out(tmp_out_5516_120)
+        .read(bram_addr_f[2:0]),
+        .read_out(tmp_out_5516_120)
     );
 
 /*/------------------ CALCULATE  ------------------/*/

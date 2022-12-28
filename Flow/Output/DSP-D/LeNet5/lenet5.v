@@ -1,4 +1,4 @@
-module lenet5 #(parameter IMAGE_COLS = 32, IN_WIDTH = 8, OUT_WIDTH = 16) (
+module lenet5 #(parameter IMAGE_COLS = 32, IN_WIDTH = 8, OUT_WIDTH = 32) (
 	input clk, rst,
 	input signed[IN_WIDTH-1:0] nextPixel,
 	output [3:0] out	// the predicted digit
@@ -50,48 +50,26 @@ wire signed[HALF_WIDTH-1:0] C1_relu[0:C1_MAPS-1];	// outputs of ReLU function
 wire signed[IN_WIDTH*C1_MAPS*(CONV_SIZE+1)-1:0] rom_c1;	// C1 parameters stored in memory
 
 // parameters for conv filters
-// rom_params #(.BIT_WIDTH(IN_WIDTH), .SIZE((CONV_SIZE+1)*C1_MAPS),	// (filters + bias) * (no. feature maps)
-// 		.FILE("kernel_c1.list")) ROM_C1 (
-// 	.clk(clk),
-// 	.read(read),
-// 	.read_out(rom_c1)
-// );
-
-rom_params_bram #(.BIT_WIDTH(IN_WIDTH), .SIZE((CONV_SIZE+1)*C1_MAPS)) ROM_C1 (
+rom_params #(.BIT_WIDTH(IN_WIDTH), .SIZE((CONV_SIZE+1)*C1_MAPS),	// (filters + bias) * (no. feature maps)
+		.FILE("kernel_c1.list")) ROM_C1 (
 	.clk(clk),
 	.read(read),
 	.read_out(rom_c1)
 );
 
-
 // convolution modules
 generate
 	for (g = 0; g < C1_MAPS; g = g+1) begin : C1_op
 		localparam SIZE = CONV_SIZE + 1;	// 5x5 filter + 1 bias
-		// conv55 #(.BIT_WIDTH(IN_WIDTH), .OUT_WIDTH(HALF_WIDTH)) C1_CONV (
-		// 	.clk(clk), //.rst(rst),
-		// 	.en(1'b1),	// whether to latch or not
-		// 	//.in1(rb_out[4]), .in2(rb_out[3]), .in3(rb_out[2]), .in4(rb_out[1]), .in5(rb_out[0]),
-		// 	.in1(rb_out[3]), .in2(rb_out[2]), .in3(rb_out[1]), .in4(rb_out[0]), .in5(nextPixel),
-		// 	.filter( rom_c1[IN_WIDTH*((g+1)*SIZE-1)-1 : IN_WIDTH*g*SIZE] ),
-		// 	//.bias( rom_c1[BIT_WIDTH*((g+1)*SIZE)-1 : BIT_WIDTH*((g+1)*SIZE-1)] ),
-		// 	.convValue(C1_convOut[g])
-		// );
-
-        conv_pim #(.BIT_WIDTH(HALF_WIDTH), .OUT_WIDTH(OUT_WIDTH), .KERNEL_SIZE(5), .CHANNEL(1), .DEPTH(8)) C1_CONV(
-             .clk(clk), 
-             .rst(rst),
-             .en(1'b1), // whether to latch or not
-             .input_feature(
-                         {
-							rb_out[3],rb_out[2],rb_out[1],rb_out[0],nextPixel
-                         }
-             ),
-             // input [(BIT_WIDTH*KERNEL_SIZE*KERNEL_SIZE*CHANNEL)-1:0] filter,  // 5x5x3 filter
-             .address(4'b0000),
-             .convValue(C1_convOut[g])   // size should increase to hold the sum of products
-        );
-
+		conv55 #(.BIT_WIDTH(IN_WIDTH), .OUT_WIDTH(HALF_WIDTH)) C1_CONV (
+			.clk(clk), //.rst(rst),
+			.en(1'b1),	// whether to latch or not
+			//.in1(rb_out[4]), .in2(rb_out[3]), .in3(rb_out[2]), .in4(rb_out[1]), .in5(rb_out[0]),
+			.in1(rb_out[3]), .in2(rb_out[2]), .in3(rb_out[1]), .in4(rb_out[0]), .in5(nextPixel),
+			.filter( rom_c1[IN_WIDTH*((g+1)*SIZE-1)-1 : IN_WIDTH*g*SIZE] ),
+			//.bias( rom_c1[BIT_WIDTH*((g+1)*SIZE)-1 : BIT_WIDTH*((g+1)*SIZE-1)] ),
+			.convValue(C1_convOut[g])
+		);
 
 		assign C1_convPlusBias[g] = C1_convOut[g] + rom_c1[IN_WIDTH*((g+1)*SIZE)-1 : IN_WIDTH*((g+1)*SIZE-1)];
 
@@ -159,35 +137,20 @@ wire signed[HALF_WIDTH*9*(CONV_SIZE_4+1)-1:0] rom_c3_x4;	// 9 C3 maps' parameter
 wire signed[HALF_WIDTH*(CONV_SIZE_6+1)-1:0] rom_c3_x6;	// 1 C3 map's parameters stored in memory for 5x5x6 conv
 
 // parameters for conv filters
-// rom_params #(.BIT_WIDTH(HALF_WIDTH), .SIZE(6*(CONV_SIZE_3+1)),	// (filters + bias) * (no. feature maps)
-// 		.FILE("kernel_c3_x3.list")) ROM_C3_X3 (
-// 	.clk(clk),
-// 	.read(read),
-// 	.read_out(rom_c3_x3)
-// );
-rom_params_bram #(.BIT_WIDTH(HALF_WIDTH), .SIZE(6*(CONV_SIZE_3+1))) ROM_C3_X3 (
+rom_params #(.BIT_WIDTH(HALF_WIDTH), .SIZE(6*(CONV_SIZE_3+1)),	// (filters + bias) * (no. feature maps)
+		.FILE("kernel_c3_x3.list")) ROM_C3_X3 (
 	.clk(clk),
 	.read(read),
 	.read_out(rom_c3_x3)
 );
-// rom_params #(.BIT_WIDTH(HALF_WIDTH), .SIZE(9*(CONV_SIZE_4+1)),	// (filters + bias) * (no. feature maps)
-// 		.FILE("kernel_c3_x4.list")) ROM_C3_X4 (
-// 	.clk(clk),
-// 	.read(read),
-// 	.read_out(rom_c3_x4)
-// );
-rom_params_bram #(.BIT_WIDTH(HALF_WIDTH), .SIZE(9*(CONV_SIZE_4+1))) ROM_C3_X4 (
+rom_params #(.BIT_WIDTH(HALF_WIDTH), .SIZE(9*(CONV_SIZE_4+1)),	// (filters + bias) * (no. feature maps)
+		.FILE("kernel_c3_x4.list")) ROM_C3_X4 (
 	.clk(clk),
 	.read(read),
 	.read_out(rom_c3_x4)
 );
-// rom_params #(.BIT_WIDTH(HALF_WIDTH), .SIZE(CONV_SIZE_6+1),	// (filters + bias) * (no. feature maps)
-// 		.FILE("kernel_c3_x6.list")) ROM_C3_X6 (
-// 	.clk(clk),
-// 	.read(read),
-// 	.read_out(rom_c3_x6)
-// );
-rom_params_bram #(.BIT_WIDTH(HALF_WIDTH), .SIZE(CONV_SIZE_6+1)) ROM_C3_X6 (
+rom_params #(.BIT_WIDTH(HALF_WIDTH), .SIZE(CONV_SIZE_6+1),	// (filters + bias) * (no. feature maps)
+		.FILE("kernel_c3_x6.list")) ROM_C3_X6 (
 	.clk(clk),
 	.read(read),
 	.read_out(rom_c3_x6)
@@ -199,41 +162,24 @@ generate
 		localparam g1 = (g+1 >= 6) ? g-5 : g+1;
 		localparam g2 = (g+2 >= 6) ? g-4 : g+2;
 		localparam SIZE2 = CONV_SIZE_3 + 1;	// 5x5x3 filter + 1 bias
-		// conv553 #(.BIT_WIDTH(HALF_WIDTH), .OUT_WIDTH(OUT_WIDTH)) C3_CONV_3 (
-		// 	.clk(clk), //.rst(rst),
-		// 	.en(C3_en),	// whether to latch or not
-		// 	// feature map 1: g
-		// 	.in01(rb_S2C3[g*4+3]), .in02(rb_S2C3[g*4+2]), .in03(rb_S2C3[g*4+1]), .in04(rb_S2C3[g*4]),
-		// 		.in05(S2_poolOut[g]),
-		// 	// feature map 2: (g+1 >= 6) ? g-5 : g+1
-		// 	.in11(rb_S2C3[g1*4+3]), .in12(rb_S2C3[g1*4+2]), .in13(rb_S2C3[g1*4+1]), .in14(rb_S2C3[g1*4]),
-		// 		.in15(S2_poolOut[g1]),
-		// 	// feature map 3: (g+2 >= 6) ? g-4 : g+2
-		// 	.in21(rb_S2C3[g2*4+3]), .in22(rb_S2C3[g2*4+2]), .in23(rb_S2C3[g2*4+1]), .in24(rb_S2C3[g2*4]),
-		// 		.in25(S2_poolOut[g2]),
+		conv553 #(.BIT_WIDTH(HALF_WIDTH), .OUT_WIDTH(OUT_WIDTH)) C3_CONV_3 (
+			.clk(clk), //.rst(rst),
+			.en(C3_en),	// whether to latch or not
+			// feature map 1: g
+			.in01(rb_S2C3[g*4+3]), .in02(rb_S2C3[g*4+2]), .in03(rb_S2C3[g*4+1]), .in04(rb_S2C3[g*4]),
+				.in05(S2_poolOut[g]),
+			// feature map 2: (g+1 >= 6) ? g-5 : g+1
+			.in11(rb_S2C3[g1*4+3]), .in12(rb_S2C3[g1*4+2]), .in13(rb_S2C3[g1*4+1]), .in14(rb_S2C3[g1*4]),
+				.in15(S2_poolOut[g1]),
+			// feature map 3: (g+2 >= 6) ? g-4 : g+2
+			.in21(rb_S2C3[g2*4+3]), .in22(rb_S2C3[g2*4+2]), .in23(rb_S2C3[g2*4+1]), .in24(rb_S2C3[g2*4]),
+				.in25(S2_poolOut[g2]),
 
-		// 	.filter( rom_c3_x3[HALF_WIDTH*((g+1)*SIZE2-1)-1 : HALF_WIDTH*g*SIZE2] ),	// 5x5x3 filter
-		// 	.bias( rom_c3_x3[HALF_WIDTH*((g+1)*SIZE2)-1 : HALF_WIDTH*((g+1)*SIZE2-1)] ),
+			.filter( rom_c3_x3[HALF_WIDTH*((g+1)*SIZE2-1)-1 : HALF_WIDTH*g*SIZE2] ),	// 5x5x3 filter
+			.bias( rom_c3_x3[HALF_WIDTH*((g+1)*SIZE2)-1 : HALF_WIDTH*((g+1)*SIZE2-1)] ),
 
-		// 	.convValue(C3_convOut[g])
-		// );
-
-        conv_pim #(.BIT_WIDTH(HALF_WIDTH), .OUT_WIDTH(OUT_WIDTH), .KERNEL_SIZE(5), .CHANNEL(3), .DEPTH(8)) C3_CONV_3(
-             .clk(clk), 
-             .rst(rst),
-             .en(C3_en), // whether to latch or not
-             .input_feature(
-                         {
-                         rb_S2C3[g*4+3],rb_S2C3[g*4+2],rb_S2C3[g*4+1],rb_S2C3[g*4],S2_poolOut[g],
-                         rb_S2C3[g1*4+3],rb_S2C3[g1*4+2],rb_S2C3[g1*4+1],rb_S2C3[g1*4],S2_poolOut[g1],
-                         rb_S2C3[g2*4+3],rb_S2C3[g2*4+2],rb_S2C3[g2*4+1],rb_S2C3[g2*4],S2_poolOut[g2]
-                         }
-             ),
-             // input [(BIT_WIDTH*KERNEL_SIZE*KERNEL_SIZE*CHANNEL)-1:0] filter,  // 5x5x3 filter
-             .address(4'b0000),
-             .convValue(C3_convOut[g])   // size should increase to hold the sum of products
-        );
-
+			.convValue(C3_convOut[g])
+		);
 
 		// C3 activation layer (ReLU)
 		relu #(.BIT_WIDTH(OUT_WIDTH)) C3_RELU_3 (
@@ -249,47 +195,28 @@ generate
 		localparam g2 = (g+2 >= 6) ? g-4 : g+2;
 		localparam g3 = (g+3 >= 6) ? g-3 : g+3;
 		localparam SIZE = CONV_SIZE_4 + 1;	// 5x5x3 filter + 1 bias
-		// conv554 #(.BIT_WIDTH(HALF_WIDTH), .OUT_WIDTH(OUT_WIDTH)) C3_CONV_4 (
-		// 	.clk(clk), //.rst(rst),
-		// 	.en(C3_en),	// whether to latch or not
+		conv554 #(.BIT_WIDTH(HALF_WIDTH), .OUT_WIDTH(OUT_WIDTH)) C3_CONV_4 (
+			.clk(clk), //.rst(rst),
+			.en(C3_en),	// whether to latch or not
 
-		// 	// feature map 1: g
-		// 	.in01(rb_S2C3[g*4+3]), .in02(rb_S2C3[g*4+2]), .in03(rb_S2C3[g*4+1]), .in04(rb_S2C3[g*4]),
-		// 		.in05(S2_poolOut[g]),
-		// 	// feature map 2: (g+1 >= 6) ? g-5 : g+1
-		// 	.in11(rb_S2C3[g1*4+3]), .in12(rb_S2C3[g1*4+2]), .in13(rb_S2C3[g1*4+1]), .in14(rb_S2C3[g1*4]),
-		// 		.in15(S2_poolOut[g1]),
-		// 	// feature map 3: (g+2 >= 6) ? g-4 : g+2
-		// 	.in21(rb_S2C3[g2*4+3]), .in22(rb_S2C3[g2*4+2]), .in23(rb_S2C3[g2*4+1]), .in24(rb_S2C3[g2*4]),
-		// 		.in25(S2_poolOut[g2]),
-		// 	// feature map 4: (g+3 >= 6) ? g-3 : g+3
-		// 	.in31(rb_S2C3[g3*4+3]), .in32(rb_S2C3[g3*4+2]), .in33(rb_S2C3[g3*4+1]), .in34(rb_S2C3[g3*4]),
-		// 		.in35(S2_poolOut[g3]),
+			// feature map 1: g
+			.in01(rb_S2C3[g*4+3]), .in02(rb_S2C3[g*4+2]), .in03(rb_S2C3[g*4+1]), .in04(rb_S2C3[g*4]),
+				.in05(S2_poolOut[g]),
+			// feature map 2: (g+1 >= 6) ? g-5 : g+1
+			.in11(rb_S2C3[g1*4+3]), .in12(rb_S2C3[g1*4+2]), .in13(rb_S2C3[g1*4+1]), .in14(rb_S2C3[g1*4]),
+				.in15(S2_poolOut[g1]),
+			// feature map 3: (g+2 >= 6) ? g-4 : g+2
+			.in21(rb_S2C3[g2*4+3]), .in22(rb_S2C3[g2*4+2]), .in23(rb_S2C3[g2*4+1]), .in24(rb_S2C3[g2*4]),
+				.in25(S2_poolOut[g2]),
+			// feature map 4: (g+3 >= 6) ? g-3 : g+3
+			.in31(rb_S2C3[g3*4+3]), .in32(rb_S2C3[g3*4+2]), .in33(rb_S2C3[g3*4+1]), .in34(rb_S2C3[g3*4]),
+				.in35(S2_poolOut[g3]),
 
-		// 	.filter( rom_c3_x4[HALF_WIDTH*((g+1)*SIZE-1)-1 : HALF_WIDTH*g*SIZE] ),	// 5x5x4 filter
-		// 	.bias( rom_c3_x4[HALF_WIDTH*((g+1)*SIZE)-1 : HALF_WIDTH*((g+1)*SIZE-1)] ),
+			.filter( rom_c3_x4[HALF_WIDTH*((g+1)*SIZE-1)-1 : HALF_WIDTH*g*SIZE] ),	// 5x5x4 filter
+			.bias( rom_c3_x4[HALF_WIDTH*((g+1)*SIZE)-1 : HALF_WIDTH*((g+1)*SIZE-1)] ),
 
-		// 	.convValue(C3_convOut[g+6])
-		// );
-
-        conv_pim #(.BIT_WIDTH(HALF_WIDTH), .OUT_WIDTH(OUT_WIDTH), .KERNEL_SIZE(5), .CHANNEL(4), .DEPTH(8)) C3_CONV_4(
-             .clk(clk), 
-             .rst(rst),
-             .en(C3_en), // whether to latch or not
-             .input_feature(
-                         {
-							rb_S2C3[g*4+3], rb_S2C3[g*4+2], rb_S2C3[g*4+1], rb_S2C3[g*4], S2_poolOut[g],
-							rb_S2C3[g1*4+3], rb_S2C3[g1*4+2], rb_S2C3[g1*4+1], rb_S2C3[g1*4], S2_poolOut[g1],
-							rb_S2C3[g2*4+3], rb_S2C3[g2*4+2], rb_S2C3[g2*4+1], rb_S2C3[g2*4], S2_poolOut[g2],
-							rb_S2C3[g3*4+3], rb_S2C3[g3*4+2], rb_S2C3[g3*4+1], rb_S2C3[g3*4], S2_poolOut[g3]
-
-                         }
-             ),
-             // input [(BIT_WIDTH*KERNEL_SIZE*KERNEL_SIZE*CHANNEL)-1:0] filter,  // 5x5x3 filter
-             .address(4'b0000),
-             .convValue(C3_convOut[g+6])   // size should increase to hold the sum of products
-        );
-
+			.convValue(C3_convOut[g+6])
+		);
 
 		// C3 activation layer (ReLU)
 		relu #(.BIT_WIDTH(OUT_WIDTH)) C3_RELU_4 (
@@ -304,47 +231,28 @@ generate
 		localparam g4 = (g+4 >= 6) ? g-2 : g+4;
 		localparam SIZE = CONV_SIZE_4 + 1;	// 5x5x3 filter + 1 bias
 		localparam start = g+6;	// start index for accessing ROM
-		// conv554 #(.BIT_WIDTH(HALF_WIDTH), .OUT_WIDTH(OUT_WIDTH)) C3_CONV_4 (
-		// 	.clk(clk), //.rst(rst),
-		// 	.en(C3_en),	// whether to latch or not
+		conv554 #(.BIT_WIDTH(HALF_WIDTH), .OUT_WIDTH(OUT_WIDTH)) C3_CONV_4 (
+			.clk(clk), //.rst(rst),
+			.en(C3_en),	// whether to latch or not
 
-		// 	// feature map 1
-		// 	.in01(rb_S2C3[g*4+3]), .in02(rb_S2C3[g*4+2]), .in03(rb_S2C3[g*4+1]), .in04(rb_S2C3[g*4]),
-		// 		.in05(S2_poolOut[g]),
-		// 	// feature map 2
-		// 	.in11(rb_S2C3[(g+1)*4+3]), .in12(rb_S2C3[(g+1)*4+2]), .in13(rb_S2C3[(g+1)*4+1]), .in14(rb_S2C3[(g+1)*4]),
-		// 		.in15(S2_poolOut[g+1]),
-		// 	// feature map 3
-		// 	.in21(rb_S2C3[(g+3)*4+3]), .in22(rb_S2C3[(g+3)*4+2]), .in23(rb_S2C3[(g+3)*4+1]), .in24(rb_S2C3[(g+3)*4]),
-		// 		.in25(S2_poolOut[g+3]),
-		// 	// feature map 4
-		// 	.in31(rb_S2C3[g4*4+3]), .in32(rb_S2C3[g4*4+2]), .in33(rb_S2C3[g4*4+1]), .in34(rb_S2C3[g4*4]),
-		// 		.in35(S2_poolOut[g4]),
+			// feature map 1
+			.in01(rb_S2C3[g*4+3]), .in02(rb_S2C3[g*4+2]), .in03(rb_S2C3[g*4+1]), .in04(rb_S2C3[g*4]),
+				.in05(S2_poolOut[g]),
+			// feature map 2
+			.in11(rb_S2C3[(g+1)*4+3]), .in12(rb_S2C3[(g+1)*4+2]), .in13(rb_S2C3[(g+1)*4+1]), .in14(rb_S2C3[(g+1)*4]),
+				.in15(S2_poolOut[g+1]),
+			// feature map 3
+			.in21(rb_S2C3[(g+3)*4+3]), .in22(rb_S2C3[(g+3)*4+2]), .in23(rb_S2C3[(g+3)*4+1]), .in24(rb_S2C3[(g+3)*4]),
+				.in25(S2_poolOut[g+3]),
+			// feature map 4
+			.in31(rb_S2C3[g4*4+3]), .in32(rb_S2C3[g4*4+2]), .in33(rb_S2C3[g4*4+1]), .in34(rb_S2C3[g4*4]),
+				.in35(S2_poolOut[g4]),
 
-		// 	.filter( rom_c3_x4[HALF_WIDTH*((start+1)*SIZE-1)-1 : HALF_WIDTH*start*SIZE] ),	// 5x5x4 filter
-		// 	.bias( rom_c3_x4[HALF_WIDTH*((start+1)*SIZE)-1 : HALF_WIDTH*((start+1)*SIZE-1)] ),
+			.filter( rom_c3_x4[HALF_WIDTH*((start+1)*SIZE-1)-1 : HALF_WIDTH*start*SIZE] ),	// 5x5x4 filter
+			.bias( rom_c3_x4[HALF_WIDTH*((start+1)*SIZE)-1 : HALF_WIDTH*((start+1)*SIZE-1)] ),
 
-		// 	.convValue(C3_convOut[g+12])
-		// );
-
-        conv_pim #(.BIT_WIDTH(HALF_WIDTH), .OUT_WIDTH(OUT_WIDTH), .KERNEL_SIZE(5), .CHANNEL(4), .DEPTH(8)) C3_CONV_4(
-             .clk(clk), 
-             .rst(rst),
-             .en(C3_en), // whether to latch or not
-             .input_feature(
-                         {
-							rb_S2C3[g*4+3], rb_S2C3[g*4+2], rb_S2C3[g*4+1], rb_S2C3[g*4], S2_poolOut[g],
-							rb_S2C3[(g+1)*4+3], rb_S2C3[(g+1)*4+2], rb_S2C3[(g+1)*4+1], rb_S2C3[(g+1)*4], S2_poolOut[g+1],
-							rb_S2C3[(g+3)*4+3], rb_S2C3[(g+3)*4+2], rb_S2C3[(g+3)*4+1], rb_S2C3[(g+3)*4], S2_poolOut[g+3],
-							rb_S2C3[g4*4+3], rb_S2C3[g4*4+2], rb_S2C3[g4*4+1], rb_S2C3[g4*4], S2_poolOut[g4]
-
-                         }
-             ),
-             // input [(BIT_WIDTH*KERNEL_SIZE*KERNEL_SIZE*CHANNEL)-1:0] filter,  // 5x5x3 filter
-             .address(4'b0000),
-             .convValue(C3_convOut[g+12])   // size should increase to hold the sum of products
-        );	
-
+			.convValue(C3_convOut[g+12])
+		);
 
 		// C3 activation layer (ReLU)
 		relu #(.BIT_WIDTH(OUT_WIDTH)) C3_RELU_4 (
@@ -356,44 +264,22 @@ endgenerate
 //localparam SIZE = CONV_SIZE_6 + 1;	// 5x5x3 filter + 1 bias
 
 // last 1 C3 feature map (#15): takes input from all S2 feature maps
-// conv556 #(.BIT_WIDTH(HALF_WIDTH), .OUT_WIDTH(OUT_WIDTH)) C3_CONV_6 (
-// 	.clk(clk), //.rst(rst),
-// 	.en(C3_en),	// whether to latch or not
+conv556 #(.BIT_WIDTH(HALF_WIDTH), .OUT_WIDTH(OUT_WIDTH)) C3_CONV_6 (
+	.clk(clk), //.rst(rst),
+	.en(C3_en),	// whether to latch or not
 
-// 	.in01(rb_S2C3[3]), .in02(rb_S2C3[2]), .in03(rb_S2C3[1]), .in04(rb_S2C3[0]), .in05(S2_poolOut[0]),	// feature map 1
-// 	.in11(rb_S2C3[4+3]), .in12(rb_S2C3[4+2]), .in13(rb_S2C3[4+1]), .in14(rb_S2C3[4]), .in15(S2_poolOut[1]),	// feature map 2
-// 	.in21(rb_S2C3[2*4+3]), .in22(rb_S2C3[2*4+2]), .in23(rb_S2C3[2*4+1]), .in24(rb_S2C3[2*4]), .in25(S2_poolOut[2]),	// feature map 3
-// 	.in31(rb_S2C3[3*4+3]), .in32(rb_S2C3[3*4+2]), .in33(rb_S2C3[3*4+1]), .in34(rb_S2C3[3*4]), .in35(S2_poolOut[3]),	// feature map 4
-// 	.in41(rb_S2C3[4*4+3]), .in42(rb_S2C3[4*4+2]), .in43(rb_S2C3[4*4+1]), .in44(rb_S2C3[4*4]), .in45(S2_poolOut[4]),	// feature map 5
-// 	.in51(rb_S2C3[5*4+3]), .in52(rb_S2C3[5*4+2]), .in53(rb_S2C3[5*4+1]), .in54(rb_S2C3[5*4]), .in55(S2_poolOut[5]),	// feature map 6
+	.in01(rb_S2C3[3]), .in02(rb_S2C3[2]), .in03(rb_S2C3[1]), .in04(rb_S2C3[0]), .in05(S2_poolOut[0]),	// feature map 1
+	.in11(rb_S2C3[4+3]), .in12(rb_S2C3[4+2]), .in13(rb_S2C3[4+1]), .in14(rb_S2C3[4]), .in15(S2_poolOut[1]),	// feature map 2
+	.in21(rb_S2C3[2*4+3]), .in22(rb_S2C3[2*4+2]), .in23(rb_S2C3[2*4+1]), .in24(rb_S2C3[2*4]), .in25(S2_poolOut[2]),	// feature map 3
+	.in31(rb_S2C3[3*4+3]), .in32(rb_S2C3[3*4+2]), .in33(rb_S2C3[3*4+1]), .in34(rb_S2C3[3*4]), .in35(S2_poolOut[3]),	// feature map 4
+	.in41(rb_S2C3[4*4+3]), .in42(rb_S2C3[4*4+2]), .in43(rb_S2C3[4*4+1]), .in44(rb_S2C3[4*4]), .in45(S2_poolOut[4]),	// feature map 5
+	.in51(rb_S2C3[5*4+3]), .in52(rb_S2C3[5*4+2]), .in53(rb_S2C3[5*4+1]), .in54(rb_S2C3[5*4]), .in55(S2_poolOut[5]),	// feature map 6
 
-// 	.filter( rom_c3_x6[HALF_WIDTH*CONV_SIZE_6-1 : 0] ),	// 5x5x6 filter
-// 	.bias( rom_c3_x6[HALF_WIDTH*(CONV_SIZE_6 + 1)-1 : HALF_WIDTH*CONV_SIZE_6] ),
+	.filter( rom_c3_x6[HALF_WIDTH*CONV_SIZE_6-1 : 0] ),	// 5x5x6 filter
+	.bias( rom_c3_x6[HALF_WIDTH*(CONV_SIZE_6 + 1)-1 : HALF_WIDTH*CONV_SIZE_6] ),
 
-// 	.convValue(C3_convOut[15])
-// );
-
-conv_pim #(.BIT_WIDTH(HALF_WIDTH), .OUT_WIDTH(OUT_WIDTH), .KERNEL_SIZE(5), .CHANNEL(6), .DEPTH(8)) C3_CONV_6 (
-		.clk(clk), 
-		.rst(rst),
-		.en(C3_en), // whether to latch or not
-		.input_feature(
-					{
-					rb_S2C3[3], rb_S2C3[2], rb_S2C3[1], rb_S2C3[0], S2_poolOut[0],
-					rb_S2C3[4+3], rb_S2C3[4+2], rb_S2C3[4+1], rb_S2C3[4], S2_poolOut[1],
-					rb_S2C3[2*4+3], rb_S2C3[2*4+2], rb_S2C3[2*4+1], rb_S2C3[2*4], S2_poolOut[2],
-					rb_S2C3[3*4+3], rb_S2C3[3*4+2], rb_S2C3[3*4+1], rb_S2C3[3*4], S2_poolOut[3],
-					rb_S2C3[4*4+3], rb_S2C3[4*4+2], rb_S2C3[4*4+1], rb_S2C3[4*4], S2_poolOut[4],
-					rb_S2C3[5*4+3], rb_S2C3[5*4+2], rb_S2C3[5*4+1], rb_S2C3[5*4], S2_poolOut[5]
-
-
-					}
-		),
-		// input [(BIT_WIDTH*KERNEL_SIZE*KERNEL_SIZE*CHANNEL)-1:0] filter,  // 5x5x3 filter
-		.address(4'b0000),
-		.convValue(C3_convOut[15])   // size should increase to hold the sum of products
-);	
-
+	.convValue(C3_convOut[15])
+);
 
 // activation layer (ReLU)
 relu #(.BIT_WIDTH(OUT_WIDTH)) C3_RELU_6 (
@@ -458,24 +344,14 @@ wire signed[OUT_WIDTH*C5_HALF*(CONV_SIZE_16+1)-1:0] rom_c5_0;	// 16 C5 map's par
 wire signed[OUT_WIDTH*C5_HALF*(CONV_SIZE_16+1)-1:0] rom_c5_1;	// 16 C5 map's parameters stored in memory for 5x5x16 conv
 
 // parameters for conv filters
-// rom_params #(.BIT_WIDTH(OUT_WIDTH), .SIZE((CONV_SIZE_16+1)*C5_HALF),	// (filters + bias) * (no. feature maps)
-// 		.FILE("kernel_c5_0.list")) ROM_C5_0 (
-// 	.clk(clk),
-// 	.read(read),
-// 	.read_out(rom_c5_0)
-// );
-rom_params_bram #(.BIT_WIDTH(OUT_WIDTH), .SIZE((CONV_SIZE_16+1)*C5_HALF)) ROM_C5_0 (
+rom_params #(.BIT_WIDTH(OUT_WIDTH), .SIZE((CONV_SIZE_16+1)*C5_HALF),	// (filters + bias) * (no. feature maps)
+		.FILE("kernel_c5_0.list")) ROM_C5_0 (
 	.clk(clk),
 	.read(read),
 	.read_out(rom_c5_0)
 );
-// rom_params #(.BIT_WIDTH(OUT_WIDTH), .SIZE((CONV_SIZE_16+1)*C5_HALF),	// (filters + bias) * (no. feature maps)
-// 		.FILE("kernel_c5_1.list")) ROM_C5_1 (
-// 	.clk(clk),
-// 	.read(read),
-// 	.read_out(rom_c5_1)
-// );
-rom_params_bram #(.BIT_WIDTH(OUT_WIDTH), .SIZE((CONV_SIZE_16+1)*C5_HALF)) ROM_C5_1 (
+rom_params #(.BIT_WIDTH(OUT_WIDTH), .SIZE((CONV_SIZE_16+1)*C5_HALF),	// (filters + bias) * (no. feature maps)
+		.FILE("kernel_c5_1.list")) ROM_C5_1 (
 	.clk(clk),
 	.read(read),
 	.read_out(rom_c5_1)
@@ -499,59 +375,29 @@ generate
 	for (g = 0; g < C5_HALF; g = g+1) begin : C5_op
 		localparam SIZE = CONV_SIZE_16 + 1;	// 5x5x16 filter + 1 bias
 		//conv55x #(.N(16), .BIT_WIDTH(OUT_WIDTH), .OUT_WIDTH(OUT_WIDTH)) C5_CONV (
-		// conv55_16 #(.BIT_WIDTH(OUT_WIDTH), .OUT_WIDTH(OUT_WIDTH)) C5_CONV_0 (
-		// 	.clk(clk), //.rst(rst),
-		// 	.en(C5_en),	// whether to latch or not
-		// 	//.in1(rb_out[4]), .in2(rb_out[3]), .in3(rb_out[2]), .in4(rb_out[1]), .in5(rb_out[0]),
-		// 	.in1(C5_in1), .in2(C5_in2), .in3(C5_in3), .in4(C5_in4), .in5(C5_in5),
+		conv55_16 #(.BIT_WIDTH(OUT_WIDTH), .OUT_WIDTH(OUT_WIDTH)) C5_CONV_0 (
+			.clk(clk), //.rst(rst),
+			.en(C5_en),	// whether to latch or not
+			//.in1(rb_out[4]), .in2(rb_out[3]), .in3(rb_out[2]), .in4(rb_out[1]), .in5(rb_out[0]),
+			.in1(C5_in1), .in2(C5_in2), .in3(C5_in3), .in4(C5_in4), .in5(C5_in5),
 
-		// 	.filter( rom_c5_0[OUT_WIDTH*((g+1)*SIZE-1)-1 : OUT_WIDTH*g*SIZE] ),	// 5x5xN filter
-		// 	.bias( rom_c5_0[OUT_WIDTH*((g+1)*SIZE)-1 : OUT_WIDTH*((g+1)*SIZE-1)] ),
+			.filter( rom_c5_0[OUT_WIDTH*((g+1)*SIZE-1)-1 : OUT_WIDTH*g*SIZE] ),	// 5x5xN filter
+			.bias( rom_c5_0[OUT_WIDTH*((g+1)*SIZE)-1 : OUT_WIDTH*((g+1)*SIZE-1)] ),
 
-		// 	.convValue(C5_convOut[g])
-		// );
-
-		conv_pim #(.BIT_WIDTH(OUT_WIDTH), .OUT_WIDTH(OUT_WIDTH), .KERNEL_SIZE(5), .CHANNEL(16), .DEPTH(8)) C5_CONV (
-		.clk(clk), 
-		.rst(rst),
-		.en(C5_en), // whether to latch or not
-		.input_feature(
-					{
-					C5_in1, C5_in2, C5_in3, C5_in4, C5_in5
-					}
-		),
-		// input [(BIT_WIDTH*KERNEL_SIZE*KERNEL_SIZE*CHANNEL)-1:0] filter,  // 5x5x3 filter
-		.address(4'b0000),
-		.convValue(C5_convOut[g])   // size should increase to hold the sum of products
-);	
+			.convValue(C5_convOut[g])
+		);
 		
-		// conv55_16 #(.BIT_WIDTH(OUT_WIDTH), .OUT_WIDTH(OUT_WIDTH)) C5_CONV_1 (
-		// 	.clk(clk), //.rst(rst),
-		// 	.en(C5_en),	// whether to latch or not
-		// 	//.in1(rb_out[4]), .in2(rb_out[3]), .in3(rb_out[2]), .in4(rb_out[1]), .in5(rb_out[0]),
-		// 	.in1(C5_in1), .in2(C5_in2), .in3(C5_in3), .in4(C5_in4), .in5(C5_in5),
+		conv55_16 #(.BIT_WIDTH(OUT_WIDTH), .OUT_WIDTH(OUT_WIDTH)) C5_CONV_1 (
+			.clk(clk), //.rst(rst),
+			.en(C5_en),	// whether to latch or not
+			//.in1(rb_out[4]), .in2(rb_out[3]), .in3(rb_out[2]), .in4(rb_out[1]), .in5(rb_out[0]),
+			.in1(C5_in1), .in2(C5_in2), .in3(C5_in3), .in4(C5_in4), .in5(C5_in5),
 
-		// 	.filter( rom_c5_1[OUT_WIDTH*((g+1)*SIZE-1)-1 : OUT_WIDTH*g*SIZE] ),	// 5x5xN filter
-		// 	.bias( rom_c5_1[OUT_WIDTH*((g+1)*SIZE)-1 : OUT_WIDTH*((g+1)*SIZE-1)] ),
+			.filter( rom_c5_1[OUT_WIDTH*((g+1)*SIZE-1)-1 : OUT_WIDTH*g*SIZE] ),	// 5x5xN filter
+			.bias( rom_c5_1[OUT_WIDTH*((g+1)*SIZE)-1 : OUT_WIDTH*((g+1)*SIZE-1)] ),
 
-		// 	.convValue(C5_convOut[g+60])
-		// );
-		conv_pim #(.BIT_WIDTH(OUT_WIDTH), .OUT_WIDTH(OUT_WIDTH), .KERNEL_SIZE(5), .CHANNEL(16), .DEPTH(8)) C5_CONV_1 (
-		.clk(clk), 
-		.rst(rst),
-		.en(C5_en), // whether to latch or not
-		.input_feature(
-					{
-					C5_in1, C5_in2, C5_in3, C5_in4, C5_in5
-					}
-		),
-		// input [(BIT_WIDTH*KERNEL_SIZE*KERNEL_SIZE*CHANNEL)-1:0] filter,  // 5x5x3 filter
-		.address(4'b0000),
-		.convValue(C5_convOut[g+60])   // size should increase to hold the sum of products
-);	
-
-
-
+			.convValue(C5_convOut[g+60])
+		);
 	end
 
 	// C5 activation layer (ReLU)
@@ -577,13 +423,8 @@ wire signed[OUT_WIDTH-1:0] F6_relu[0:F6_OUT-1];	// outputs after activation func
 wire signed[OUT_WIDTH*F6_OUT*(C5_MAPS+1)-1:0] rom_f6;	// F6 parameters stored in memory
 
 // parameters for neuron weights
-// rom_params #(.BIT_WIDTH(OUT_WIDTH), .SIZE(F6_OUT*(C5_MAPS+1)),	// (no. neurons) * (no. inputs + bias)
-// 		.FILE("weights_f6.list")) ROM_F6 (
-// 	.clk(clk),
-// 	.read(read),
-// 	.read_out(rom_f6)
-// );
-rom_params_bram #(.BIT_WIDTH(OUT_WIDTH), .SIZE(F6_OUT*(C5_MAPS+1))) ROM_F6 (
+rom_params #(.BIT_WIDTH(OUT_WIDTH), .SIZE(F6_OUT*(C5_MAPS+1)),	// (no. neurons) * (no. inputs + bias)
+		.FILE("weights_f6.list")) ROM_F6 (
 	.clk(clk),
 	.read(read),
 	.read_out(rom_f6)
@@ -637,18 +478,12 @@ wire signed[OUT_WIDTH-1:0] LAST_fcOut[0:LAST_OUT-1];	// array of outputs
 wire signed[OUT_WIDTH*LAST_OUT*(F6_OUT+1)-1:0] rom_out7;	// layer OUT parameters stored in memory
 
 // parameters for neuron weights
-// rom_params #(.BIT_WIDTH(OUT_WIDTH), .SIZE(LAST_OUT*(F6_OUT+1)),	// (no. neurons) * (no. inputs + bias)
-// 		.FILE("weights_out7.list")) ROM_OUT7 (
-// 	.clk(clk),
-// 	.read(read),
-// 	.read_out(rom_out7)
-// );
-rom_params_bram #(.BIT_WIDTH(OUT_WIDTH), .SIZE(LAST_OUT*(F6_OUT+1))) ROM_OUT7 (
+rom_params #(.BIT_WIDTH(OUT_WIDTH), .SIZE(LAST_OUT*(F6_OUT+1)),	// (no. neurons) * (no. inputs + bias)
+		.FILE("weights_out7.list")) ROM_OUT7 (
 	.clk(clk),
 	.read(read),
 	.read_out(rom_out7)
 );
-
 
 // flatten input vector
 wire signed[F6_OUT*OUT_WIDTH-1:0] LAST_invec;	// 84 * 32-bit inputs from F6 as a flattened vector

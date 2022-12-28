@@ -13,7 +13,6 @@ module rom_params_bram #(parameter BIT_WIDTH = 8, SIZE = 26) (
 );
 
     wire [BIT_WIDTH-1:0] bram_out;
-    reg [clogb2(SIZE-1)-1:0] add_counter;
     defparam weight_single_port_ram.ADDR_WIDTH = clogb2(SIZE-1);
     defparam weight_single_port_ram.DATA_WIDTH = BIT_WIDTH;
     single_port_ram weight_single_port_ram(
@@ -35,8 +34,6 @@ module rom_params_bram #(parameter BIT_WIDTH = 8, SIZE = 26) (
                 read_out[i*BIT_WIDTH +: BIT_WIDTH] <= bram_out;
         end
     end
-
-
 
 
 endmodule

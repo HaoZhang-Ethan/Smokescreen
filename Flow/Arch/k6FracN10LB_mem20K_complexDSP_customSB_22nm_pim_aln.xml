@@ -2665,10 +2665,13 @@
           <T_clock_to_Q max="60.32e-12" port="mem_pim.we" clock="clk"/>
           <T_clock_to_Q max="60.32e-12" port="mem_pim.out" clock="clk"/>
 
-          <delay_constant max="0.852e-9" in_port="mem_pim.addr" out_port="mem_pim.out"/>
+          <!-- <delay_constant max="0.852e-9" in_port="mem_pim.addr" out_port="mem_pim.out"/>
           <delay_constant max="0.852e-9" in_port="mem_pim.data" out_port="mem_pim.out"/>
-          <delay_constant max="0.852e-9" in_port="mem_pim.we"   out_port="mem_pim.out"/>
-
+          <delay_constant max="0.852e-9" in_port="mem_pim.we"   out_port="mem_pim.out"/> -->
+          
+          <delay_constant max="4.012e-9" in_port="mem_pim.addr" out_port="mem_pim.out"/>
+          <delay_constant max="4.012e-9" in_port="mem_pim.data" out_port="mem_pim.out"/>
+          <delay_constant max="4.012e-9" in_port="mem_pim.we"   out_port="mem_pim.out"/>
 
 
           <power method="pin-toggle">

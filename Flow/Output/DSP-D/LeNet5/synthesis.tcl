@@ -34,7 +34,7 @@ yosys -import
 
 # Read the HDL file with pre-defined parser in the run_vtr_flow script
 
-# lstm.v (input circuit) is replaced with filename by the run_vtr_flow script
+# lenet5_bram.v (input circuit) is replaced with filename by the run_vtr_flow script
 
 if {$env(PARSER) == "surelog" } {
 
@@ -44,7 +44,7 @@ if {$env(PARSER) == "surelog" } {
 
 	yosys -import
 
-	read_uhdm -debug lstm.v
+	read_uhdm -debug lenet5_bram.v
 
 } elseif {$env(PARSER) == "yosys-plugin" } {
 
@@ -54,13 +54,13 @@ if {$env(PARSER) == "surelog" } {
 
 	yosys -import
 
-	read_systemverilog -debug lstm.v
+	read_systemverilog -debug lenet5_bram.v
 
 } elseif {$env(PARSER) == "yosys" } {
 
 	puts "Using Yosys read_verilog command"
 
-	read_verilog -sv -nolatches lstm.v
+	read_verilog -sv -nolatches lenet5_bram.v
 
 } else {
 
@@ -72,7 +72,7 @@ if {$env(PARSER) == "surelog" } {
 
 # read the custom complex blocks in the architecture
 
-read_verilog -lib /root/Project/Smokescreen/Flow/Output/PIM/LSTM/arch_dsps.v
+read_verilog -lib /root/Project/Smokescreen/Flow/Output/DSP-D/LeNet5/arch_dsps.v
 
 
 
@@ -142,7 +142,7 @@ techmap -map /root/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_flow/mis
 
 # Map multipliers, DSPs, and add/subtracts according to yosys_models.v
 
-techmap -map /root/Project/Smokescreen/Flow/Output/PIM/LSTM/yosys_models.v */t:\$mul */t:\$mem */t:\$sub */t:\$add
+techmap -map /root/Project/Smokescreen/Flow/Output/DSP-D/LeNet5/yosys_models.v */t:\$mul */t:\$mem */t:\$sub */t:\$add
 
 opt -fast -full
 
@@ -176,15 +176,15 @@ read_verilog -lib /root/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_flo
 
 read_verilog -lib /root/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_flow/misc/yosyslib/multiply.v
 
-#(/root/Project/Smokescreen/Flow/Output/PIM/LSTM/single_port_ram.v) will be replaced by single_port_ram.v by python script
+#(/root/Project/Smokescreen/Flow/Output/DSP-D/LeNet5/single_port_ram.v) will be replaced by single_port_ram.v by python script
 
-read_verilog -lib /root/Project/Smokescreen/Flow/Output/PIM/LSTM/single_port_ram.v
+read_verilog -lib /root/Project/Smokescreen/Flow/Output/DSP-D/LeNet5/single_port_ram.v
 
-read_verilog -lib /root/Project/Smokescreen/Flow/Output/PIM/LSTM/memory_pim.v
+read_verilog -lib /root/Project/Smokescreen/Flow/Output/DSP-D/LeNet5/memory_pim.v
 
-#(/root/Project/Smokescreen/Flow/Output/PIM/LSTM/dual_port_ram.v) will be replaced by dual_port_ram.v by python script
+#(/root/Project/Smokescreen/Flow/Output/DSP-D/LeNet5/dual_port_ram.v) will be replaced by dual_port_ram.v by python script
 
-read_verilog -lib /root/Project/Smokescreen/Flow/Output/PIM/LSTM/dual_port_ram.v
+read_verilog -lib /root/Project/Smokescreen/Flow/Output/DSP-D/LeNet5/dual_port_ram.v
 
 
 
@@ -196,15 +196,15 @@ read_verilog -lib /root/Project/Smokescreen/Flow/Output/PIM/LSTM/dual_port_ram.v
 
 # since it may outcome hierarchy error
 
-#(/root/Project/Smokescreen/Flow/Output/PIM/LSTM/spram_rename.v) will be replaced by spram_rename.v by python script
+#(/root/Project/Smokescreen/Flow/Output/DSP-D/LeNet5/spram_rename.v) will be replaced by spram_rename.v by python script
 
-read_verilog /root/Project/Smokescreen/Flow/Output/PIM/LSTM/spram_rename.v
+read_verilog /root/Project/Smokescreen/Flow/Output/DSP-D/LeNet5/spram_rename.v
 
-read_verilog /root/Project/Smokescreen/Flow/Output/PIM/LSTM/pimram_rename.v
+read_verilog /root/Project/Smokescreen/Flow/Output/DSP-D/LeNet5/pimram_rename.v
 
-#(/root/Project/Smokescreen/Flow/Output/PIM/LSTM/dpram_rename.v) will be replaced by dpram_rename.v by python script
+#(/root/Project/Smokescreen/Flow/Output/DSP-D/LeNet5/dpram_rename.v) will be replaced by dpram_rename.v by python script
 
-read_verilog /root/Project/Smokescreen/Flow/Output/PIM/LSTM/dpram_rename.v
+read_verilog /root/Project/Smokescreen/Flow/Output/DSP-D/LeNet5/dpram_rename.v
 
 
 
@@ -242,7 +242,7 @@ autoname
 
 # switch `-impltf' doesn't output them
 
-# lstm.yosys.blif will be replaced by run_vtr_flow.pl
+# lenet5_bram.yosys.blif will be replaced by run_vtr_flow.pl
 
-write_blif -true + vcc -false + gnd -undef + unconn -blackbox lstm.yosys.blif
+write_blif -true + vcc -false + gnd -undef + unconn -blackbox lenet5_bram.yosys.blif
 
