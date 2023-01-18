@@ -32,15 +32,47 @@ yosys -import
 
 
 
-# t1.v (input circuit) is replaced with filename by the run_vtr_flow script
+# Read the HDL file with pre-defined parser in the run_vtr_flow script
 
-read_verilog -sv -nolatches t1.v
+# boundtop.v (input circuit) is replaced with filename by the run_vtr_flow script
+
+if {$env(PARSER) == "surelog" } {
+
+	puts "Using Yosys read_uhdm command"
+
+	plugin -i systemverilog
+
+	yosys -import
+
+	read_uhdm -debug boundtop.v
+
+} elseif {$env(PARSER) == "yosys-plugin" } {
+
+	puts "Using Yosys read_systemverilog command"
+
+	plugin -i systemverilog
+
+	yosys -import
+
+	read_systemverilog -debug boundtop.v
+
+} elseif {$env(PARSER) == "yosys" } {
+
+	puts "Using Yosys read_verilog command"
+
+	read_verilog -sv -nolatches boundtop.v
+
+} else {
+
+	error "Invalid PARSER"
+
+}
 
 
 
 # read the custom complex blocks in the architecture
 
-read_verilog -lib /home/zolid/Project/Smokescreen/mytest/zhtest/e1/arch_dsps.v
+read_verilog -lib /root/Project/Smokescreen/Flow/Output/demo/arch_dsps.v
 
 
 
@@ -104,13 +136,13 @@ opt -full
 
 techmap -map +/adff2dff.v
 
-techmap -map /home/zolid/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_flow/misc/yosyslib/../../../ODIN_II/techlib/adffe2dff.v
+techmap -map /root/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_flow/misc/yosyslib/../../../ODIN_II/techlib/adffe2dff.v
 
 
 
 # Map multipliers, DSPs, and add/subtracts according to yosys_models.v
 
-techmap -map /home/zolid/Project/Smokescreen/mytest/zhtest/e1/yosys_models.v */t:\$mul */t:\$mem */t:\$sub */t:\$add
+techmap -map /root/Project/Smokescreen/Flow/Output/demo/yosys_models.v */t:\$mul */t:\$mem */t:\$sub */t:\$add
 
 opt -fast -full
 
@@ -140,19 +172,19 @@ opt -fast
 
 # as blackboxes
 
-read_verilog -lib /home/zolid/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_flow/misc/yosyslib/adder.v
+read_verilog -lib /root/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_flow/misc/yosyslib/adder.v
 
-read_verilog -lib /home/zolid/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_flow/misc/yosyslib/multiply.v
+read_verilog -lib /root/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_flow/misc/yosyslib/multiply.v
 
-#(/home/zolid/Project/Smokescreen/mytest/zhtest/e1/single_port_ram.v) will be replaced by single_port_ram.v by python script
+#(/root/Project/Smokescreen/Flow/Output/demo/single_port_ram.v) will be replaced by single_port_ram.v by python script
 
-read_verilog -lib /home/zolid/Project/Smokescreen/mytest/zhtest/e1/single_port_ram.v
+read_verilog -lib /root/Project/Smokescreen/Flow/Output/demo/single_port_ram.v
 
-read_verilog -lib /home/zolid/Project/Smokescreen/mytest/zhtest/e1/memory_pim.v
+read_verilog -lib /root/Project/Smokescreen/Flow/Output/demo/memory_pim.v
 
-#(/home/zolid/Project/Smokescreen/mytest/zhtest/e1/dual_port_ram.v) will be replaced by dual_port_ram.v by python script
+#(/root/Project/Smokescreen/Flow/Output/demo/dual_port_ram.v) will be replaced by dual_port_ram.v by python script
 
-read_verilog -lib /home/zolid/Project/Smokescreen/mytest/zhtest/e1/dual_port_ram.v
+read_verilog -lib /root/Project/Smokescreen/Flow/Output/demo/dual_port_ram.v
 
 
 
@@ -164,15 +196,15 @@ read_verilog -lib /home/zolid/Project/Smokescreen/mytest/zhtest/e1/dual_port_ram
 
 # since it may outcome hierarchy error
 
-#(/home/zolid/Project/Smokescreen/mytest/zhtest/e1/spram_rename.v) will be replaced by spram_rename.v by python script
+#(/root/Project/Smokescreen/Flow/Output/demo/spram_rename.v) will be replaced by spram_rename.v by python script
 
-read_verilog /home/zolid/Project/Smokescreen/mytest/zhtest/e1/spram_rename.v
+read_verilog /root/Project/Smokescreen/Flow/Output/demo/spram_rename.v
 
-read_verilog /home/zolid/Project/Smokescreen/mytest/zhtest/e1/pimram_rename.v
+read_verilog /root/Project/Smokescreen/Flow/Output/demo/pimram_rename.v
 
-#(/home/zolid/Project/Smokescreen/mytest/zhtest/e1/dpram_rename.v) will be replaced by dpram_rename.v by python script
+#(/root/Project/Smokescreen/Flow/Output/demo/dpram_rename.v) will be replaced by dpram_rename.v by python script
 
-read_verilog /home/zolid/Project/Smokescreen/mytest/zhtest/e1/dpram_rename.v
+read_verilog /root/Project/Smokescreen/Flow/Output/demo/dpram_rename.v
 
 
 
@@ -210,7 +242,7 @@ autoname
 
 # switch `-impltf' doesn't output them
 
-# t1.yosys.blif will be replaced by run_vtr_flow.pl
+# boundtop.yosys.blif will be replaced by run_vtr_flow.pl
 
-write_blif -true + vcc -false + gnd -undef + unconn -blackbox t1.yosys.blif
+write_blif -true + vcc -false + gnd -undef + unconn -blackbox boundtop.yosys.blif
 
