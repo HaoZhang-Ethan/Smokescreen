@@ -4,7 +4,7 @@
 Author: haozhang haozhang@mail.sdu.edu.cn
 Date: 2023-01-02 16:11:04
 LastEditors: haozhang haozhang@mail.sdu.edu.cn
-LastEditTime: 2023-01-18 18:07:03
+LastEditTime: 2023-01-20 04:18:06
 FilePath: /Smokescreen/Flow/Scirpts/run_benchmark.py
 Description: 
 
@@ -21,12 +21,13 @@ vtr_script_path = "~/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_flow/s
 
 # Benchmark name list
 
-benchmarks = [ "lenet5_bram", "conv33", "conv55", "conv77","lstm",  "gemm10", "gemm100"] # 
-benchmarks_vtr = [ "LU8PEEng",  "LU32PEEng", "mcml", "mkDelayWorker32B", "mkPktMerge", "mkSMAdapter4B" ] # "lenet5_bram","conv33", "conv55", "conv77",
+benchmarks = ["conv33", "conv55", "conv77","lstm", "gemm10", "gemm100" ] # "lenet5_bram", 
+benchmarks_vtr = []
+# benchmarks_vtr = [ "LU8PEEng",  "LU32PEEng", "mcml", "mkDelayWorker32B", "mkPktMerge", "mkSMAdapter4B" ] # "lenet5_bram","conv33", "conv55", "conv77",
 
 # arch = ["k6FracN10LB_mem20K_complexDSP_customSB_22nm.dsp_heavy", "k6FracN10LB_mem20K_complexDSP_customSB_22nm_nvm.dsp_heavy", "k6FracN10LB_mem20K_complexDSP_customSB_22nm_pim_ald" ]
 arch = ["k6FracN10LB_mem20K_complexDSP_customSB_22nm", "k6FracN10LB_mem20K_complexDSP_customSB_22nm.dsp_heavy", "k6FracN10LB_mem20K_complexDSP_customSB_22nm_nvm.dsp_heavy", "k6FracN10LB_mem20K_complexDSP_customSB_22nm_pim_ald", "k6FracN10LB_mem20K_complexDSP_customSB_22nm_pim_ald" ]
-mode = ["base","baseh","nvm","pim","pimnvm"] # , "nvm", "pim" ,  "base","baseh","nvm","pim","pimnvm"
+mode = ["nvm","pim"] # , "nvm", "pim" ,  "base","baseh","nvm","pim","pimnvm"
 channel_width = {"lenet5_bram":"158", "lstm":"134", "conv33":"62", "conv55":"66", "conv77":"64", "gemm10":"78", "gemm100":"112"}
 
 for mode_ in mode:

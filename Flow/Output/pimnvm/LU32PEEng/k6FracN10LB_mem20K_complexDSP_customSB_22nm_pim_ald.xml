@@ -2666,9 +2666,9 @@
           <T_clock_to_Q max="60.32e-12" port="mem_pim.we" clock="clk"/>
           <T_clock_to_Q max="60.32e-12" port="mem_pim.out" clock="clk"/>
 
-          <!-- <delay_constant max="10.00e-9" in_port="mem_pim.addr" out_port="mem_pim.out"/>
-          <delay_constant max="10.00e-9" in_port="mem_pim.data" out_port="mem_pim.out"/>
-          <delay_constant max="10.00e-9" in_port="mem_pim.we"   out_port="mem_pim.out"/> -->
+          <!-- <delay_constant max="8.05e-9" in_port="mem_pim.addr" out_port="mem_pim.out"/>
+          <delay_constant max="8.05e-9" in_port="mem_pim.data" out_port="mem_pim.out"/>
+          <delay_constant max="8.05e-9" in_port="mem_pim.we"   out_port="mem_pim.out"/> -->
           <!-- 4+7.81+0.85 -->
           <delay_constant max="12.66e-9" in_port="mem_pim.addr" out_port="mem_pim.out"/>
           <delay_constant max="12.66e-9" in_port="mem_pim.data" out_port="mem_pim.out"/>
@@ -2712,9 +2712,9 @@
           <T_clock_to_Q max="60.32e-12" port="mem_512x40_sp.we" clock="clk"/>
           <T_clock_to_Q max="60.32e-12" port="mem_512x40_sp.out" clock="clk"/>
 
-          <delay_constant max="10.00e-9" in_port="mem_512x40_sp.addr" out_port="mem_512x40_sp.out"/>
-          <delay_constant max="10.00e-9" in_port="mem_512x40_sp.data" out_port="mem_512x40_sp.out"/>
-          <delay_constant max="10.00e-9" in_port="mem_512x40_sp.we"   out_port="mem_512x40_sp.out"/>
+          <delay_constant max="8.05e-9" in_port="mem_512x40_sp.addr" out_port="mem_512x40_sp.out"/>
+          <delay_constant max="8.05e-9" in_port="mem_512x40_sp.data" out_port="mem_512x40_sp.out"/>
+          <delay_constant max="8.05e-9" in_port="mem_512x40_sp.we"   out_port="mem_512x40_sp.out"/>
 
           <power method="pin-toggle">
             <port name="clk" energy_per_toggle="9.0e-12"/>
@@ -2754,9 +2754,9 @@
           <T_clock_to_Q max="60.32e-12" port="mem_1024x20_sp.we" clock="clk"/>
           <T_clock_to_Q max="60.32e-12" port="mem_1024x20_sp.out" clock="clk"/>
 
-          <delay_constant max="10.00e-9" in_port="mem_1024x20_sp.addr" out_port="mem_1024x20_sp.out"/>
-          <delay_constant max="10.00e-9" in_port="mem_1024x20_sp.data" out_port="mem_1024x20_sp.out"/>
-          <delay_constant max="10.00e-9" in_port="mem_1024x20_sp.we"   out_port="mem_1024x20_sp.out"/>
+          <delay_constant max="8.05e-9" in_port="mem_1024x20_sp.addr" out_port="mem_1024x20_sp.out"/>
+          <delay_constant max="8.05e-9" in_port="mem_1024x20_sp.data" out_port="mem_1024x20_sp.out"/>
+          <delay_constant max="8.05e-9" in_port="mem_1024x20_sp.we"   out_port="mem_1024x20_sp.out"/>
 
           <power method="pin-toggle">
             <port name="clk" energy_per_toggle="9.0e-12"/>
@@ -2795,9 +2795,9 @@
           <T_clock_to_Q max="60.32e-12" port="mem_2048x10_sp.we" clock="clk"/>
           <T_clock_to_Q max="60.32e-12" port="mem_2048x10_sp.out" clock="clk"/>
 
-          <delay_constant max="10.00e-9" in_port="mem_2048x10_sp.addr" out_port="mem_2048x10_sp.out"/>
-          <delay_constant max="10.00e-9" in_port="mem_2048x10_sp.data" out_port="mem_2048x10_sp.out"/>
-          <delay_constant max="10.00e-9" in_port="mem_2048x10_sp.we"   out_port="mem_2048x10_sp.out"/>
+          <delay_constant max="8.05e-9" in_port="mem_2048x10_sp.addr" out_port="mem_2048x10_sp.out"/>
+          <delay_constant max="8.05e-9" in_port="mem_2048x10_sp.data" out_port="mem_2048x10_sp.out"/>
+          <delay_constant max="8.05e-9" in_port="mem_2048x10_sp.we"   out_port="mem_2048x10_sp.out"/>
 
           <power method="pin-toggle">
             <port name="clk" energy_per_toggle="9.0e-12"/>
@@ -2849,12 +2849,12 @@
           <T_clock_to_Q max="60.32e-12" port="mem_1024x20_dp.out1" clock="clk"/>
           <T_clock_to_Q max="60.32e-12" port="mem_1024x20_dp.out2" clock="clk"/>
 
-          <delay_constant max="10.00e-9" in_port="mem_1024x20_dp.addr1" out_port="mem_1024x20_dp.out1"/>
-          <delay_constant max="10.00e-9" in_port="mem_1024x20_dp.data1" out_port="mem_1024x20_dp.out1"/>
-          <delay_constant max="10.00e-9" in_port="mem_1024x20_dp.we1" out_port="mem_1024x20_dp.out1"/>
-          <delay_constant max="10.00e-9" in_port="mem_1024x20_dp.addr2" out_port="mem_1024x20_dp.out2"/>
-          <delay_constant max="10.00e-9" in_port="mem_1024x20_dp.data2" out_port="mem_1024x20_dp.out2"/>
-          <delay_constant max="10.00e-9" in_port="mem_1024x20_dp.we2" out_port="mem_1024x20_dp.out2"/>
+          <delay_constant max="8.05e-9" in_port="mem_1024x20_dp.addr1" out_port="mem_1024x20_dp.out1"/>
+          <delay_constant max="8.05e-9" in_port="mem_1024x20_dp.data1" out_port="mem_1024x20_dp.out1"/>
+          <delay_constant max="8.05e-9" in_port="mem_1024x20_dp.we1" out_port="mem_1024x20_dp.out1"/>
+          <delay_constant max="8.05e-9" in_port="mem_1024x20_dp.addr2" out_port="mem_1024x20_dp.out2"/>
+          <delay_constant max="8.05e-9" in_port="mem_1024x20_dp.data2" out_port="mem_1024x20_dp.out2"/>
+          <delay_constant max="8.05e-9" in_port="mem_1024x20_dp.we2" out_port="mem_1024x20_dp.out2"/>
 
           <power method="pin-toggle">
             <port name="clk" energy_per_toggle="17.9e-12"/>
@@ -2913,12 +2913,12 @@
           <T_clock_to_Q max="60.32e-12" port="mem_2048x10_dp.out1" clock="clk"/>
           <T_clock_to_Q max="60.32e-12" port="mem_2048x10_dp.out2" clock="clk"/>
 
-          <delay_constant max="10.00e-9" in_port="mem_2048x10_dp.addr1" out_port="mem_2048x10_dp.out1"/>
-          <delay_constant max="10.00e-9" in_port="mem_2048x10_dp.data1" out_port="mem_2048x10_dp.out1"/>
-          <delay_constant max="10.00e-9" in_port="mem_2048x10_dp.we1" out_port="mem_2048x10_dp.out1"/>
-          <delay_constant max="10.00e-9" in_port="mem_2048x10_dp.addr2" out_port="mem_2048x10_dp.out2"/>
-          <delay_constant max="10.00e-9" in_port="mem_2048x10_dp.data2" out_port="mem_2048x10_dp.out2"/>
-          <delay_constant max="10.00e-9" in_port="mem_2048x10_dp.we2" out_port="mem_2048x10_dp.out2"/>
+          <delay_constant max="8.05e-9" in_port="mem_2048x10_dp.addr1" out_port="mem_2048x10_dp.out1"/>
+          <delay_constant max="8.05e-9" in_port="mem_2048x10_dp.data1" out_port="mem_2048x10_dp.out1"/>
+          <delay_constant max="8.05e-9" in_port="mem_2048x10_dp.we1" out_port="mem_2048x10_dp.out1"/>
+          <delay_constant max="8.05e-9" in_port="mem_2048x10_dp.addr2" out_port="mem_2048x10_dp.out2"/>
+          <delay_constant max="8.05e-9" in_port="mem_2048x10_dp.data2" out_port="mem_2048x10_dp.out2"/>
+          <delay_constant max="8.05e-9" in_port="mem_2048x10_dp.we2" out_port="mem_2048x10_dp.out2"/>
 
           <power method="pin-toggle">
             <port name="clk" energy_per_toggle="17.9e-12"/>
