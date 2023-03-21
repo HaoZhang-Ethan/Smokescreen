@@ -2,22 +2,22 @@
  * @Author: haozhang-hoge haozhang@mail.sdu.edu.cn
  * @Date: 2022-11-29 10:08:30
  * @LastEditors: haozhang haozhang@mail.sdu.edu.cn
- * @LastEditTime: 2023-03-20 12:19:42
- * @FilePath: /Smokescreen/Flow/Circuits/conv33/PIM/conv.v
+ * @LastEditTime: 2023-03-05 08:01:10
+ * @FilePath: /Smokescreen/Flow/Circuits/gemm32/PIM/conv.v
  * @Description: the basic component of PIM
  * 
  * Copyright (c) 2022 by haozhang-hoge haozhang@mail.sdu.edu.cn, All Rights Reserved. 
  */
 
 
-`define MAX_SIZE_ROW 96 // the max size of the ReRAM Crossbar rows  32*6
+`define MAX_SIZE_ROW 192 // the max size of the ReRAM Crossbar rows  32*6
 `define MAX_SIZE_COL 5 // the max size of the ReRAM Crossbar cols , (default: 5 = log(32) )
 
 // Parameter:
 // INPUT_SIZE, the size of inpuit vector (default: 32), we use 64 for 32x32 crossbar
 // MAP_WIDTH, the column of crossbar we used (default: 5), we use log(32) for 32x32 crossbar
 // ADC_P, ADC precision, we use 8 bits ADC
-module conv #(parameter INPUT_SIZE = 96, DEPTH = 5, ADC_P = 6) (
+module conv #(parameter INPUT_SIZE = 192, DEPTH = 5, ADC_P = 8) (
 	input clk, 
 	input rst,
 	input en,	// enable
@@ -43,7 +43,7 @@ endmodule
 
 
 // split the used crossbar colunm into 2 parts, and select one of the conv_col modules
-module conv_col #(parameter INPUT_SIZE = 96, DEPTH = 5, ADC_P = 8) (
+module conv_col #(parameter INPUT_SIZE = 32, DEPTH = 5, ADC_P = 8) (
 	input clk, 
 	input rst,
 	input en,	// enable
@@ -92,7 +92,7 @@ endmodule
 
 
 // split the input vector into 2 parts, and use 2 conv_row to calculate the output
-module conv_row #(parameter INPUT_SIZE = 96, DEPTH = 5, ADC_P = 8) (
+module conv_row #(parameter INPUT_SIZE = 32, DEPTH = 5, ADC_P = 8) (
 	input clk, 
 	input rst,
 	input en,	// enable
@@ -149,7 +149,7 @@ endmodule
 
 
 
-module qadd #(parameter BIT_WIDTH = 6, OUT_WIDTH = 8)(a,b,c);
+module qadd #(parameter BIT_WIDTH = 8, OUT_WIDTH = 32)(a,b,c);
 input [BIT_WIDTH-1:0] a;
 input [BIT_WIDTH-1:0] b;
 output [BIT_WIDTH-1:0] c;
