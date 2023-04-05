@@ -34,7 +34,7 @@ yosys -import
 
 # Read the HDL file with pre-defined parser in the run_vtr_flow script
 
-# conv55.v (input circuit) is replaced with filename by the run_vtr_flow script
+# conv55_6bit.v (input circuit) is replaced with filename by the run_vtr_flow script
 
 if {$env(PARSER) == "surelog" } {
 
@@ -44,7 +44,7 @@ if {$env(PARSER) == "surelog" } {
 
 	yosys -import
 
-	read_uhdm -debug conv55.v
+	read_uhdm -debug conv55_6bit.v
 
 } elseif {$env(PARSER) == "yosys-plugin" } {
 
@@ -54,13 +54,13 @@ if {$env(PARSER) == "surelog" } {
 
 	yosys -import
 
-	read_systemverilog -debug conv55.v
+	read_systemverilog -debug conv55_6bit.v
 
 } elseif {$env(PARSER) == "yosys" } {
 
 	puts "Using Yosys read_verilog command"
 
-	read_verilog -sv -nolatches conv55.v
+	read_verilog -sv -nolatches conv55_6bit.v
 
 } else {
 
@@ -242,7 +242,7 @@ autoname
 
 # switch `-impltf' doesn't output them
 
-# conv55.yosys.blif will be replaced by run_vtr_flow.pl
+# conv55_6bit.yosys.blif will be replaced by run_vtr_flow.pl
 
-write_blif -true + vcc -false + gnd -undef + unconn -blackbox conv55.yosys.blif
+write_blif -true + vcc -false + gnd -undef + unconn -blackbox conv55_6bit.yosys.blif
 
