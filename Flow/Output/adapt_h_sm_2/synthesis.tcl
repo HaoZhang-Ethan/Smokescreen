@@ -72,7 +72,7 @@ if {$env(PARSER) == "surelog" } {
 
 # read the custom complex blocks in the architecture
 
-read_verilog -lib /root/Project/Smokescreen/Flow/Output/adapt_h_sm/arch_dsps.v
+read_verilog -lib /root/Project/Smokescreen/Flow/Output/adapt_h_sm_2/arch_dsps.v
 
 
 
@@ -142,7 +142,7 @@ techmap -map /root/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_flow/mis
 
 # Map multipliers, DSPs, and add/subtracts according to yosys_models.v
 
-techmap -map /root/Project/Smokescreen/Flow/Output/adapt_h_sm/yosys_models.v */t:\$mul */t:\$mem */t:\$sub */t:\$add
+techmap -map /root/Project/Smokescreen/Flow/Output/adapt_h_sm_2/yosys_models.v */t:\$mul */t:\$mem */t:\$sub */t:\$add
 
 opt -fast -full
 
@@ -176,15 +176,15 @@ read_verilog -lib /root/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_flo
 
 read_verilog -lib /root/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_flow/misc/yosyslib/multiply.v
 
-#(/root/Project/Smokescreen/Flow/Output/adapt_h_sm/single_port_ram.v) will be replaced by single_port_ram.v by python script
+#(/root/Project/Smokescreen/Flow/Output/adapt_h_sm_2/single_port_ram.v) will be replaced by single_port_ram.v by python script
 
-read_verilog -lib /root/Project/Smokescreen/Flow/Output/adapt_h_sm/single_port_ram.v
+read_verilog -lib /root/Project/Smokescreen/Flow/Output/adapt_h_sm_2/single_port_ram.v
 
-read_verilog -lib /root/Project/Smokescreen/Flow/Output/adapt_h_sm/memory_pim.v
+read_verilog -lib /root/Project/Smokescreen/Flow/Output/adapt_h_sm_2/memory_pim.v
 
-#(/root/Project/Smokescreen/Flow/Output/adapt_h_sm/dual_port_ram.v) will be replaced by dual_port_ram.v by python script
+#(/root/Project/Smokescreen/Flow/Output/adapt_h_sm_2/dual_port_ram.v) will be replaced by dual_port_ram.v by python script
 
-read_verilog -lib /root/Project/Smokescreen/Flow/Output/adapt_h_sm/dual_port_ram.v
+read_verilog -lib /root/Project/Smokescreen/Flow/Output/adapt_h_sm_2/dual_port_ram.v
 
 
 
@@ -196,15 +196,15 @@ read_verilog -lib /root/Project/Smokescreen/Flow/Output/adapt_h_sm/dual_port_ram
 
 # since it may outcome hierarchy error
 
-#(/root/Project/Smokescreen/Flow/Output/adapt_h_sm/spram_rename.v) will be replaced by spram_rename.v by python script
+#(/root/Project/Smokescreen/Flow/Output/adapt_h_sm_2/spram_rename.v) will be replaced by spram_rename.v by python script
 
-read_verilog /root/Project/Smokescreen/Flow/Output/adapt_h_sm/spram_rename.v
+read_verilog /root/Project/Smokescreen/Flow/Output/adapt_h_sm_2/spram_rename.v
 
-read_verilog /root/Project/Smokescreen/Flow/Output/adapt_h_sm/pimram_rename.v
+read_verilog /root/Project/Smokescreen/Flow/Output/adapt_h_sm_2/pimram_rename.v
 
-#(/root/Project/Smokescreen/Flow/Output/adapt_h_sm/dpram_rename.v) will be replaced by dpram_rename.v by python script
+#(/root/Project/Smokescreen/Flow/Output/adapt_h_sm_2/dpram_rename.v) will be replaced by dpram_rename.v by python script
 
-read_verilog /root/Project/Smokescreen/Flow/Output/adapt_h_sm/dpram_rename.v
+read_verilog /root/Project/Smokescreen/Flow/Output/adapt_h_sm_2/dpram_rename.v
 
 
 
