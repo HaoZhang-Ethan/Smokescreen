@@ -1,7 +1,7 @@
 module conv55 #(parameter BIT_WIDTH = 8, OUT_WIDTH = 32) (
 		input clk, //rst,
 		input en,	// whether to latch or not
-		input signed[BIT_WIDTH*5-1:0] in1, in2, in3, in4, in5,
+		input signed[BIT_WIDTH-1:0] in1, in2, in3, in4, in5,
 		input signed[(BIT_WIDTH*25)-1:0] filter,	// 5x5 filter
 		//input [BIT_WIDTH-1:0] bias,
 		output signed[OUT_WIDTH-1:0] convValue	// size should increase to hold the sum of products
@@ -39,6 +39,8 @@ generate
 		end
 	end
 endgenerate
+
+
 
 // adder tree
 wire signed[OUT_WIDTH-1:0] sums[0:22];	// 25-2 intermediate sums

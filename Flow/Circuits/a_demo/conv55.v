@@ -1,71 +1,80 @@
-module conv55 #(parameter BIT_WIDTH = 8, OUT_WIDTH = 8) (
-		input clk, //rst,
-		input en,	// whether to latch or not
-		input signed[BIT_WIDTH*5-1:0] in1, in2, in3, in4, in5,
-		input signed[(BIT_WIDTH*25)-1:0] filter,	// 5x5 filter
-		//input [BIT_WIDTH-1:0] bias,
-		output signed[OUT_WIDTH-1:0] convValue	// size should increase to hold the sum of products
+module multiplier(input [5:0] a, b, output [11:0] p);
+    reg [5:0] multiplier_reg;
+    reg [11:0] result_reg;
+
+    always @(*) begin
+        multiplier_reg = b;
+        result_reg = {6'b0, a};
+        if (multiplier_reg[0]) result_reg = result_reg + {15'b0, a};
+        if (multiplier_reg[1]) result_reg = result_reg + {14'b0, a} << 1;
+        if (multiplier_reg[2]) result_reg = result_reg + {13'b0, a} << 2;
+        if (multiplier_reg[3]) result_reg = result_reg + {12'b0, a} << 3;
+        if (multiplier_reg[4]) result_reg = result_reg + {11'b0, a} << 4;
+        if (multiplier_reg[5]) result_reg = result_reg + {10'b0, a} << 5;
+    end
+
+    assign p = result_reg;
+endmodule
+
+module conv3x3 (
+  input [5:0] in_data_0, input [5:0] in_data_1, input [5:0] in_data_2, input [5:0] in_data_3, input [5:0] in_data_4, input [5:0] in_data_5, input [5:0] in_data_6, input [5:0] in_data_7, input [5:0] in_data_8, // 输入数据
+  input [5:0] kernel_0, input [5:0] kernel_1, input [5:0] kernel_2, input [5:0] kernel_3, input [5:0] kernel_4, input [5:0] kernel_5, input [5:0] kernel_6, input [5:0] kernel_7, input [5:0] kernel_8, // 卷积核
+  input clk,
+  output reg [17:0] out_data // 输出数据
+);  
+
+  wire [107:0] conv_sum;
+  multiplier mult_inst9(.a(in_data_8), .b(kernel_8), .p(conv_sum[11:0]));
+  multiplier mult_inst8(.a(in_data_7), .b(kernel_7), .p(conv_sum[23:12]));
+  multiplier mult_inst7(.a(in_data_6), .b(kernel_6), .p(conv_sum[35:24]));
+  multiplier mult_inst6(.a(in_data_5), .b(kernel_5), .p(conv_sum[47:36]));
+  multiplier mult_inst5(.a(in_data_4), .b(kernel_4), .p(conv_sum[59:48]));
+  multiplier mult_inst4(.a(in_data_3), .b(kernel_3), .p(conv_sum[71:60]));
+  multiplier mult_inst3(.a(in_data_2), .b(kernel_2), .p(conv_sum[83:72]));
+  multiplier mult_inst2(.a(in_data_1), .b(kernel_1), .p(conv_sum[95:84]));
+  multiplier mult_inst1(.a(in_data_0), .b(kernel_0), .p(conv_sum[107:96]));
+
+
+  parallel_adder_tree adder_inst(.a(conv_sum[11:0]), .b(conv_sum[23:12]), .c(conv_sum[35:24]), .d(conv_sum[47:36]), .e(conv_sum[59:48]), .f(conv_sum[71:60]), .g(conv_sum[83:72]), .h(conv_sum[95:84]), .i(conv_sum[107:96]), .clk(clk), .sum(out_data));
+  
+endmodule
+
+module parallel_adder_tree (
+    input [11:0] a,  // 9个8位数字输入
+    input [11:0] b,
+    input [11:0] c,
+    input [11:0] d,
+    input [11:0] e,
+    input [11:0] f,
+    input [11:0] g,
+    input [11:0] h,
+    input [11:0] i,
+    input clk,
+    output reg [17:0] sum // 结果
 );
 
-reg signed [BIT_WIDTH-1:0] rows[0:4][0:4];
-integer i;
+wire [16:0] c1[4:0], c2[2:0], c3; // 中间电路
+assign c1[0] = a + b;
+assign c1[1] = c + d;
+assign c1[2] = e + f;
+assign c1[3] = g + h;
+assign c1[4] = i;
 
-always @ (posedge clk) begin
-	if (en) begin
-		for (i = 4; i > 0; i = i-1) begin
-			rows[0][i] <= rows[0][i-1];
-			rows[1][i] <= rows[1][i-1];
-			rows[2][i] <= rows[2][i-1];
-			rows[3][i] <= rows[3][i-1];
-			rows[4][i] <= rows[4][i-1];
-		end
-		rows[0][0] <= in1;
-		rows[1][0] <= in2;
-		rows[2][0] <= in3;
-		rows[3][0] <= in4;
-		rows[4][0] <= in5;
-	end
+assign c2[0] = c1[0] + c1[1];
+assign c2[1] = c1[2] + c1[3];
+assign c2[2] = c1[4];
+
+assign c3 = c2[0] + c2[1] + c2[2];
+
+
+always @(posedge clk) begin
+    sum <= c3;
 end
 
-// multiply & accumulate in 1 clock cycle
-wire signed[OUT_WIDTH-1:0] mult55[0:24];
-genvar x, y;
-
-// multiplication
-generate
-	for (x = 0; x < 5; x = x+1) begin : sum_rows	// each row
-		for (y = 0; y < 5; y = y+1) begin : sum_columns	// each item in a row
-			assign mult55[5*x+y] = rows[x][4-y] * filter[BIT_WIDTH*(5*x+y+1)-1 : BIT_WIDTH*(5*x+y)];
-		end
-	end
-endgenerate
-
-// adder tree
-wire signed[OUT_WIDTH-1:0] sums[0:22];	// 25-2 intermediate sums
-generate
-	// sums[0] to sums[11]
-	for (x = 0; x < 12; x = x+1) begin : addertree_nodes0
-		qadd news(mult55[x*2],mult55[x*2+1],sums[x]);
-	end
-	// sums[12] to sums[17]
-	for (x = 0; x < 6; x = x+1) begin : addertree_nodes1
-		qadd news1(sums[x*2] + sums[x*2+1],sums[x+18],sums[x+12]);
-	end
-	// sums[18] to sums[20]
-	for (x = 0; x < 3; x = x+1) begin : addertree_nodes2
-		qadd news2(sums[x*2+12], sums[x*2+13],sums[x+18]);
-	end
-	// sums[21] = sums[18] + sums[19]
-	qadd news3(sums[18], sums[19], sums[21]);
-	// sums[22] = sums[20] + mult55[24]
-	qadd news4(sums[20], mult55[24], sums[22]);
-endgenerate
-
-// final sum
-// assign sums[12] = sums[1] || sums[2];
-// qadd new1(sums[1],sums[2],sums[12]);
-qadd new(sums[21],sums[22],convValue);
-// assign convValue = qaddsums[10] + sums[12];
-
 endmodule
+
+
+
+
+
 

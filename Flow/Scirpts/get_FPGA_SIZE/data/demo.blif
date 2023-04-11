@@ -1,0 +1,107 @@
+# Benchmark "parallel_adder_tree" written by ABC on Tue Apr 11 01:33:27 2023 
+
+
+.model parallel_adder_tree 
+
+
+.inputs a[0] a[1] a[2] a[3] a[4] a[5] a[6] a[7] a[8] a[9] a[10] a[11] b[0] b[1] b[2] b[3] b[4] b[5] b[6] b[7] b[8] b[9] b[10] \
+ b[11] clk 
+
+
+.outputs sum[13] sum[14] sum[15] sum[16] sum[17] 
+
+
+
+.subckt adder a=a[9] b=b[9] cin=sum_adder_sumout_cout[9] cout=sum_adder_sumout_cout[10] sumout=sum[9] 
+
+
+.subckt adder a=a[8] b=b[8] cin=sum_adder_sumout_cout[8] cout=sum_adder_sumout_cout[9] sumout=sum[8] 
+
+
+.subckt adder a=a[11] b=b[11] cin=sum_adder_sumout_cout[11] cout=sum_adder_sumout_cout[12] sumout=sum[11] 
+
+
+.subckt adder a=a[10] b=b[10] cin=sum_adder_sumout_cout[10] cout=sum_adder_sumout_cout[11] sumout=sum[10] 
+
+
+.subckt adder a=a[0] b=b[0] cin=unconn cout=sum_adder_sumout_cout[1] sumout=sum[0] 
+
+
+.subckt adder a=a[7] b=b[7] cin=sum_adder_sumout_cout[7] cout=sum_adder_sumout_cout[8] sumout=sum[7] 
+
+
+.subckt adder a=a[6] b=b[6] cin=sum_adder_sumout_cout[6] cout=sum_adder_sumout_cout[7] sumout=sum[6] 
+
+
+.subckt adder a=a[5] b=b[5] cin=sum_adder_sumout_cout[5] cout=sum_adder_sumout_cout[6] sumout=sum[5] 
+
+
+.subckt adder a=a[4] b=b[4] cin=sum_adder_sumout_cout[4] cout=sum_adder_sumout_cout[5] sumout=sum[4] 
+
+
+.subckt adder a=a[3] b=b[3] cin=sum_adder_sumout_cout[3] cout=sum_adder_sumout_cout[4] sumout=sum[3] 
+
+
+.subckt adder a=a[2] b=b[2] cin=sum_adder_sumout_cout[2] cout=sum_adder_sumout_cout[3] sumout=sum[2] 
+
+
+.subckt adder a=a[1] b=b[1] cin=sum_adder_sumout_cout[1] cout=sum_adder_sumout_cout[2] sumout=sum[1] 
+
+
+.subckt adder a=gnd b=gnd cin=sum_adder_sumout_cout[12] cout=sum_adder_sumout_9_cout[13] sumout=sum[12] 
+
+
+
+
+.names sum[13] 
+0 
+
+
+.names sum[14] 
+0 
+
+
+.names sum[15] 
+0 
+
+
+.names sum[16] 
+0 
+
+
+.names sum[17] 
+0 
+
+
+.names unconn 
+0 
+
+
+.names gnd 
+0 
+
+
+
+.end 
+
+
+
+
+.model adder 
+
+
+.inputs a b cin 
+
+
+.outputs cout sumout 
+
+
+.blackbox 
+
+
+
+.end 
+
+
+
+
