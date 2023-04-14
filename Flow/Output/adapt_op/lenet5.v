@@ -800,7 +800,7 @@ relu #(.BIT_WIDTH(OUT_WIDTH)) C3_RELU_10 (.in(conv_Value_3), .out(C3_relu[9]));
 relu #(.BIT_WIDTH(OUT_WIDTH)) C3_RELU_11 (.in(conv_Value_4), .out(C3_relu[10]));
 relu #(.BIT_WIDTH(OUT_WIDTH)) C3_RELU_12 (.in(conv_Value_5), .out(C3_relu[11]));
 
-assign out2 = C3_relu[6] | C3_relu[7]  | C3_relu[8] | C3_relu[9] | C3_relu[10] | C3_relu[11];
+assign out2 = conv_Value_0 | conv_Value_1 | conv_Value_2 | conv_Value_3 | conv_Value_4 | conv_Value_5;
 
 reg signed [IN_WIDTH-1:0] rows41[0:4][0:4];
 always @ (posedge clk) begin
@@ -884,134 +884,131 @@ conv55_6bit CONV_55_DSP_59 (.in_data_0(rows43[4][0]), .in_data_1(rows43[4][1]), 
 
 assign sum_2_0 = conv_2_0 + conv_2_1 + conv_2_3;
 assign sum_2_1 = conv_2_2 + rom_c3_x4[IN_WIDTH*(3*4*CONVSIZE) + 3*IN_WIDTH: IN_WIDTH*(3*4*CONVSIZE)+2*IN_WIDTH];
-assign conv_Value_8 = sum_2_0 + sum_2_1;
+assign conv_Value_8 = sum_1_0 + sum_1_1;
 
 
-relu #(.BIT_WIDTH(OUT_WIDTH)) C3_RELU_13 (.in(conv_Value_6), .out(C3_relu[12]));
-relu #(.BIT_WIDTH(OUT_WIDTH)) C3_RELU_14 (.in(conv_Value_7), .out(C3_relu[13]));
-relu #(.BIT_WIDTH(OUT_WIDTH)) C3_RELU_15 (.in(conv_Value_8), .out(C3_relu[14]));
-
-assign out3 = C3_relu[12] |  C3_relu[13] |  C3_relu[14];
+assign out3 = conv_Value_6 | conv_Value_7  | conv_Value_8;
 
 
-reg signed [IN_WIDTH-1:0] rows51[0:4][0:4];
-always @ (posedge clk) begin
-		for (i = 4; i > 0; i = i-1) begin
-			rows51[0][i] <= rows51[0][i-1];
-			rows51[1][i] <= rows51[1][i-1];
-			rows51[2][i] <= rows51[2][i-1];
-			rows51[3][i] <= rows51[3][i-1];
-			rows51[4][i] <= rows51[4][i-1];
-		end
-		rows51[0][0] <= rb_S2C3[3];
-		rows51[1][0] <= rb_S2C3[2];
-		rows51[2][0] <= rb_S2C3[1];
-		rows51[3][0] <= rb_S2C3[0];
-		rows51[4][0] <= S2_poolOut[0];
-end
+// reg signed [IN_WIDTH-1:0] rows51[0:4][0:4];
+// always @ (posedge clk) begin
+// 		for (i = 4; i > 0; i = i-1) begin
+// 			rows51[0][i] <= rows51[0][i-1];
+// 			rows51[1][i] <= rows51[1][i-1];
+// 			rows51[2][i] <= rows51[2][i-1];
+// 			rows51[3][i] <= rows51[3][i-1];
+// 			rows51[4][i] <= rows51[4][i-1];
+// 		end
+// 		rows51[0][0] <= rb_S2C3[3];
+// 		rows51[1][0] <= rb_S2C3[2];
+// 		rows51[2][0] <= rb_S2C3[1];
+// 		rows51[3][0] <= rb_S2C3[0];
+// 		rows51[4][0] <= S2_poolOut[0];
+// end
 
-reg signed [IN_WIDTH-1:0] rows52[0:4][0:4];
-always @ (posedge clk) begin
-		for (i = 4; i > 0; i = i-1) begin
-			rows52[0][i] <= rows52[0][i-1];
-			rows52[1][i] <= rows52[1][i-1];
-			rows52[2][i] <= rows52[2][i-1];
-			rows52[3][i] <= rows52[3][i-1];
-			rows52[4][i] <= rows52[4][i-1];
-		end
-		rows52[0][0] <= rb_S2C3[7];
-		rows52[1][0] <= rb_S2C3[6];
-		rows52[2][0] <= rb_S2C3[5];
-		rows52[3][0] <= rb_S2C3[4];
-		rows52[4][0] <= S2_poolOut[1];
-end
+// reg signed [IN_WIDTH-1:0] rows52[0:4][0:4];
+// always @ (posedge clk) begin
+// 		for (i = 4; i > 0; i = i-1) begin
+// 			rows52[0][i] <= rows52[0][i-1];
+// 			rows52[1][i] <= rows52[1][i-1];
+// 			rows52[2][i] <= rows52[2][i-1];
+// 			rows52[3][i] <= rows52[3][i-1];
+// 			rows52[4][i] <= rows52[4][i-1];
+// 		end
+// 		rows52[0][0] <= rb_S2C3[7];
+// 		rows52[1][0] <= rb_S2C3[6];
+// 		rows52[2][0] <= rb_S2C3[5];
+// 		rows52[3][0] <= rb_S2C3[4];
+// 		rows52[4][0] <= S2_poolOut[1];
+// end
 
-reg signed [IN_WIDTH-1:0] rows53[0:4][0:4];
-always @ (posedge clk) begin
-		for (i = 4; i > 0; i = i-1) begin
-			rows53[0][i] <= rows53[0][i-1];
-			rows53[1][i] <= rows53[1][i-1];
-			rows53[2][i] <= rows53[2][i-1];
-			rows53[3][i] <= rows53[3][i-1];
-			rows53[4][i] <= rows53[4][i-1];
-		end
-		rows53[0][0] <= rb_S2C3[11];
-		rows53[1][0] <= rb_S2C3[10];
-		rows53[2][0] <= rb_S2C3[9];
-		rows53[3][0] <= rb_S2C3[8];
-		rows53[4][0] <= S2_poolOut[2];
-end
+// reg signed [IN_WIDTH-1:0] rows53[0:4][0:4];
+// always @ (posedge clk) begin
+// 		for (i = 4; i > 0; i = i-1) begin
+// 			rows53[0][i] <= rows53[0][i-1];
+// 			rows53[1][i] <= rows53[1][i-1];
+// 			rows53[2][i] <= rows53[2][i-1];
+// 			rows53[3][i] <= rows53[3][i-1];
+// 			rows53[4][i] <= rows53[4][i-1];
+// 		end
+// 		rows53[0][0] <= rb_S2C3[11];
+// 		rows53[1][0] <= rb_S2C3[10];
+// 		rows53[2][0] <= rb_S2C3[9];
+// 		rows53[3][0] <= rb_S2C3[8];
+// 		rows53[4][0] <= S2_poolOut[2];
+// end
 
 
-reg signed [IN_WIDTH-1:0] rows54[0:4][0:4];
-always @ (posedge clk) begin
-		for (i = 4; i > 0; i = i-1) begin
-			rows54[0][i] <= rows54[0][i-1];
-			rows54[1][i] <= rows54[1][i-1];
-			rows54[2][i] <= rows54[2][i-1];
-			rows54[3][i] <= rows54[3][i-1];
-			rows54[4][i] <= rows54[4][i-1];
-		end
-		rows54[0][0] <= rb_S2C3[15];
-		rows54[1][0] <= rb_S2C3[14];
-		rows54[2][0] <= rb_S2C3[13];
-		rows54[3][0] <= rb_S2C3[12];
-		rows54[4][0] <= S2_poolOut[3];
-end
+// reg signed [IN_WIDTH-1:0] rows54[0:4][0:4];
+// always @ (posedge clk) begin
+// 		for (i = 4; i > 0; i = i-1) begin
+// 			rows54[0][i] <= rows54[0][i-1];
+// 			rows54[1][i] <= rows54[1][i-1];
+// 			rows54[2][i] <= rows54[2][i-1];
+// 			rows54[3][i] <= rows54[3][i-1];
+// 			rows54[4][i] <= rows54[4][i-1];
+// 		end
+// 		rows54[0][0] <= rb_S2C3[15];
+// 		rows54[1][0] <= rb_S2C3[14];
+// 		rows54[2][0] <= rb_S2C3[13];
+// 		rows54[3][0] <= rb_S2C3[12];
+// 		rows54[4][0] <= S2_poolOut[3];
+// end
 
-reg signed [IN_WIDTH-1:0] rows55[0:4][0:4];
-always @ (posedge clk) begin
-		for (i = 4; i > 0; i = i-1) begin
-			rows55[0][i] <= rows55[0][i-1];
-			rows55[1][i] <= rows55[1][i-1];
-			rows55[2][i] <= rows55[2][i-1];
-			rows55[3][i] <= rows55[3][i-1];
-			rows55[4][i] <= rows55[4][i-1];
-		end
-		rows55[0][0] <= rb_S2C3[19];
-		rows55[1][0] <= rb_S2C3[18];
-		rows55[2][0] <= rb_S2C3[17];
-		rows55[3][0] <= rb_S2C3[16];
-		rows55[4][0] <= S2_poolOut[4];
-end
+// reg signed [IN_WIDTH-1:0] rows55[0:4][0:4];
+// always @ (posedge clk) begin
+// 		for (i = 4; i > 0; i = i-1) begin
+// 			rows55[0][i] <= rows55[0][i-1];
+// 			rows55[1][i] <= rows55[1][i-1];
+// 			rows55[2][i] <= rows55[2][i-1];
+// 			rows55[3][i] <= rows55[3][i-1];
+// 			rows55[4][i] <= rows55[4][i-1];
+// 		end
+// 		rows55[0][0] <= rb_S2C3[19];
+// 		rows55[1][0] <= rb_S2C3[18];
+// 		rows55[2][0] <= rb_S2C3[17];
+// 		rows55[3][0] <= rb_S2C3[16];
+// 		rows55[4][0] <= S2_poolOut[4];
+// end
 
-reg signed [IN_WIDTH-1:0] rows56[0:4][0:4];
-always @ (posedge clk) begin
-		for (i = 4; i > 0; i = i-1) begin
-			rows56[0][i] <= rows56[0][i-1];
-			rows56[1][i] <= rows56[1][i-1];
-			rows56[2][i] <= rows56[2][i-1];
-			rows56[3][i] <= rows56[3][i-1];
-			rows56[4][i] <= rows56[4][i-1];
-		end
-		rows56[0][0] <= rb_S2C3[23];
-		rows56[1][0] <= rb_S2C3[22];
-		rows56[2][0] <= rb_S2C3[21];
-		rows56[3][0] <= rb_S2C3[20];
-		rows56[4][0] <= S2_poolOut[5];
-end
+// reg signed [IN_WIDTH-1:0] rows56[0:4][0:4];
+// always @ (posedge clk) begin
+// 		for (i = 4; i > 0; i = i-1) begin
+// 			rows56[0][i] <= rows56[0][i-1];
+// 			rows56[1][i] <= rows56[1][i-1];
+// 			rows56[2][i] <= rows56[2][i-1];
+// 			rows56[3][i] <= rows56[3][i-1];
+// 			rows56[4][i] <= rows56[4][i-1];
+// 		end
+// 		rows56[0][0] <= rb_S2C3[23];
+// 		rows56[1][0] <= rb_S2C3[22];
+// 		rows56[2][0] <= rb_S2C3[21];
+// 		rows56[3][0] <= rb_S2C3[20];
+// 		rows56[4][0] <= S2_poolOut[5];
+// end
 
 
 
-wire signed[OUT_WIDTH-1:0] conv_c3_0, conv_c3_1, conv_c3_2, conv_c3_3, conv_c3_4, conv_c3_5;
-wire signed[OUT_WIDTH-1:0] sum_c3_0;  
-wire signed[OUT_WIDTH-1:0] conv_Value_c3_0;
+// wire signed[OUT_WIDTH-1:0] conv_c3_0, conv_c3_1, conv_c3_2, conv_c3_3, conv_c3_4, conv_c3_5;
+// wire signed[OUT_WIDTH-1:0] sum_c3_0;  
+// wire signed[OUT_WIDTH-1:0] conv_Value_c3_0;
 
-localparam CONVSIZE_6 = CONV_SIZE_6 + 1;	// 5x5x3 filter + 1 bias
+// localparam CONVSIZE_6 = CONV_SIZE_6 + 1;	// 5x5x3 filter + 1 bias
 
-conv55_6bit CONV_55_DSP_60 (.in_data_0(rows51[4][0]), .in_data_1(rows51[4][1]), .in_data_2(rows51[4][2]), .in_data_3(rows51[4][3]), .in_data_4(rows51[4][4]), .in_data_5(rows51[3][0]), .in_data_6(rows51[3][1]), .in_data_7(rows51[3][2]), .in_data_8(rows51[3][3]), .in_data_9(rows51[3][4]), .in_data_10(rows51[2][0]), .in_data_11(rows51[2][1]), .in_data_12(rows51[2][2]), .in_data_13(rows51[2][3]), .in_data_14(rows51[2][4]), .in_data_15(rows51[1][0]), .in_data_16(rows51[1][1]), .in_data_17(rows51[1][2]), .in_data_18(rows51[1][3]), .in_data_19(rows51[1][4]), .in_data_20(rows51[0][0]), .in_data_21(rows51[0][1]), .in_data_22(rows51[0][2]), .in_data_23(rows51[0][3]), .in_data_24(rows51[0][4]), .kernel_0(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*1 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*0]), .kernel_1(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*2 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*1]), .kernel_2(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*3 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*2]), .kernel_3(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*4 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*3]), .kernel_4(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*5 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*4]), .kernel_5(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*6 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*5]), .kernel_6(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*7 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*6]), .kernel_7(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*8 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*7]), .kernel_8(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*9 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*8]), .kernel_9(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*10 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*9]), .kernel_10(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*11 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*10]), .kernel_11(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*12 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*11]), .kernel_12(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*13 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*12]), .kernel_13(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*14 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*13]), .kernel_14(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*15 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*14]), .kernel_15(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*16 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*15]), .kernel_16(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*17 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*16]), .kernel_17(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*18 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*17]), .kernel_18(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*19 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*18]), .kernel_19(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*20 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*19]), .kernel_20(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*21 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*20]), .kernel_21(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*22 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*21]), .kernel_22(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*23 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*22]), .kernel_23(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*24 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*23]), .kernel_24(rom_c3_x6[IN_WIDTH*(0*CONVSIZE) + IN_WIDTH*25 : IN_WIDTH*(0*CONVSIZE)+IN_WIDTH*24]), .clk(clk), .out_data(conv_c3_0));
-conv55_6bit CONV_55_DSP_61 (.in_data_0(rows52[4][0]), .in_data_1(rows52[4][1]), .in_data_2(rows52[4][2]), .in_data_3(rows52[4][3]), .in_data_4(rows52[4][4]), .in_data_5(rows52[3][0]), .in_data_6(rows52[3][1]), .in_data_7(rows52[3][2]), .in_data_8(rows52[3][3]), .in_data_9(rows52[3][4]), .in_data_10(rows52[2][0]), .in_data_11(rows52[2][1]), .in_data_12(rows52[2][2]), .in_data_13(rows52[2][3]), .in_data_14(rows52[2][4]), .in_data_15(rows52[1][0]), .in_data_16(rows52[1][1]), .in_data_17(rows52[1][2]), .in_data_18(rows52[1][3]), .in_data_19(rows52[1][4]), .in_data_20(rows52[0][0]), .in_data_21(rows52[0][1]), .in_data_22(rows52[0][2]), .in_data_23(rows52[0][3]), .in_data_24(rows52[0][4]), .kernel_0(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*1 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*0]), .kernel_1(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*2 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*1]), .kernel_2(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*3 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*2]), .kernel_3(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*4 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*3]), .kernel_4(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*5 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*4]), .kernel_5(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*6 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*5]), .kernel_6(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*7 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*6]), .kernel_7(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*8 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*7]), .kernel_8(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*9 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*8]), .kernel_9(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*10 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*9]), .kernel_10(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*11 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*10]), .kernel_11(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*12 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*11]), .kernel_12(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*13 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*12]), .kernel_13(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*14 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*13]), .kernel_14(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*15 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*14]), .kernel_15(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*16 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*15]), .kernel_16(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*17 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*16]), .kernel_17(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*18 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*17]), .kernel_18(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*19 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*18]), .kernel_19(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*20 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*19]), .kernel_20(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*21 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*20]), .kernel_21(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*22 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*21]), .kernel_22(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*23 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*22]), .kernel_23(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*24 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*23]), .kernel_24(rom_c3_x6[IN_WIDTH*(1*CONVSIZE) + IN_WIDTH*25 : IN_WIDTH*(1*CONVSIZE)+IN_WIDTH*24]), .clk(clk), .out_data(conv_c3_1));
-conv55_6bit CONV_55_DSP_62 (.in_data_0(rows53[4][0]), .in_data_1(rows53[4][1]), .in_data_2(rows53[4][2]), .in_data_3(rows53[4][3]), .in_data_4(rows53[4][4]), .in_data_5(rows53[3][0]), .in_data_6(rows53[3][1]), .in_data_7(rows53[3][2]), .in_data_8(rows53[3][3]), .in_data_9(rows53[3][4]), .in_data_10(rows53[2][0]), .in_data_11(rows53[2][1]), .in_data_12(rows53[2][2]), .in_data_13(rows53[2][3]), .in_data_14(rows53[2][4]), .in_data_15(rows53[1][0]), .in_data_16(rows53[1][1]), .in_data_17(rows53[1][2]), .in_data_18(rows53[1][3]), .in_data_19(rows53[1][4]), .in_data_20(rows53[0][0]), .in_data_21(rows53[0][1]), .in_data_22(rows53[0][2]), .in_data_23(rows53[0][3]), .in_data_24(rows53[0][4]), .kernel_0(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*1 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*0]), .kernel_1(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*2 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*1]), .kernel_2(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*3 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*2]), .kernel_3(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*4 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*3]), .kernel_4(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*5 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*4]), .kernel_5(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*6 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*5]), .kernel_6(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*7 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*6]), .kernel_7(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*8 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*7]), .kernel_8(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*9 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*8]), .kernel_9(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*10 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*9]), .kernel_10(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*11 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*10]), .kernel_11(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*12 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*11]), .kernel_12(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*13 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*12]), .kernel_13(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*14 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*13]), .kernel_14(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*15 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*14]), .kernel_15(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*16 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*15]), .kernel_16(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*17 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*16]), .kernel_17(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*18 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*17]), .kernel_18(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*19 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*18]), .kernel_19(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*20 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*19]), .kernel_20(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*21 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*20]), .kernel_21(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*22 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*21]), .kernel_22(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*23 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*22]), .kernel_23(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*24 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*23]), .kernel_24(rom_c3_x6[IN_WIDTH*(2*CONVSIZE) + IN_WIDTH*25 : IN_WIDTH*(2*CONVSIZE)+IN_WIDTH*24]), .clk(clk), .out_data(conv_c3_2));
-conv55_6bit CONV_55_DSP_63 (.in_data_0(rows54[4][0]), .in_data_1(rows54[4][1]), .in_data_2(rows54[4][2]), .in_data_3(rows54[4][3]), .in_data_4(rows54[4][4]), .in_data_5(rows54[3][0]), .in_data_6(rows54[3][1]), .in_data_7(rows54[3][2]), .in_data_8(rows54[3][3]), .in_data_9(rows54[3][4]), .in_data_10(rows54[2][0]), .in_data_11(rows54[2][1]), .in_data_12(rows54[2][2]), .in_data_13(rows54[2][3]), .in_data_14(rows54[2][4]), .in_data_15(rows54[1][0]), .in_data_16(rows54[1][1]), .in_data_17(rows54[1][2]), .in_data_18(rows54[1][3]), .in_data_19(rows54[1][4]), .in_data_20(rows54[0][0]), .in_data_21(rows54[0][1]), .in_data_22(rows54[0][2]), .in_data_23(rows54[0][3]), .in_data_24(rows54[0][4]), .kernel_0(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*1 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*0]), .kernel_1(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*2 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*1]), .kernel_2(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*3 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*2]), .kernel_3(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*4 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*3]), .kernel_4(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*5 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*4]), .kernel_5(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*6 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*5]), .kernel_6(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*7 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*6]), .kernel_7(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*8 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*7]), .kernel_8(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*9 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*8]), .kernel_9(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*10 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*9]), .kernel_10(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*11 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*10]), .kernel_11(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*12 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*11]), .kernel_12(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*13 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*12]), .kernel_13(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*14 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*13]), .kernel_14(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*15 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*14]), .kernel_15(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*16 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*15]), .kernel_16(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*17 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*16]), .kernel_17(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*18 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*17]), .kernel_18(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*19 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*18]), .kernel_19(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*20 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*19]), .kernel_20(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*21 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*20]), .kernel_21(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*22 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*21]), .kernel_22(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*23 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*22]), .kernel_23(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*24 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*23]), .kernel_24(rom_c3_x6[IN_WIDTH*(3*CONVSIZE) + IN_WIDTH*25 : IN_WIDTH*(3*CONVSIZE)+IN_WIDTH*24]), .clk(clk), .out_data(conv_c3_3));
-conv55_6bit CONV_55_DSP_64 (.in_data_0(rows55[4][0]), .in_data_1(rows55[4][1]), .in_data_2(rows55[4][2]), .in_data_3(rows55[4][3]), .in_data_4(rows55[4][4]), .in_data_5(rows55[3][0]), .in_data_6(rows55[3][1]), .in_data_7(rows55[3][2]), .in_data_8(rows55[3][3]), .in_data_9(rows55[3][4]), .in_data_10(rows55[2][0]), .in_data_11(rows55[2][1]), .in_data_12(rows55[2][2]), .in_data_13(rows55[2][3]), .in_data_14(rows55[2][4]), .in_data_15(rows55[1][0]), .in_data_16(rows55[1][1]), .in_data_17(rows55[1][2]), .in_data_18(rows55[1][3]), .in_data_19(rows55[1][4]), .in_data_20(rows55[0][0]), .in_data_21(rows55[0][1]), .in_data_22(rows55[0][2]), .in_data_23(rows55[0][3]), .in_data_24(rows55[0][4]), .kernel_0(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*1 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*0]), .kernel_1(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*2 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*1]), .kernel_2(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*3 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*2]), .kernel_3(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*4 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*3]), .kernel_4(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*5 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*4]), .kernel_5(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*6 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*5]), .kernel_6(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*7 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*6]), .kernel_7(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*8 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*7]), .kernel_8(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*9 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*8]), .kernel_9(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*10 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*9]), .kernel_10(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*11 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*10]), .kernel_11(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*12 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*11]), .kernel_12(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*13 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*12]), .kernel_13(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*14 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*13]), .kernel_14(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*15 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*14]), .kernel_15(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*16 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*15]), .kernel_16(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*17 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*16]), .kernel_17(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*18 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*17]), .kernel_18(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*19 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*18]), .kernel_19(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*20 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*19]), .kernel_20(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*21 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*20]), .kernel_21(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*22 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*21]), .kernel_22(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*23 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*22]), .kernel_23(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*24 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*23]), .kernel_24(rom_c3_x6[IN_WIDTH*(4*CONVSIZE) + IN_WIDTH*25 : IN_WIDTH*(4*CONVSIZE)+IN_WIDTH*24]), .clk(clk), .out_data(conv_c3_4));
-conv55_6bit CONV_55_DSP_65 (.in_data_0(rows56[4][0]), .in_data_1(rows56[4][1]), .in_data_2(rows56[4][2]), .in_data_3(rows56[4][3]), .in_data_4(rows56[4][4]), .in_data_5(rows56[3][0]), .in_data_6(rows56[3][1]), .in_data_7(rows56[3][2]), .in_data_8(rows56[3][3]), .in_data_9(rows56[3][4]), .in_data_10(rows56[2][0]), .in_data_11(rows56[2][1]), .in_data_12(rows56[2][2]), .in_data_13(rows56[2][3]), .in_data_14(rows56[2][4]), .in_data_15(rows56[1][0]), .in_data_16(rows56[1][1]), .in_data_17(rows56[1][2]), .in_data_18(rows56[1][3]), .in_data_19(rows56[1][4]), .in_data_20(rows56[0][0]), .in_data_21(rows56[0][1]), .in_data_22(rows56[0][2]), .in_data_23(rows56[0][3]), .in_data_24(rows56[0][4]), .kernel_0(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*1 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*0]), .kernel_1(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*2 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*1]), .kernel_2(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*3 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*2]), .kernel_3(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*4 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*3]), .kernel_4(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*5 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*4]), .kernel_5(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*6 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*5]), .kernel_6(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*7 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*6]), .kernel_7(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*8 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*7]), .kernel_8(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*9 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*8]), .kernel_9(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*10 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*9]), .kernel_10(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*11 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*10]), .kernel_11(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*12 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*11]), .kernel_12(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*13 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*12]), .kernel_13(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*14 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*13]), .kernel_14(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*15 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*14]), .kernel_15(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*16 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*15]), .kernel_16(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*17 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*16]), .kernel_17(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*18 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*17]), .kernel_18(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*19 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*18]), .kernel_19(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*20 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*19]), .kernel_20(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*21 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*20]), .kernel_21(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*22 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*21]), .kernel_22(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*23 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*22]), .kernel_23(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*24 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*23]), .kernel_24(rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*25 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*24]), .clk(clk), .out_data(conv_c3_5));
+// conv55_6bit CONV_55_DSP_60 (.in_data_0(rows51[4][0]), .in_data_1(rows51[4][1]), .in_data_2(rows51[4][2]), .in_data_3(rows51[4][3]), .in_data_4(rows51[4][4]), .in_data_5(rows51[3][0]), .in_data_6(rows51[3][1]), .in_data_7(rows51[3][2]), .in_data_8(rows51[3][3]), .in_data_9(rows51[3][4]), .in_data_10(rows51[2][0]), .in_data_11(rows51[2][1]), .in_data_12(rows51[2][2]), .in_data_13(rows51[2][3]), .in_data_14(rows51[2][4]), .in_data_15(rows51[1][0]), .in_data_16(rows51[1][1]), .in_data_17(rows51[1][2]), .in_data_18(rows51[1][3]), .in_data_19(rows51[1][4]), .in_data_20(rows51[0][0]), .in_data_21(rows51[0][1]), .in_data_22(rows51[0][2]), .in_data_23(rows51[0][3]), .in_data_24(rows51[0][4]), .kernel_0(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*1 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*0]), .kernel_1(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*2 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*1]), .kernel_2(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*3 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*2]), .kernel_3(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*4 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*3]), .kernel_4(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*5 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*4]), .kernel_5(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*6 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*5]), .kernel_6(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*7 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*6]), .kernel_7(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*8 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*7]), .kernel_8(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*9 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*8]), .kernel_9(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*10 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*9]), .kernel_10(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*11 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*10]), .kernel_11(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*12 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*11]), .kernel_12(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*13 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*12]), .kernel_13(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*14 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*13]), .kernel_14(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*15 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*14]), .kernel_15(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*16 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*15]), .kernel_16(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*17 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*16]), .kernel_17(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*18 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*17]), .kernel_18(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*19 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*18]), .kernel_19(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*20 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*19]), .kernel_20(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*21 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*20]), .kernel_21(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*22 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*21]), .kernel_22(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*23 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*22]), .kernel_23(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*24 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*23]), .kernel_24(rom_c3_x6[IN_WIDTH*(0*CONVSIZE_6) + IN_WIDTH*25 : IN_WIDTH*(0*CONVSIZE_6)+IN_WIDTH*24]), .clk(clk), .out_data(conv_c3_0));
+// conv55_6bit CONV_55_DSP_61 (.in_data_0(rows52[4][0]), .in_data_1(rows52[4][1]), .in_data_2(rows52[4][2]), .in_data_3(rows52[4][3]), .in_data_4(rows52[4][4]), .in_data_5(rows52[3][0]), .in_data_6(rows52[3][1]), .in_data_7(rows52[3][2]), .in_data_8(rows52[3][3]), .in_data_9(rows52[3][4]), .in_data_10(rows52[2][0]), .in_data_11(rows52[2][1]), .in_data_12(rows52[2][2]), .in_data_13(rows52[2][3]), .in_data_14(rows52[2][4]), .in_data_15(rows52[1][0]), .in_data_16(rows52[1][1]), .in_data_17(rows52[1][2]), .in_data_18(rows52[1][3]), .in_data_19(rows52[1][4]), .in_data_20(rows52[0][0]), .in_data_21(rows52[0][1]), .in_data_22(rows52[0][2]), .in_data_23(rows52[0][3]), .in_data_24(rows52[0][4]), .kernel_0(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*1 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*0]), .kernel_1(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*2 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*1]), .kernel_2(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*3 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*2]), .kernel_3(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*4 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*3]), .kernel_4(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*5 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*4]), .kernel_5(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*6 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*5]), .kernel_6(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*7 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*6]), .kernel_7(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*8 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*7]), .kernel_8(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*9 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*8]), .kernel_9(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*10 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*9]), .kernel_10(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*11 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*10]), .kernel_11(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*12 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*11]), .kernel_12(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*13 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*12]), .kernel_13(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*14 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*13]), .kernel_14(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*15 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*14]), .kernel_15(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*16 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*15]), .kernel_16(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*17 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*16]), .kernel_17(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*18 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*17]), .kernel_18(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*19 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*18]), .kernel_19(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*20 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*19]), .kernel_20(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*21 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*20]), .kernel_21(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*22 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*21]), .kernel_22(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*23 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*22]), .kernel_23(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*24 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*23]), .kernel_24(rom_c3_x6[IN_WIDTH*(1*CONVSIZE_6) + IN_WIDTH*25 : IN_WIDTH*(1*CONVSIZE_6)+IN_WIDTH*24]), .clk(clk), .out_data(conv_c3_1));
+// conv55_6bit CONV_55_DSP_62 (.in_data_0(rows53[4][0]), .in_data_1(rows53[4][1]), .in_data_2(rows53[4][2]), .in_data_3(rows53[4][3]), .in_data_4(rows53[4][4]), .in_data_5(rows53[3][0]), .in_data_6(rows53[3][1]), .in_data_7(rows53[3][2]), .in_data_8(rows53[3][3]), .in_data_9(rows53[3][4]), .in_data_10(rows53[2][0]), .in_data_11(rows53[2][1]), .in_data_12(rows53[2][2]), .in_data_13(rows53[2][3]), .in_data_14(rows53[2][4]), .in_data_15(rows53[1][0]), .in_data_16(rows53[1][1]), .in_data_17(rows53[1][2]), .in_data_18(rows53[1][3]), .in_data_19(rows53[1][4]), .in_data_20(rows53[0][0]), .in_data_21(rows53[0][1]), .in_data_22(rows53[0][2]), .in_data_23(rows53[0][3]), .in_data_24(rows53[0][4]), .kernel_0(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*1 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*0]), .kernel_1(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*2 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*1]), .kernel_2(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*3 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*2]), .kernel_3(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*4 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*3]), .kernel_4(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*5 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*4]), .kernel_5(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*6 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*5]), .kernel_6(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*7 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*6]), .kernel_7(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*8 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*7]), .kernel_8(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*9 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*8]), .kernel_9(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*10 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*9]), .kernel_10(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*11 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*10]), .kernel_11(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*12 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*11]), .kernel_12(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*13 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*12]), .kernel_13(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*14 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*13]), .kernel_14(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*15 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*14]), .kernel_15(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*16 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*15]), .kernel_16(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*17 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*16]), .kernel_17(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*18 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*17]), .kernel_18(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*19 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*18]), .kernel_19(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*20 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*19]), .kernel_20(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*21 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*20]), .kernel_21(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*22 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*21]), .kernel_22(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*23 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*22]), .kernel_23(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*24 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*23]), .kernel_24(rom_c3_x6[IN_WIDTH*(2*CONVSIZE_6) + IN_WIDTH*25 : IN_WIDTH*(2*CONVSIZE_6)+IN_WIDTH*24]), .clk(clk), .out_data(conv_c3_2));
+// conv55_6bit CONV_55_DSP_63 (.in_data_0(rows54[4][0]), .in_data_1(rows54[4][1]), .in_data_2(rows54[4][2]), .in_data_3(rows54[4][3]), .in_data_4(rows54[4][4]), .in_data_5(rows54[3][0]), .in_data_6(rows54[3][1]), .in_data_7(rows54[3][2]), .in_data_8(rows54[3][3]), .in_data_9(rows54[3][4]), .in_data_10(rows54[2][0]), .in_data_11(rows54[2][1]), .in_data_12(rows54[2][2]), .in_data_13(rows54[2][3]), .in_data_14(rows54[2][4]), .in_data_15(rows54[1][0]), .in_data_16(rows54[1][1]), .in_data_17(rows54[1][2]), .in_data_18(rows54[1][3]), .in_data_19(rows54[1][4]), .in_data_20(rows54[0][0]), .in_data_21(rows54[0][1]), .in_data_22(rows54[0][2]), .in_data_23(rows54[0][3]), .in_data_24(rows54[0][4]), .kernel_0(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*1 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*0]), .kernel_1(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*2 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*1]), .kernel_2(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*3 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*2]), .kernel_3(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*4 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*3]), .kernel_4(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*5 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*4]), .kernel_5(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*6 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*5]), .kernel_6(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*7 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*6]), .kernel_7(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*8 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*7]), .kernel_8(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*9 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*8]), .kernel_9(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*10 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*9]), .kernel_10(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*11 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*10]), .kernel_11(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*12 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*11]), .kernel_12(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*13 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*12]), .kernel_13(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*14 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*13]), .kernel_14(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*15 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*14]), .kernel_15(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*16 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*15]), .kernel_16(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*17 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*16]), .kernel_17(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*18 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*17]), .kernel_18(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*19 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*18]), .kernel_19(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*20 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*19]), .kernel_20(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*21 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*20]), .kernel_21(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*22 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*21]), .kernel_22(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*23 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*22]), .kernel_23(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*24 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*23]), .kernel_24(rom_c3_x6[IN_WIDTH*(3*CONVSIZE_6) + IN_WIDTH*25 : IN_WIDTH*(3*CONVSIZE_6)+IN_WIDTH*24]), .clk(clk), .out_data(conv_c3_3));
+// conv55_6bit CONV_55_DSP_64 (.in_data_0(rows55[4][0]), .in_data_1(rows55[4][1]), .in_data_2(rows55[4][2]), .in_data_3(rows55[4][3]), .in_data_4(rows55[4][4]), .in_data_5(rows55[3][0]), .in_data_6(rows55[3][1]), .in_data_7(rows55[3][2]), .in_data_8(rows55[3][3]), .in_data_9(rows55[3][4]), .in_data_10(rows55[2][0]), .in_data_11(rows55[2][1]), .in_data_12(rows55[2][2]), .in_data_13(rows55[2][3]), .in_data_14(rows55[2][4]), .in_data_15(rows55[1][0]), .in_data_16(rows55[1][1]), .in_data_17(rows55[1][2]), .in_data_18(rows55[1][3]), .in_data_19(rows55[1][4]), .in_data_20(rows55[0][0]), .in_data_21(rows55[0][1]), .in_data_22(rows55[0][2]), .in_data_23(rows55[0][3]), .in_data_24(rows55[0][4]), .kernel_0(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*1 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*0]), .kernel_1(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*2 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*1]), .kernel_2(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*3 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*2]), .kernel_3(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*4 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*3]), .kernel_4(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*5 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*4]), .kernel_5(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*6 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*5]), .kernel_6(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*7 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*6]), .kernel_7(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*8 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*7]), .kernel_8(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*9 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*8]), .kernel_9(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*10 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*9]), .kernel_10(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*11 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*10]), .kernel_11(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*12 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*11]), .kernel_12(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*13 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*12]), .kernel_13(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*14 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*13]), .kernel_14(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*15 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*14]), .kernel_15(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*16 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*15]), .kernel_16(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*17 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*16]), .kernel_17(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*18 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*17]), .kernel_18(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*19 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*18]), .kernel_19(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*20 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*19]), .kernel_20(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*21 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*20]), .kernel_21(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*22 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*21]), .kernel_22(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*23 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*22]), .kernel_23(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*24 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*23]), .kernel_24(rom_c3_x6[IN_WIDTH*(4*CONVSIZE_6) + IN_WIDTH*25 : IN_WIDTH*(4*CONVSIZE_6)+IN_WIDTH*24]), .clk(clk), .out_data(conv_c3_4));
+// conv55_6bit CONV_55_DSP_65 (.in_data_0(rows56[4][0]), .in_data_1(rows56[4][1]), .in_data_2(rows56[4][2]), .in_data_3(rows56[4][3]), .in_data_4(rows56[4][4]), .in_data_5(rows56[3][0]), .in_data_6(rows56[3][1]), .in_data_7(rows56[3][2]), .in_data_8(rows56[3][3]), .in_data_9(rows56[3][4]), .in_data_10(rows56[2][0]), .in_data_11(rows56[2][1]), .in_data_12(rows56[2][2]), .in_data_13(rows56[2][3]), .in_data_14(rows56[2][4]), .in_data_15(rows56[1][0]), .in_data_16(rows56[1][1]), .in_data_17(rows56[1][2]), .in_data_18(rows56[1][3]), .in_data_19(rows56[1][4]), .in_data_20(rows56[0][0]), .in_data_21(rows56[0][1]), .in_data_22(rows56[0][2]), .in_data_23(rows56[0][3]), .in_data_24(rows56[0][4]), .kernel_0(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*1 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*0]), .kernel_1(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*2 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*1]), .kernel_2(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*3 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*2]), .kernel_3(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*4 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*3]), .kernel_4(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*5 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*4]), .kernel_5(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*6 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*5]), .kernel_6(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*7 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*6]), .kernel_7(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*8 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*7]), .kernel_8(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*9 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*8]), .kernel_9(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*10 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*9]), .kernel_10(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*11 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*10]), .kernel_11(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*12 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*11]), .kernel_12(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*13 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*12]), .kernel_13(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*14 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*13]), .kernel_14(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*15 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*14]), .kernel_15(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*16 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*15]), .kernel_16(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*17 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*16]), .kernel_17(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*18 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*17]), .kernel_18(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*19 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*18]), .kernel_19(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*20 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*19]), .kernel_20(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*21 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*20]), .kernel_21(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*22 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*21]), .kernel_22(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*23 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*22]), .kernel_23(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*24 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*23]), .kernel_24(rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*25 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*24]), .clk(clk), .out_data(conv_c3_5));
 
-assign sum_c3_0 = conv_c3_0 + conv_c3_1 + conv_c3_2 + conv_c3_3 + conv_c3_4 + conv_c3_5;
-assign conv_Value_c3_0 = sum_c3_0 + rom_c3_x6[IN_WIDTH*(5*CONVSIZE) + IN_WIDTH*26 : IN_WIDTH*(5*CONVSIZE)+IN_WIDTH*25];
+// assign sum_c3_0 = conv_c3_0 + conv_c3_1 + conv_c3_2 + conv_c3_3 + conv_c3_4 + conv_c3_5;
+// assign conv_Value_c3_0 = sum_c3_0 + rom_c3_x6[IN_WIDTH*(5*CONVSIZE_6) + IN_WIDTH*26 : IN_WIDTH*(5*CONVSIZE_6)+IN_WIDTH*25];
 
-relu #(.BIT_WIDTH(OUT_WIDTH)) C3_RELU_16 (.in(conv_Value_c3_0), .out(C3_relu[15]));
+// relu #(.BIT_WIDTH(OUT_WIDTH)) C3_RELU_16 (.in(conv_Value_c3_0), .out(C3_relu[15]));
 
-assign out4 = C3_relu[15];
+
+// assign out4 = C3_relu[15];
 
 
 // // holds output of rowbuffer for C3 -> S4

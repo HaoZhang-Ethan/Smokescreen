@@ -4,7 +4,7 @@
 Author: haozhang haozhang@mail.sdu.edu.cn
 Date: 2023-04-02 03:13:45
 LastEditors: haozhang haozhang@mail.sdu.edu.cn
-LastEditTime: 2023-04-12 03:00:24
+LastEditTime: 2023-04-13 08:34:04
 FilePath: /Smokescreen/Flow/Scirpts/presyn.py
 Description: 
 
@@ -165,7 +165,7 @@ with open(args.input.replace(".v","") + "_BLK_vpr.out", 'r') as f:
 # generate a initial solution
 # traverse the DICT_OP of CIRCUIT_inst and randomly assign the OP to the OP_M
 for key, value in CIRCUIT_inst.DICT_OP.items():
-    CIRCUIT_inst.DICT_OP[key][1] = random.choice(OP_DICT[CIRCUIT_inst.DICT_OP[key][0]]) #  OP_DICT[CIRCUIT_inst.DICT_OP[key][0]][2] #
+    CIRCUIT_inst.DICT_OP[key][1] =  OP_DICT[CIRCUIT_inst.DICT_OP[key][0]][2] # random.choice(OP_DICT[CIRCUIT_inst.DICT_OP[key][0]]) # 
     CIRCUIT_inst.NUM_BASE_CLB = CIRCUIT_inst.NUM_BASE_CLB + OP_AREA_DICT[CIRCUIT_inst.DICT_OP[key][1]][0]
     CIRCUIT_inst.NUM_BASE_DSP = CIRCUIT_inst.NUM_BASE_DSP + OP_AREA_DICT[CIRCUIT_inst.DICT_OP[key][1]][1]
     CIRCUIT_inst.NUM_BASE_BRAM = CIRCUIT_inst.NUM_BASE_BRAM + OP_AREA_DICT[CIRCUIT_inst.DICT_OP[key][1]][2]
@@ -218,7 +218,7 @@ def cost_function(solution):
 def func(cost_function):
     cost_function()
 
-best_solution, best_cost = simulated_annealing(cost_function, CIRCUIT_inst, temperature = 1000, cooling_rate = 0.9999, stopping_temperature = 0.001)
+best_solution, best_cost = simulated_annealing(cost_function, CIRCUIT_inst, temperature = 1000, cooling_rate = 0.99999, stopping_temperature = 0.0001)
 
 # read the Verilog file and replace the instances with the blackboxes module
 # Read the Verilog file

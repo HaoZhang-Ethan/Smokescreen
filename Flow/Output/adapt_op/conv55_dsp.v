@@ -1,7 +1,7 @@
-module conv55 #(parameter BIT_WIDTH = 8, OUT_WIDTH = 32) (
+module conv55_dsp #(parameter BIT_WIDTH = 8, OUT_WIDTH = 8) (
 		input clk, //rst,
 		input en,	// whether to latch or not
-		input signed[BIT_WIDTH-1:0] in1, in2, in3, in4, in5,
+		input signed[BIT_WIDTH*5-1:0] in1, in2, in3, in4, in5,
 		input signed[(BIT_WIDTH*25)-1:0] filter,	// 5x5 filter
 		//input [BIT_WIDTH-1:0] bias,
 		output signed[OUT_WIDTH-1:0] convValue	// size should increase to hold the sum of products
@@ -40,28 +40,32 @@ generate
 	end
 endgenerate
 
-
-
 // adder tree
 wire signed[OUT_WIDTH-1:0] sums[0:22];	// 25-2 intermediate sums
 generate
+	// sums[0] to sums[11]
 	for (x = 0; x < 12; x = x+1) begin : addertree_nodes0
 		qadd news(mult55[x*2],mult55[x*2+1],sums[x]);
 	end
+	// sums[12] to sums[17]
 	for (x = 0; x < 6; x = x+1) begin : addertree_nodes1
-		qadd news1(sums[x*2] , sums[x*2+1],sums[x+12]);
+		qadd news1(sums[x*2] + sums[x*2+1],sums[x+18],sums[x+12]);
 	end
+	// sums[18] to sums[20]
 	for (x = 0; x < 3; x = x+1) begin : addertree_nodes2
 		qadd news2(sums[x*2+12], sums[x*2+13],sums[x+18]);
 	end
-
+	// sums[21] = sums[18] + sums[19]
+	qadd news3(sums[18], sums[19], sums[21]);
+	// sums[22] = sums[20] + mult55[24]
+	qadd news4(sums[20], mult55[24], sums[22]);
 endgenerate
 
 // final sum
-qadd news3(sums[18], sums[19], sums[21]);
-qadd news4(sums[20], mult55[24], sums[22]);
+// assign sums[12] = sums[1] || sums[2];
+// qadd new1(sums[1],sums[2],sums[12]);
 qadd new(sums[21],sums[22],convValue);
-
+// assign convValue = qaddsums[10] + sums[12];
 
 endmodule
 
