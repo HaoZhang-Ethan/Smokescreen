@@ -2,7 +2,7 @@
  * @Author: haozhang-hoge haozhang@mail.sdu.edu.cn
  * @Date: 2022-11-29 10:08:30
  * @LastEditors: haozhang haozhang@mail.sdu.edu.cn
- * @LastEditTime: 2023-04-13 08:07:36
+ * @LastEditTime: 2023-04-16 07:15:32
  * @FilePath: /Smokescreen/Flow/Circuits/lenet5/Adapt/conv55_6bit_PIM.v
  * @Description: the basic component of PIM conv. It can caculate the output for every address.
  * 
@@ -73,16 +73,16 @@ module conv5x5 (
 		.clk(clk)
 	);
 
-// // //  LL Unit
-// 	conv #(.INPUT_SIZE(27), .DEPTH(clogb2(9)), .ADC_P(6)) single_conv_LL(
-// 		.Input_feature({in_data_0[3:0], in_data_1[3:0], in_data_2[3:0], in_data_3[3:0], in_data_4[3:0], in_data_5[3:0], in_data_6[3:0], in_data_7[3:0], in_data_8[3:0]}),
-// 		.Address(add_counter),
-// 		.en(Compute_flag),
-// 		.Output(tmp_result_LL),
-// 		.clk(clk)
-// 	);
+//  LL Unit
+	conv #(.INPUT_SIZE(75), .DEPTH(clogb2(1)), .ADC_P(6)) single_conv_LL(
+		.Input_feature({in_data_0[3:0], in_data_1[3:0], in_data_2[3:0], in_data_3[3:0], in_data_4[3:0], in_data_5[3:0], in_data_6[3:0], in_data_7[3:0], in_data_8[3:0], in_data_9[3:0], in_data_10[3:0], in_data_11[3:0], in_data_12[3:0], in_data_13[3:0], in_data_14[3:0], in_data_15[3:0], in_data_16[3:0], in_data_17[3:0], in_data_18[3:0], in_data_19[3:0], in_data_20[3:0], in_data_21[3:0], in_data_22[3:0], in_data_23[3:0], in_data_24[3:0]}),
+		.Address(Add_pim),
+		.en(Compute_flag),
+		.Output(tmp_result_LL),
+		.clk(clk)
+	);
 
-	wire [5:0] tmp_out_1;
+	wire [5:0] tmp_out_1, tmp_out_2;
 	// assign tmp_out_1 = tmp_result_HH + {tmp_result_HL[5:3], 3'b000};
 	// assign out_data = tmp_out_1 + {tmp_result_LH[5:4], 4'b0000};
 	// assign out_data = tmp_result_HH + tmp_result_HL + tmp_result_LH;
@@ -93,8 +93,14 @@ module conv5x5 (
 			.c(tmp_out_1)
 		);
 		qadd1 #(.BIT_WIDTH(6), .OUT_WIDTH(6)) qadd_inst_2(
-			.a(tmp_out_1),
+			.a(tmp_result_LL),
 			.b(tmp_result_LH),
+			.c(tmp_out_2)
+		);
+
+		qadd1 #(.BIT_WIDTH(6), .OUT_WIDTH(6)) qadd_inst_3(
+			.a(tmp_out_1),
+			.b(tmp_out_2),
 			.c(Out_data)
 		);
 

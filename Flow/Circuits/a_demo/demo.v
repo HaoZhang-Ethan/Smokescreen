@@ -1,18 +1,16 @@
+`timescale 10ns/10ns
+module clock_pulse;
+    reg     clock;
+    initial begin
+        $display("start a clock pulse");    // 打印开始标记
+        $dumpfile("wave.vcd");              // 指定记录模拟波形的文件
+        $dumpvars(0, clock_pulse);          // 指定记录的模块层级
+        clock <= 1;                         // 初始clock信号为1
+        #6000 $finish;                      // 6000个单位时间后结束模拟
+    end
 
+    always begin
+        #20 clock = !clock;                 // 每20个单位clock取反
+    end
 
-module parallel_adder_tree (
-    input [11:0] a,  // 9个8位数字输入
-    input [11:0] b,
-    input clk,
-    output reg [17:0] sum // 结果
-);
-
-assign sum = a+b;
-
-endmodule
-
-
-
-
-
-
+endmodule //clock_pulse

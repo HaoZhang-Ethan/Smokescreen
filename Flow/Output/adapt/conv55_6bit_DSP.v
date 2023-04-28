@@ -13,7 +13,7 @@ endmodule
 module parallel_adder_tree_dsp (
     input [299:0] a,  // 25个16位数字输入
     input clk,
-    output reg [17:0] sum // 结果
+    output [17:0] sum // 结果
 );
 
 wire [17:0] c1[24:0], c2[6:0], c3[3:0], c4[2:0]; // 中间电路
