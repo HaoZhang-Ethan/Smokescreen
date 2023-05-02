@@ -4,7 +4,7 @@
 Author: haozhang haozhang@mail.sdu.edu.cn
 Date: 2023-04-02 03:13:45
 LastEditors: haozhang haozhang@mail.sdu.edu.cn
-LastEditTime: 2023-04-27 15:47:04
+LastEditTime: 2023-05-02 07:08:02
 FilePath: /Smokescreen/Flow/Scirpts/presyn.py
 Description: 
 
@@ -26,8 +26,8 @@ import psutil
 Get_BLK = 0
 AUTO_EXE = 0
 FIND_OP = 0
-GET_FIND_OP_RES = 1
-SA_RUN = 0
+GET_FIND_OP_RES = 0
+SA_RUN = 1
 
 # Parse the command line arguments
 parser = argparse.ArgumentParser(description='Find instances in a Verilog file containing certain keywords and write their names and corresponding module names to a file.')
@@ -99,10 +99,10 @@ OP_SET.append(OP("conv55_6bit", "conv55_6bit", "conv55_6bit_DSP", "conv55_6bit_C
 OP_DICT["conv55_6bit"] = ["conv55_6bit_DSP", "conv55_6bit_CLB", "conv55_6bit_PIM"]
 OP_AREA_DICT["conv55_6bit_DSP"] = [25, 24, 0]
 OP_AREA_DICT["conv55_6bit_CLB"] = [150, 0, 0]
-OP_AREA_DICT["conv55_6bit_PIM"] = [15, 0, 4]
+OP_AREA_DICT["conv55_6bit_PIM"] = [15, 90, 94]
 OP_NET_DICT["conv55_6bit_DSP"] = 1097
 OP_NET_DICT["conv55_6bit_CLB"] = 4841
-OP_NET_DICT["conv55_6bit_PIM"] = 2049999
+OP_NET_DICT["conv55_6bit_PIM"] = 20499
 # OP_AREA_DICT["conv55_6bit_DSP"] = [14, 0, 3]
 # OP_AREA_DICT["conv55_6bit_CLB"] = [14, 0, 3]
 # OP_AREA_DICT["conv55_6bit_PIM"] = [14, 0, 3]
@@ -192,7 +192,7 @@ def simulated_annealing(cost_function, initial_solution, temperature, cooling_ra
         candidate_A_cost, candidate_P_cost = cost_function(candidate_solution)
         delta_A = candidate_A_cost - current_A_cost
         delta_P = candidate_P_cost - current_P_cost
-        if delta_P <= 0 or  math.exp(-delta_P / temperature) > random.uniform(0, 1):
+        if  delta_P <= 0 or  math.exp(-delta_P / temperature) > random.uniform(0, 1):
         # if delta_A < 0 or (math.exp(-delta_A / temperature) > random.uniform(0, 1)):
         #     # print(delta_P)
         #     if math.exp(-delta_P / temperature) > random.uniform(0, 1):
@@ -225,6 +225,7 @@ def generate_neighbor(solution):
     tmp_solution.NUM_BASE_BRAM = tmp_solution.NUM_BASE_BRAM - OP_AREA_DICT[tmp_solution.DICT_OP[random_key][1]][2]
     tmp_solution.NET = tmp_solution.NET - OP_NET_DICT[tmp_solution.DICT_OP[random_key][1]]
     tmp_solution.DICT_OP[random_key][1] =  OP_DICT[tmp_solution.DICT_OP[random_key][0]][rand_sele(tmp_solution)] # random.choice(OP_DICT[tmp_solution.DICT_OP[random_key][0]]) # 
+    # print(tmp_solution.DICT_OP[random_key][1])
     tmp_solution.NUM_BASE_CLB = tmp_solution.NUM_BASE_CLB + OP_AREA_DICT[tmp_solution.DICT_OP[random_key][1]][0]
     tmp_solution.NUM_BASE_DSP = tmp_solution.NUM_BASE_DSP + OP_AREA_DICT[tmp_solution.DICT_OP[random_key][1]][1]
     tmp_solution.NUM_BASE_BRAM = tmp_solution.NUM_BASE_BRAM + OP_AREA_DICT[tmp_solution.DICT_OP[random_key][1]][2]
@@ -234,6 +235,7 @@ def generate_neighbor(solution):
     return tmp_solution
 
 def rand_sele(solution):
+    # print(str(round(solution.NUM_BASE_CLB/DICT_FPGA_SIZE[solution.BASE_FPGA_SIZE+1][0],3))+"-"+str(round(solution.NUM_BASE_DSP/DICT_FPGA_SIZE[solution.BASE_FPGA_SIZE+1][1],3))+"-"+str(round(solution.NUM_BASE_BRAM/DICT_FPGA_SIZE[solution.BASE_FPGA_SIZE+1][2],3)))
     CLB_R = random.uniform(0, round(1-solution.NUM_BASE_CLB/DICT_FPGA_SIZE[solution.BASE_FPGA_SIZE+1][0],3))
     DSP_R = random.uniform(0, round(1-solution.NUM_BASE_DSP/DICT_FPGA_SIZE[solution.BASE_FPGA_SIZE+1][1],3))
     BRAM_R = random.uniform(0, round(1-solution.NUM_BASE_BRAM/DICT_FPGA_SIZE[solution.BASE_FPGA_SIZE+1][2],3))
@@ -243,7 +245,7 @@ def rand_sele(solution):
 def cost_function(solution):
     max_num = max(solution.NUM_BASE_CLB/DICT_FPGA_SIZE[solution.BASE_FPGA_SIZE][0], solution.NUM_BASE_DSP/DICT_FPGA_SIZE[solution.BASE_FPGA_SIZE][1], solution.NUM_BASE_BRAM/DICT_FPGA_SIZE[solution.BASE_FPGA_SIZE][2])
     A_Cost = solution.BASE_FPGA_SIZE # + max_num + 
-    P_Cost = (solution.NET/solution.BASE_FPGA_SIZE)
+    P_Cost = (solution.NET) # /(solution.BASE_FPGA_SIZE*solution.BASE_FPGA_SIZE)
     return A_Cost, P_Cost
 
 if SA_RUN == 1:    
@@ -274,7 +276,7 @@ if FIND_OP == 1:
     # generate folder
     for tmp_num_dsp in range(0,len(CIRCUIT_inst.DICT_OP)+1):
         for tmp_num_clb in range(0,len(CIRCUIT_inst.DICT_OP)+1):
-            for tmp_num_pim in range(0,len(CIRCUIT_inst.DICT_OP)+1):
+            for tmp_num_pim in range(0,1): # len(CIRCUIT_inst.DICT_OP)+1
                 if (tmp_num_dsp + tmp_num_clb + tmp_num_pim) == len(CIRCUIT_inst.DICT_OP):
                     tmp_vector = [0] * len(CIRCUIT_inst.DICT_OP)
                     for tmp_j in range(0,tmp_num_dsp):
@@ -319,6 +321,8 @@ if FIND_OP == 1:
                     while True:
                         # if cpu usage is less than 95%, then execute the command
                         if psutil.cpu_percent() < 95:
+                            if os.path.exists(path + "test_op.route"):
+                                break
                             os.system(cmd)
                             break
                         else:
@@ -330,8 +334,8 @@ if GET_FIND_OP_RES == 1:
 
     # read the report
     for tmp_num_dsp in range(0,len(CIRCUIT_inst.DICT_OP)+1):
-            for tmp_num_clb in range(0,len(CIRCUIT_inst.DICT_OP)+1):
-                for tmp_num_pim in range(0,len(CIRCUIT_inst.DICT_OP)+1):
+            for tmp_num_clb in range(0, 1): #len(CIRCUIT_inst.DICT_OP)+1):
+                for tmp_num_pim in range(0, len(CIRCUIT_inst.DICT_OP)+1): # 1):
                     if (tmp_num_dsp + tmp_num_clb + tmp_num_pim) == len(CIRCUIT_inst.DICT_OP):
                         path = "/root/Project/Smokescreen/Flow/Output/debug/Le" + str(tmp_num_dsp) + "-" + str(tmp_num_clb) + "-" + str(tmp_num_pim) + "/"
                         if os.path.exists(path):
@@ -356,6 +360,6 @@ if GET_FIND_OP_RES == 1:
                                             tmp_area = line.split()
                                             CP = float(tmp_area[len(tmp_area)-2])
                                 if CP != 0:
-                                    re_f.write(str(tmp_num_dsp) + "-" + str(tmp_num_clb) + "-" + str(tmp_num_pim) + "\t" + str(T_area) + "\t" + str(L_area) + "\t" + str(R_area) + "\t" + str(CP) + "\n")
+                                    re_f.write(str(tmp_num_dsp) + "-" + str(tmp_num_clb) + "-" + str(tmp_num_pim) + "\t" + str(L_area) + "\t" + str(T_area) + "\t" + str(R_area) + "\t" + str(T_area+R_area) + "\t" + str(CP) + "\n")
 
 
