@@ -4,7 +4,7 @@
 Author: haozhang haozhang@mail.sdu.edu.cn
 Date: 2023-04-02 03:13:45
 LastEditors: haozhang haozhang@mail.sdu.edu.cn
-LastEditTime: 2023-05-02 07:08:02
+LastEditTime: 2023-05-04 01:52:59
 FilePath: /Smokescreen/Flow/Scirpts/presyn.py
 Description: 
 
@@ -25,9 +25,9 @@ import psutil
 # Debug Flag
 Get_BLK = 0
 AUTO_EXE = 0
-FIND_OP = 0
+FIND_OP = 1
 GET_FIND_OP_RES = 0
-SA_RUN = 1
+SA_RUN = 0
 
 # Parse the command line arguments
 parser = argparse.ArgumentParser(description='Find instances in a Verilog file containing certain keywords and write their names and corresponding module names to a file.')
@@ -96,16 +96,22 @@ OP_AREA_DICT = {}
 OP_NET_DICT = {}
 # TODO: if you add a new type op, you should add the following code
 OP_SET.append(OP("conv55_6bit", "conv55_6bit", "conv55_6bit_DSP", "conv55_6bit_CLB", "conv55_6bit_PIM", "conv55_6bit_BLK"))
+OP_SET.append(OP("conv33_6bit", "conv33_6bit", "conv33_6bit_DSP", "conv33_6bit_CLB", "conv33_6bit_PIM", "conv33_6bit_BLK"))
 OP_DICT["conv55_6bit"] = ["conv55_6bit_DSP", "conv55_6bit_CLB", "conv55_6bit_PIM"]
-OP_AREA_DICT["conv55_6bit_DSP"] = [25, 24, 0]
+OP_DICT["conv33_6bit"] = ["conv33_6bit_DSP", "conv33_6bit_CLB", "conv33_6bit_PIM"]
+OP_AREA_DICT["conv55_6bit_DSP"] = [24, 25, 0]
 OP_AREA_DICT["conv55_6bit_CLB"] = [150, 0, 0]
-OP_AREA_DICT["conv55_6bit_PIM"] = [15, 90, 94]
+OP_AREA_DICT["conv55_6bit_PIM"] = [15, 0, 4]
+OP_AREA_DICT["conv33_6bit_DSP"] = [8, 9, 0]
+OP_AREA_DICT["conv33_6bit_CLB"] = [53, 0, 0]
+OP_AREA_DICT["conv33_6bit_PIM"] = [14, 0, 4]
 OP_NET_DICT["conv55_6bit_DSP"] = 1097
-OP_NET_DICT["conv55_6bit_CLB"] = 4841
-OP_NET_DICT["conv55_6bit_PIM"] = 20499
-# OP_AREA_DICT["conv55_6bit_DSP"] = [14, 0, 3]
-# OP_AREA_DICT["conv55_6bit_CLB"] = [14, 0, 3]
-# OP_AREA_DICT["conv55_6bit_PIM"] = [14, 0, 3]
+OP_NET_DICT["conv55_6bit_CLB"] = 4822
+OP_NET_DICT["conv55_6bit_PIM"] = 204
+OP_NET_DICT["conv33_6bit_DSP"] = 387
+OP_NET_DICT["conv33_6bit_CLB"] = 1728
+OP_NET_DICT["conv33_6bit_PIM"] = 122
+
 KIND_OP_CHIP = len(OP_SET)
 # initialize the CIRCUIT
 CIRCUIT_inst = CIRCUIT()
@@ -192,7 +198,7 @@ def simulated_annealing(cost_function, initial_solution, temperature, cooling_ra
         candidate_A_cost, candidate_P_cost = cost_function(candidate_solution)
         delta_A = candidate_A_cost - current_A_cost
         delta_P = candidate_P_cost - current_P_cost
-        if  delta_P <= 0 or  math.exp(-delta_P / temperature) > random.uniform(0, 1):
+        if delta_P <= 0 or  math.exp(-delta_P / temperature) > random.uniform(0, 1):
         # if delta_A < 0 or (math.exp(-delta_A / temperature) > random.uniform(0, 1)):
         #     # print(delta_P)
         #     if math.exp(-delta_P / temperature) > random.uniform(0, 1):
@@ -249,7 +255,7 @@ def cost_function(solution):
     return A_Cost, P_Cost
 
 if SA_RUN == 1:    
-    best_solution, best_cost = simulated_annealing(cost_function, CIRCUIT_inst, temperature = 1000, cooling_rate = 0.9999, stopping_temperature = 0.0001)
+    best_solution, best_cost = simulated_annealing(cost_function, CIRCUIT_inst, temperature = 1000, cooling_rate = 0.9999, stopping_temperature = 0.01)
 
     # read the Verilog file and replace the instances with the blackboxes module
     # Read the Verilog file
@@ -259,7 +265,7 @@ if SA_RUN == 1:
             for OP_ in OP_SET:
                 if line.count(OP_.OP_key) != 0:
                     line = line.replace(OP_.OP_key ,best_solution.DICT_OP[line.split()[1]][1])
-                tmp_verilog_buffer.append(line)
+            tmp_verilog_buffer.append(line)
     # write the blackboxes Verilog file
     with open(args.input.replace(".v","_myop.v"), 'w') as f:
         for tmp_verilog_ in tmp_verilog_buffer:
@@ -276,7 +282,7 @@ if FIND_OP == 1:
     # generate folder
     for tmp_num_dsp in range(0,len(CIRCUIT_inst.DICT_OP)+1):
         for tmp_num_clb in range(0,len(CIRCUIT_inst.DICT_OP)+1):
-            for tmp_num_pim in range(0,1): # len(CIRCUIT_inst.DICT_OP)+1
+            for tmp_num_pim in range(0,len(CIRCUIT_inst.DICT_OP)+1): # 1
                 if (tmp_num_dsp + tmp_num_clb + tmp_num_pim) == len(CIRCUIT_inst.DICT_OP):
                     tmp_vector = [0] * len(CIRCUIT_inst.DICT_OP)
                     for tmp_j in range(0,tmp_num_dsp):
@@ -288,12 +294,12 @@ if FIND_OP == 1:
                     random.shuffle(tmp_vector)
                     path = "/root/Project/Smokescreen/Flow/Output/debug/Le" + str(tmp_num_dsp) + "-" + str(tmp_num_clb) + "-" + str(tmp_num_pim) + "/"
                     if os.path.exists(path):
-                        cmd = "cp -f " + "/root/Project/Smokescreen/Flow/Circuits/lenet5/Adapt/*.v" + " " + path
+                        cmd = "cp -f " + "/root/Project/Smokescreen/Flow/Circuits/CNN_self-all/*.v" + " " + path
                         os.system(cmd)
                     else:
                         cmd = "mkdir " + path 
                         os.system(cmd)
-                        cmd = "cp " + "/root/Project/Smokescreen/Flow/Circuits/lenet5/Adapt/*.v" + " " + path
+                        cmd = "cp " + "/root/Project/Smokescreen/Flow/Circuits/CNN_self-all/*.v" + " " + path
                         os.system(cmd)
                     time.sleep(0.5)
                     tmp_verilog_buffer = []
@@ -310,7 +316,7 @@ if FIND_OP == 1:
                             for OP_ in OP_SET:
                                 if line.count(OP_.OP_key) != 0:
                                     line = line.replace(OP_.OP_key ,tmp_CIRCUIT_inst.DICT_OP[line.split()[1]][1])
-                                tmp_verilog_buffer.append(line)
+                            tmp_verilog_buffer.append(line)
                     # write the blackboxes Verilog file
                     with open(args.input.replace(".v","_op.v"), 'w') as f:
                         for tmp_verilog_ in tmp_verilog_buffer:
@@ -333,9 +339,9 @@ if GET_FIND_OP_RES == 1:
     re_f = open("/root/Project/Smokescreen/Flow/Scirpts/test_op.res", 'w')
 
     # read the report
-    for tmp_num_dsp in range(0,len(CIRCUIT_inst.DICT_OP)+1):
-            for tmp_num_clb in range(0, 1): #len(CIRCUIT_inst.DICT_OP)+1):
-                for tmp_num_pim in range(0, len(CIRCUIT_inst.DICT_OP)+1): # 1):
+    for tmp_num_dsp in range(0, len(CIRCUIT_inst.DICT_OP)+1): # 1): 
+            for tmp_num_clb in range(0,len(CIRCUIT_inst.DICT_OP)+1):   # 1):
+                for tmp_num_pim in range(0,  len(CIRCUIT_inst.DICT_OP)+1): # 1):
                     if (tmp_num_dsp + tmp_num_clb + tmp_num_pim) == len(CIRCUIT_inst.DICT_OP):
                         path = "/root/Project/Smokescreen/Flow/Output/debug/Le" + str(tmp_num_dsp) + "-" + str(tmp_num_clb) + "-" + str(tmp_num_pim) + "/"
                         if os.path.exists(path):

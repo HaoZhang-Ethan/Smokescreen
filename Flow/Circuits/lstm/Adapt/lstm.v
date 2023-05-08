@@ -656,10 +656,11 @@ end
 
 
 //FORGET GATE
-  vecmat_mul_x #(`varraysize,`INPUT_DEPTH) f_gatex(.clk(clk),.reset(rst),.data(x_in),.W(Wf_in),.tmp(mulout_fx));
-  vecmat_mul_h #(`uarraysize,`ARRAY_DEPTH) f_gateh(.clk(clk),.reset(rst),.data(h_in),.W(Uf_in),.tmp(mulout_fh));
-  vecmat_add_x #(`varraysize,`INPUT_DEPTH) f_gateaddx(.clk(clk),.reset(rst),.mulout(mulout_fx_reg),.data_out(macout_fx));
-  vecmat_add_h #(`uarraysize,`ARRAY_DEPTH) f_gateaddh(.clk(clk),.reset(rst),.mulout(mulout_fh_reg),.data_out(macout_fh));
+  vecmat_add_PIM #(`varraysize,`INPUT_DEPTH, `uarraysize) vecmat_add_OP_1(.clk(clk), .reset(rst), .data_x(x_in), .W_x(Wf_in), .data_h(h_in), .W_h(Uf_in), .data_out_x(macout_fx), .data_out_h(macout_fh));
+//   vecmat_mul_x #(`varraysize,`INPUT_DEPTH) f_gatex(.clk(clk),.reset(rst),.data(x_in),.W(Wf_in),.tmp(mulout_fx));
+//   vecmat_mul_h #(`uarraysize,`ARRAY_DEPTH) f_gateh(.clk(clk),.reset(rst),.data(h_in),.W(Uf_in),.tmp(mulout_fh));
+//   vecmat_add_x #(`varraysize,`INPUT_DEPTH) f_gateaddx(.clk(clk),.reset(rst),.mulout(mulout_fx_reg),.data_out(macout_fx));
+//   vecmat_add_h #(`uarraysize,`ARRAY_DEPTH) f_gateaddh(.clk(clk),.reset(rst),.mulout(mulout_fh_reg),.data_out(macout_fh));
   qadd2 f_gate_add(.a(mac_fx_reg),.b(mac_fh_reg),.c(add_f));
   qadd2 f_gate_biasadd(.a(bf_in),.b(add_f),.c(addbias_f));
   sigmoid sigf(addb_f_reg,sig_fo);
@@ -667,28 +668,34 @@ end
   signedmul f_elmul(.clk(clk),.a(sig_fo_reg),.b(C_in),.c(elmul_fo));
 
 //INPUT GATE
-  vecmat_mul_x #(`varraysize,`INPUT_DEPTH) i_gatex(.clk(clk),.reset(rst),.data(x_in),.W(Wi_in),.tmp(mulout_ix));
-  vecmat_mul_h #(`uarraysize,`ARRAY_DEPTH) i_gateh(.clk(clk),.reset(rst),.data(h_in),.W(Ui_in),.tmp(mulout_ih));
-  vecmat_add_x #(`varraysize,`INPUT_DEPTH) i_gateaddx(.clk(clk),.reset(rst),.mulout(mulout_ix_reg),.data_out(macout_ix));
-  vecmat_add_h #(`uarraysize,`ARRAY_DEPTH) i_gateaddh(.clk(clk),.reset(rst),.mulout(mulout_ih_reg),.data_out(macout_ih));
+  vecmat_add_PIM #(`varraysize,`INPUT_DEPTH, `uarraysize) vecmat_add_OP_2(.clk(clk), .reset(rst), .data_x(x_in), .W_x(Wi_in), .data_h(h_in), .W_h(Ui_in), .data_out_x(macout_ix), .data_out_h(macout_ih));
+
+//   vecmat_mul_x #(`varraysize,`INPUT_DEPTH) i_gatex(.clk(clk),.reset(rst),.data(x_in),.W(Wi_in),.tmp(mulout_ix));
+//   vecmat_mul_h #(`uarraysize,`ARRAY_DEPTH) i_gateh(.clk(clk),.reset(rst),.data(h_in),.W(Ui_in),.tmp(mulout_ih));
+//   vecmat_add_x #(`varraysize,`INPUT_DEPTH) i_gateaddx(.clk(clk),.reset(rst),.mulout(mulout_ix_reg),.data_out(macout_ix));
+//   vecmat_add_h #(`uarraysize,`ARRAY_DEPTH) i_gateaddh(.clk(clk),.reset(rst),.mulout(mulout_ih_reg),.data_out(macout_ih));
   qadd2 i_gate_add(.a(mac_ix_reg),.b(mac_ih_reg),.c(add_i));
   qadd2 i_gate_biasadd(.a(bi_in),.b(add_i),.c(addbias_i));
   sigmoid sigi(addb_i_reg,sig_io);
 
 //OUTPUT GATE
-  vecmat_mul_x #(`varraysize,`INPUT_DEPTH) o_gatex(.clk(clk),.reset(rst),.data(x_in),.W(Wo_in),.tmp(mulout_ox));
-  vecmat_mul_h #(`uarraysize,`ARRAY_DEPTH) o_gateh(.clk(clk),.reset(rst),.data(h_in),.W(Uo_in),.tmp(mulout_oh));
-  vecmat_add_x #(`varraysize,`INPUT_DEPTH) o_gateaddx(.clk(clk),.reset(rst),.mulout(mulout_ox_reg),.data_out(macout_ox));
-  vecmat_add_h #(`uarraysize,`ARRAY_DEPTH) o_gateaddh(.clk(clk),.reset(rst),.mulout(mulout_oh_reg),.data_out(macout_oh));
+  vecmat_add_PIM #(`varraysize,`INPUT_DEPTH, `uarraysize) vecmat_add_OP_3(.clk(clk), .reset(rst), .data_x(x_in), .W_x(Wo_in), .data_h(h_in), .W_h(Uo_in), .data_out_x(macout_ox), .data_out_h(macout_oh));
+
+//   vecmat_mul_x #(`varraysize,`INPUT_DEPTH) o_gatex(.clk(clk),.reset(rst),.data(x_in),.W(Wo_in),.tmp(mulout_ox));
+//   vecmat_mul_h #(`uarraysize,`ARRAY_DEPTH) o_gateh(.clk(clk),.reset(rst),.data(h_in),.W(Uo_in),.tmp(mulout_oh));
+//   vecmat_add_x #(`varraysize,`INPUT_DEPTH) o_gateaddx(.clk(clk),.reset(rst),.mulout(mulout_ox_reg),.data_out(macout_ox));
+//   vecmat_add_h #(`uarraysize,`ARRAY_DEPTH) o_gateaddh(.clk(clk),.reset(rst),.mulout(mulout_oh_reg),.data_out(macout_oh));
   qadd2 o_gate_add(.a(mac_ox_reg),.b(mac_oh_reg),.c(add_o));
   qadd2 o_gate_biasadd(.a(bo_in),.b(add_o),.c(addbias_o));
   sigmoid sigo(addb_o_reg,sig_oo);
 
 //CELL STATE GATE
-  vecmat_mul_x #(`varraysize,`INPUT_DEPTH) c_gatex(.clk(clk),.reset(rst),.data(x_in),.W(Wc_in),.tmp(mulout_cx));
-  vecmat_mul_h #(`uarraysize,`ARRAY_DEPTH) c_gateh(.clk(clk),.reset(rst),.data(h_in),.W(Uc_in),.tmp(mulout_ch));
-  vecmat_add_x #(`varraysize,`INPUT_DEPTH) c_gateaddx(.clk(clk),.reset(rst),.mulout(mulout_cx_reg),.data_out(macout_cx));
-  vecmat_add_h #(`uarraysize,`ARRAY_DEPTH) c_gateaddh(.clk(clk),.reset(rst),.mulout(mulout_ch_reg),.data_out(macout_ch));
+  vecmat_add_PIM #(`varraysize,`INPUT_DEPTH, `uarraysize) vecmat_add_OP_4(.clk(clk), .reset(rst), .data_x(x_in), .W_x(Wc_in), .data_h(h_in), .W_h(Uc_in), .data_out_x(macout_cx), .data_out_h(macout_ch));
+
+//   vecmat_mul_x #(`varraysize,`INPUT_DEPTH) c_gatex(.clk(clk),.reset(rst),.data(x_in),.W(Wc_in),.tmp(mulout_cx));
+//   vecmat_mul_h #(`uarraysize,`ARRAY_DEPTH) c_gateh(.clk(clk),.reset(rst),.data(h_in),.W(Uc_in),.tmp(mulout_ch));
+//   vecmat_add_x #(`varraysize,`INPUT_DEPTH) c_gateaddx(.clk(clk),.reset(rst),.mulout(mulout_cx_reg),.data_out(macout_cx));
+//   vecmat_add_h #(`uarraysize,`ARRAY_DEPTH) c_gateaddh(.clk(clk),.reset(rst),.mulout(mulout_ch_reg),.data_out(macout_ch));
   qadd2 c_gate_add(.a(mac_cx_reg),.b(mac_ch_reg),.c(add_c));
   qadd2 c_gate_biasadd(.a(bc_in),.b(add_c),.c(addbias_c)); 
   tanh tan_c1(addb_c_reg,tan_c);
@@ -703,6 +710,44 @@ end
 
 endmodule
  
+module vecmat_add #( parameter varraysize=1600, vectwidth=100, uarraysize=1024)
+(
+	input clk,
+	input reset,
+	input [varraysize-1:0] data_x,
+	input [varraysize-1:0] W_x,
+	input [uarraysize-1:0] data_h,
+	input [uarraysize-1:0] W_h,
+
+	output reg [15:0] data_out_x,
+	output reg [15:0] data_out_h
+);
+	wire [varraysize-1:0] mulout_x;
+	wire [uarraysize-1:0] mulout_h;
+	vecmat_mul_x #(`varraysize,`INPUT_DEPTH) f_gatex(.clk(clk),.reset(rst),.data(data_x),.W(W_x),.tmp(mulout_x));
+	vecmat_mul_h #(`uarraysize,`ARRAY_DEPTH) f_gateh(.clk(clk),.reset(rst),.data(data_h),.W(W_h),.tmp(mulout_h));
+	vecmat_add_x #(`varraysize,`INPUT_DEPTH) f_gateaddx(.clk(clk),.reset(rst),.mulout(mulout_x),.data_out(data_out_x));
+	vecmat_add_h #(`uarraysize,`ARRAY_DEPTH) f_gateaddh(.clk(clk),.reset(rst),.mulout(mulout_h),.data_out(data_out_h));
+
+endmodule
+
+
+module vecmat_add_PIM #( parameter varraysize=1600, vectwidth=100, uarraysize=1024)
+(
+	input clk,
+	input reset,
+	input [varraysize-1:0] data_x,
+	input [varraysize-1:0] W_x,
+	input [uarraysize-1:0] data_h,
+	input [uarraysize-1:0] W_h,
+
+	output reg [15:0] data_out_x,
+	output reg [15:0] data_out_h
+);
+	vecmat_mul_x_PIM #(`varraysize,`INPUT_DEPTH) f_gatex(.clk(clk),.reset(rst),.data(data_x), .tmp(data_out_x));
+	vecmat_mul_h_PIM #(`uarraysize,`ARRAY_DEPTH) f_gateh(.clk(clk),.reset(rst),.data(data_h), .tmp(data_out_h));
+
+endmodule
 
 module vecmat_mul_h #( parameter uarraysize=1024,parameter vectwidth=64)  //,matsize=64)   // varraysize=1024 vectwidth=64,matsize=4096
 (
@@ -1641,3 +1686,108 @@ end
 
 endmodule
 
+
+
+
+module vecmat_mul_x_PIM #(parameter varraysize=1600,vectwidth=100) //,matsize=64)   // varraysize=1024 vectwidth=64,matsize=4096
+(
+ input clk,reset,
+ input [varraysize-1:0] data,
+//  input [varraysize-1:0] W,
+ //output reg [15:0] data_out
+
+ output [`DATA_WIDTH-1:0] tmp
+ );
+
+ 
+// wire overflow [vectwidth-1:0];  
+
+
+ //wire [15:0] tmp[vectwidth-1:0];
+
+
+ reg [varraysize-1:0] vector;
+ reg Add;
+ reg Flag;
+ 
+   
+ always @(posedge clk) begin
+	if(~reset) begin
+		vector <= data;
+	end   
+ end      
+
+
+ /*genvar j;
+ generate
+	 for(j=0;j<100;j=j+1) begin
+   			signedmul mult_u0(.a(vector[j*16+:16]),.b(matrix[j*16+:16]),.c(tmp[j*16+:16]));
+	 end
+ endgenerate*/
+ 
+
+
+	conv_top #(.INPUT_SIZE(`varraysize/`DATA_WIDTH), .INPUT_P(`DATA_WIDTH), .DEPTH(1), .ADC_P(8), .OUT_P(`DATA_WIDTH)) PIM(
+		.clk(clk), 
+		.rst(rst),
+		.Input_feature(vector),
+		.Address(Add),
+		.Output(tmp),	// size should increase to hold the sum of products
+		.done_flag(Flag),
+	);
+
+
+ endmodule
+
+
+
+module vecmat_mul_h_PIM #(parameter uarraysize=1024,vectwidth=64) //,matsize=64)   // varraysize=1024 vectwidth=64,matsize=4096
+(
+ input clk,reset,
+ input [uarraysize-1:0] data,
+//  input [varraysize-1:0] W,
+ //output reg [15:0] data_out
+
+ output [`DATA_WIDTH-1:0] tmp
+ );
+
+ 
+// wire overflow [vectwidth-1:0];  
+
+
+ //wire [15:0] tmp[vectwidth-1:0];
+
+
+ reg [uarraysize-1:0] vector;
+ reg Add;
+ reg Flag;
+ 
+   
+ always @(posedge clk) begin
+	if(~reset) begin
+		vector <= data;
+	end   
+ end      
+
+
+ /*genvar j;
+ generate
+	 for(j=0;j<100;j=j+1) begin
+   			signedmul mult_u0(.a(vector[j*16+:16]),.b(matrix[j*16+:16]),.c(tmp[j*16+:16]));
+	 end
+ endgenerate*/
+ 
+
+
+	conv #(.INPUT_SIZE(`uarraysize), .DEPTH(1), .ADC_P(6)) PIM(
+		.clk(clk), 
+		.rst(rst),
+		.en(1'b1),
+		.Input_feature(vector),
+		.Address(Add),
+		.Output(tmp),	// size should increase to hold the sum of products
+		.done_flag(Flag),
+	);
+
+
+ endmodule
