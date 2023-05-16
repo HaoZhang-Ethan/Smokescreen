@@ -82,35 +82,5 @@ module conv5x5 (
 		.clk(clk)
 	);
 
-	wire [5:0] tmp_out_1, tmp_out_2;
-	// assign tmp_out_1 = tmp_result_HH + {tmp_result_HL[5:3], 3'b000};
-	// assign out_data = tmp_out_1 + {tmp_result_LH[5:4], 4'b0000};
-	// assign out_data = tmp_result_HH + tmp_result_HL + tmp_result_LH;
-
-		qadd1 #(.BIT_WIDTH(6), .OUT_WIDTH(6)) qadd_inst_1(
-			.a(tmp_result_HH),
-			.b(tmp_result_HL),
-			.c(tmp_out_1)
-		);
-		qadd1 #(.BIT_WIDTH(6), .OUT_WIDTH(6)) qadd_inst_2(
-			.a(tmp_result_LL),
-			.b(tmp_result_LH),
-			.c(tmp_out_2)
-		);
-
-		qadd1 #(.BIT_WIDTH(6), .OUT_WIDTH(6)) qadd_inst_3(
-			.a(tmp_out_1),
-			.b(tmp_out_2),
-			.c(Out_data)
-		);
-
-endmodule
-
-module qadd1 #(parameter BIT_WIDTH = 6, OUT_WIDTH = 8)(a,b,c);
-input [BIT_WIDTH-1:0] a;
-input [BIT_WIDTH-1:0] b;
-output [BIT_WIDTH-1:0] c;
-
-assign c = a + b;
-//DW01_add #(`DWIDTH) u_add(.A(a), .B(b), .CI(1'b0), .SUM(c), .CO());
+	assign Out_data = tmp_result_HH + tmp_result_HL + tmp_result_LH + tmp_result_LL;
 endmodule

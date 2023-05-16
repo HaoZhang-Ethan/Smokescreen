@@ -705,10 +705,8 @@ end
   tanh tan_c2(add_cf_reg,tan_h);
   //qmult #(12,16) h_elmul(.i_multiplicand(tan_h_reg),.i_multiplier(sig_oo_d3),.o_result(ht),.ovr(overflow0));
   signedmul h_elmul(.clk(clk),.a(tan_h_reg),.b(sig_oo_d5),.c(ht));
-
-
-
 endmodule
+ 
  
 module vecmat_add #( parameter varraysize=1600, vectwidth=100, uarraysize=1024)
 (

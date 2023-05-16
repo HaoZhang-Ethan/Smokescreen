@@ -34,7 +34,7 @@ yosys -import
 
 # Read the HDL file with pre-defined parser in the run_vtr_flow script
 
-# maxpool33.v (input circuit) is replaced with filename by the run_vtr_flow script
+# inception.v (input circuit) is replaced with filename by the run_vtr_flow script
 
 if {$env(PARSER) == "surelog" } {
 
@@ -44,7 +44,7 @@ if {$env(PARSER) == "surelog" } {
 
 	yosys -import
 
-	read_uhdm -debug maxpool33.v
+	read_uhdm -debug inception.v
 
 } elseif {$env(PARSER) == "yosys-plugin" } {
 
@@ -54,13 +54,13 @@ if {$env(PARSER) == "surelog" } {
 
 	yosys -import
 
-	read_systemverilog -debug maxpool33.v
+	read_systemverilog -debug inception.v
 
 } elseif {$env(PARSER) == "yosys" } {
 
 	puts "Using Yosys read_verilog command"
 
-	read_verilog -sv -nolatches maxpool33.v
+	read_verilog -sv -nolatches inception.v
 
 } else {
 
@@ -242,7 +242,7 @@ autoname
 
 # switch `-impltf' doesn't output them
 
-# maxpool33.yosys.blif will be replaced by run_vtr_flow.pl
+# inception.yosys.blif will be replaced by run_vtr_flow.pl
 
-write_blif -true + vcc -false + gnd -undef + unconn -blackbox maxpool33.yosys.blif
+write_blif -true + vcc -false + gnd -undef + unconn -blackbox inception.yosys.blif
 
