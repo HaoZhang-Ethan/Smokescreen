@@ -4,7 +4,11 @@
 Author: haozhang haozhang@mail.sdu.edu.cn
 Date: 2023-04-02 03:13:45
 LastEditors: haozhang haozhang@mail.sdu.edu.cn
+<<<<<<< HEAD
+LastEditTime: 2023-05-22 08:43:22
+=======
 LastEditTime: 2023-05-16 06:48:12
+>>>>>>> parent of 88a9848d (update)
 FilePath: /Smokescreen/Flow/Scirpts/presyn.py
 Description: 
 
@@ -113,6 +117,25 @@ OP_AREA_DICT["conv33_6bit_DSP"] = [8, 9, 0]
 OP_AREA_DICT["conv33_6bit_CLB"] = [53, 0, 0]
 OP_AREA_DICT["conv33_6bit_PIM"] = [14, 0, 16]
 
+<<<<<<< HEAD
+OP_AREA_DICT["vecmat_x_8_DSP"] = [601, 100, 0]
+OP_AREA_DICT["vecmat_x_8_CLB"] = [1394, 0, 0]
+OP_AREA_DICT["vecmat_x_8_PIM"] = [48, 0, 64]
+
+OP_AREA_DICT["vecmat_h_8_DSP"] = [358, 64, 0]
+OP_AREA_DICT["vecmat_h_8_CLB"] = [893, 0, 0]
+OP_AREA_DICT["vecmat_h_8_PIM"] = [24, 0, 32]
+
+OP_AREA_DICT["vecmat_x_6_DSP"] = [601, 100, 0]
+OP_AREA_DICT["vecmat_x_6_CLB"] = [99, 0, 0]
+OP_AREA_DICT["vecmat_x_6_PIM"] = [12, 0, 16]
+
+OP_AREA_DICT["vecmat_h_6_DSP"] = [358, 64, 0]
+OP_AREA_DICT["vecmat_h_6_CLB"] = [63, 0, 0]
+OP_AREA_DICT["vecmat_h_6_PIM"] = [6, 0, 8]
+
+=======
+>>>>>>> parent of 88a9848d (update)
 OP_NET_DICT["conv55_6bit_DSP"] = 1097
 OP_NET_DICT["conv55_6bit_CLB"] = 482299
 OP_NET_DICT["conv55_6bit_PIM"] = 304
@@ -126,6 +149,25 @@ OP_NET_DICT["conv33_6bit_CLB"] = 4822
 OP_NET_DICT["conv33_6bit_PIM"] = 213
 
 
+<<<<<<< HEAD
+OP_NET_DICT["vecmat_x_8_DSP"] = 29996
+OP_NET_DICT["vecmat_x_8_CLB"] = 45296
+OP_NET_DICT["vecmat_x_8_PIM"] = 2180
+
+OP_NET_DICT["vecmat_h_8_DSP"] = 19316
+OP_NET_DICT["vecmat_h_8_CLB"] = 29108
+OP_NET_DICT["vecmat_h_8_PIM"] = 1340
+
+OP_NET_DICT["vecmat_x_6_DSP"] = 29996
+OP_NET_DICT["vecmat_x_6_CLB"] = 3295
+OP_NET_DICT["vecmat_x_6_PIM"] = 924
+
+OP_NET_DICT["vecmat_h_6_DSP"] = 19316
+OP_NET_DICT["vecmat_h_6_CLB"] = 2227
+OP_NET_DICT["vecmat_h_6_PIM"] = 566
+
+=======
+>>>>>>> parent of 88a9848d (update)
 KIND_OP_CHIP = len(OP_SET)
 # initialize the CIRCUIT
 CIRCUIT_inst = CIRCUIT()
@@ -300,7 +342,7 @@ if FIND_OP == 1:
     # execute synthesis
     # generate folder
     for tmp_num_dsp in range(0, len(CIRCUIT_inst.DICT_OP)+1):
-        for tmp_num_clb in range(0, 1): # len(CIRCUIT_inst.DICT_OP)+1):
+        for tmp_num_clb in range(0, len(CIRCUIT_inst.DICT_OP)+1): #1): # 
             for tmp_num_pim in range(0, len(CIRCUIT_inst.DICT_OP)+1): # 1
                 if (tmp_num_dsp + tmp_num_clb + tmp_num_pim) == len(CIRCUIT_inst.DICT_OP):
                     tmp_vector = [0] * len(CIRCUIT_inst.DICT_OP)
@@ -311,14 +353,14 @@ if FIND_OP == 1:
                     for tmp_j in range(tmp_num_dsp + tmp_num_clb, tmp_num_dsp + tmp_num_clb + tmp_num_pim):
                         tmp_vector[tmp_j] = 2
                     random.shuffle(tmp_vector)
-                    path = "/root/Project/Smokescreen/Flow/Output/debug/Le" + str(tmp_num_dsp) + "-" + str(tmp_num_clb) + "-" + str(tmp_num_pim) + "/"
+                    path = "/root/Project/Smokescreen/Flow/Output/debug/LSTM" + str(tmp_num_dsp) + "-" + str(tmp_num_clb) + "-" + str(tmp_num_pim) + "/"
                     if os.path.exists(path):
-                        cmd = "cp -f " + "/root/Project/Smokescreen/Flow/Circuits/Lenettest/*.v" + " " + path
+                        cmd = "cp -f " + "/root/Project/Smokescreen/Flow/Circuits/lstm/Adapt/*.v" + " " + path
                         os.system(cmd)
                     else:
                         cmd = "mkdir " + path 
                         os.system(cmd)
-                        cmd = "cp " + "/root/Project/Smokescreen/Flow/Circuits/Lenettest/*.v" + " " + path
+                        cmd = "cp " + "/root/Project/Smokescreen/Flow/Circuits/lstm/Adapt/*.v" + " " + path
                         os.system(cmd)
                     time.sleep(0.5)
                     tmp_verilog_buffer = []
@@ -362,7 +404,7 @@ if GET_FIND_OP_RES == 1:
             for tmp_num_clb in range(0,len(CIRCUIT_inst.DICT_OP)+1):   # 1):
                 for tmp_num_pim in range(0,  len(CIRCUIT_inst.DICT_OP)+1): # 1):
                     if (tmp_num_dsp + tmp_num_clb + tmp_num_pim) == len(CIRCUIT_inst.DICT_OP):
-                        path = "/root/Project/Smokescreen/Flow/Output/debug/Le" + str(tmp_num_dsp) + "-" + str(tmp_num_clb) + "-" + str(tmp_num_pim) + "/"
+                        path = "/root/Project/Smokescreen/Flow/Output/debug/LSTM" + str(tmp_num_dsp) + "-" + str(tmp_num_clb) + "-" + str(tmp_num_pim) + "/"
                         if os.path.exists(path):
                             if os.path.exists(path + "test_op.route"):
                                 # read the report
