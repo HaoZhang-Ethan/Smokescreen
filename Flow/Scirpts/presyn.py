@@ -4,11 +4,7 @@
 Author: haozhang haozhang@mail.sdu.edu.cn
 Date: 2023-04-02 03:13:45
 LastEditors: haozhang haozhang@mail.sdu.edu.cn
-<<<<<<< HEAD
 LastEditTime: 2023-05-22 08:43:22
-=======
-LastEditTime: 2023-05-16 06:48:12
->>>>>>> parent of 88a9848d (update)
 FilePath: /Smokescreen/Flow/Scirpts/presyn.py
 Description: 
 
@@ -102,9 +98,26 @@ OP_NET_DICT = {}
 OP_SET.append(OP("conv55_6bit", "conv55_6bit", "conv55_6bit_DSP", "conv55_6bit_CLB", "conv55_6bit_PIM", "conv55_6bit_BLK"))
 OP_SET.append(OP("conv55_8bit", "conv55_8bit", "conv55_8bit_DSP", "conv55_8bit_CLB", "conv55_8bit_PIM", "conv55_8bit_BLK"))
 OP_SET.append(OP("conv33_6bit", "conv33_6bit", "conv33_6bit_DSP", "conv33_6bit_CLB", "conv33_6bit_PIM", "conv33_6bit_BLK"))
+
+OP_SET.append(OP("vecmat_x_8", "vecmat_x_8", "vecmat_x_8_DSP", "vecmat_x_8_CLB", "vecmat_x_8_PIM", "vecmat_x_8_BLK"))
+OP_SET.append(OP("vecmat_h_8", "vecmat_h_8", "vecmat_h_8_DSP", "vecmat_h_8_CLB", "vecmat_h_8_PIM", "vecmat_h_8_BLK"))
+
+OP_SET.append(OP("vecmat_x_6", "vecmat_x_6", "vecmat_x_6_DSP", "vecmat_x_6_CLB", "vecmat_x_6_PIM", "vecmat_x_6_BLK"))
+OP_SET.append(OP("vecmat_h_6", "vecmat_h_6", "vecmat_h_6_DSP", "vecmat_h_6_CLB", "vecmat_h_6_PIM", "vecmat_h_6_BLK"))
+
+
 OP_DICT["conv55_6bit"] = ["conv55_6bit_DSP", "conv55_6bit_CLB", "conv55_6bit_PIM"]
 OP_DICT["conv55_8bit"] = ["conv55_8bit_DSP", "conv55_8bit_CLB", "conv55_8bit_PIM"]
 OP_DICT["conv33_6bit"] = ["conv33_6bit_DSP", "conv33_6bit_CLB", "conv33_6bit_PIM"]
+
+
+OP_DICT["vecmat_x_8"] = ["vecmat_x_8_DSP", "vecmat_x_8_CLB", "vecmat_x_8_PIM"]
+OP_DICT["vecmat_h_8"] = ["vecmat_h_8_DSP", "vecmat_h_8_CLB", "vecmat_h_8_PIM"]
+
+OP_DICT["vecmat_x_6"] = ["vecmat_x_6_DSP", "vecmat_x_6_CLB", "vecmat_x_6_PIM"]
+OP_DICT["vecmat_h_6"] = ["vecmat_h_6_DSP", "vecmat_h_6_CLB", "vecmat_h_6_PIM"]
+
+
 OP_AREA_DICT["conv55_6bit_DSP"] = [24, 25, 0]
 OP_AREA_DICT["conv55_6bit_CLB"] = [150, 0, 0]
 OP_AREA_DICT["conv55_6bit_PIM"] = [12, 0, 4]
@@ -117,7 +130,6 @@ OP_AREA_DICT["conv33_6bit_DSP"] = [8, 9, 0]
 OP_AREA_DICT["conv33_6bit_CLB"] = [53, 0, 0]
 OP_AREA_DICT["conv33_6bit_PIM"] = [14, 0, 16]
 
-<<<<<<< HEAD
 OP_AREA_DICT["vecmat_x_8_DSP"] = [601, 100, 0]
 OP_AREA_DICT["vecmat_x_8_CLB"] = [1394, 0, 0]
 OP_AREA_DICT["vecmat_x_8_PIM"] = [48, 0, 64]
@@ -134,13 +146,11 @@ OP_AREA_DICT["vecmat_h_6_DSP"] = [358, 64, 0]
 OP_AREA_DICT["vecmat_h_6_CLB"] = [63, 0, 0]
 OP_AREA_DICT["vecmat_h_6_PIM"] = [6, 0, 8]
 
-=======
->>>>>>> parent of 88a9848d (update)
 OP_NET_DICT["conv55_6bit_DSP"] = 1097
-OP_NET_DICT["conv55_6bit_CLB"] = 482299
+OP_NET_DICT["conv55_6bit_CLB"] = 4822
 OP_NET_DICT["conv55_6bit_PIM"] = 304
 
-OP_NET_DICT["conv55_8bit_DSP"] = 1097
+OP_NET_DICT["conv55_8bit_DSP"] = 1417
 OP_NET_DICT["conv55_8bit_CLB"] = 8267
 OP_NET_DICT["conv55_8bit_PIM"] = 532
 
@@ -149,7 +159,6 @@ OP_NET_DICT["conv33_6bit_CLB"] = 4822
 OP_NET_DICT["conv33_6bit_PIM"] = 213
 
 
-<<<<<<< HEAD
 OP_NET_DICT["vecmat_x_8_DSP"] = 29996
 OP_NET_DICT["vecmat_x_8_CLB"] = 45296
 OP_NET_DICT["vecmat_x_8_PIM"] = 2180
@@ -166,8 +175,6 @@ OP_NET_DICT["vecmat_h_6_DSP"] = 19316
 OP_NET_DICT["vecmat_h_6_CLB"] = 2227
 OP_NET_DICT["vecmat_h_6_PIM"] = 566
 
-=======
->>>>>>> parent of 88a9848d (update)
 KIND_OP_CHIP = len(OP_SET)
 # initialize the CIRCUIT
 CIRCUIT_inst = CIRCUIT()
@@ -181,7 +188,7 @@ with open(args.input, 'r') as f:
             CIRCUIT_inst.NUM_OP_VERILOG = CIRCUIT_inst.NUM_OP_VERILOG + line.count(OP_.OP_key)
             if line.count(OP_.OP_key) != 0:
                 CIRCUIT_inst.DICT_OP[line.split()[1]] =  [OP_.OP_key, OP_.OP_BLK]
-            tmp_verilog_buffer.append(line)
+        tmp_verilog_buffer.append(line)
 # write the blackboxes Verilog file
 f.close()
 with open(args.output, 'w') as f:

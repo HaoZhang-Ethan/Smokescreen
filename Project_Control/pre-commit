@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Check file sizes using find command
+oversized_files=$(find ../ -type f -size +100M -print)
+if [ -n "$oversized_files" ]; then
+    echo "The following files exceed 100MB in size:"
+    echo "$oversized_files"
+    echo "Please remove or compress these files before committing."
+    exit 1
+fi
+
+exit 0
+

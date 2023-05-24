@@ -157,3 +157,4 @@ cmake-build-debug
 # /Flow/Output/
 
 /Flow/Scirpts/tmp/*
+/Flow/Scirpts/tmp/**/*

@@ -1,0 +1,9 @@
+# Ignore files larger than 100MB
+*.blif
+*.tar
+*.gz
+*.v
+*.xml
+*.log
+# Add more file types if needed
+
