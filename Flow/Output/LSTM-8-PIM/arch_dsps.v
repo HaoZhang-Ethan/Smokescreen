@@ -3,7 +3,7 @@
 /*   This is a machine-generated Verilog code, including the black box declaration of                    */
 /*   complex blocks defined in the following architecture file:                                          */
 /*                                                                                                       */
-/*             k6FracN10LB_mem20K_complexDSP_customSB_22nm_pim_ald_n.xml                                 */
+/*             k6FracN10LB_mem20K_complexDSP_customSB_22nm_cbram.dsp_heavy.xml                           */
 /*                                                                                                       */
 /*********************************************************************************************************/
 

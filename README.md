@@ -1,8 +1,8 @@
 <!--
  * @Author: Hao Zhang haozhang@mail.sdu.edu.cn
  * @Date: 2022-08-13 15:33:31
- * @LastEditors: haozhang-hoge haozhang@mail.sdu.edu.cn
- * @LastEditTime: 2022-12-04 13:42:17
+ * @LastEditors: haozhang haozhang@mail.sdu.edu.cn
+ * @LastEditTime: 2023-05-24 13:09:56
  * @FilePath: /Smokescreen/README.md
  * @Description: 
  * 
@@ -19,15 +19,15 @@ Vector matrix multiplication by NV-FPGA
 ```
 ├── Flow                                                                        # Main work space
 │   ├── Arch                                                                    # FPGA Architecture files
-│   │   ├── k6FracN10LB_mem20K_complexDSP_customSB_22nm_pim_ald                 # Architecture file: BRAM-PIM with heavy DSP 
-│   │   ├── k6FracN10LB_mem20K_complexDSP_customSB_22nm_pim_aln                 # Architecture file: BRAM-PIM with normal density DSP
-│   │   ├── k6FracN10LB_mem20K_complexDSP_customSB_22nm.dsp_heavy               # Architecture file: heavy DSP
-│   │   ├── k6FracN10LB_mem20K_complexDSP_customSB_22nm                         # Architecture file: normal density DSP
+|   │   ├── k6FracN10LB_mem20K_complexDSP_customSB_22nm_nvm.dsp_heavy.xml       # Architecture file: NVBRAM with heavy DSP [jv TCAD]
+│   │   ├── k6FracN10LB_mem20K_complexDSP_customSB_22nm_cbram.dsp_heavy.xml     # Architecture file: BRAM-PIM with heavy DSP 
+│   │   ├── k6FracN10LB_mem20K_complexDSP_customSB_22nm_sram.dsp_heavy.xml      # Architecture file: heavy DSP
 │   ├── Circuits                                                                # Circuits files
 │   ├── Output                                                                  # Output files
 │   ├── Scripts                                                                 # Scripts files
 │   ├── Documents                                                               # Some documents of this project
 ├── Tool                                                                        # Some Tools
+|   ├── COFFE                                                                   # COFFE framework used for estimate the performance and area of BRAM
 │   ├── MNSIM-2.0                                                               # MNSIM simulator used for quantization simulation
 │   ├── vtr-verilog-to-routing                                                  # FPGA synthesis tool
 ├── README.md

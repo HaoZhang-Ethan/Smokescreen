@@ -3,7 +3,7 @@
 /*   This is a machine-generated Verilog code, including the black box declaration of                    */
 /*   complex blocks defined in the following architecture file:                                          */
 /*                                                                                                       */
-/*             k6FracN10LB_mem20K_complexDSP_customSB_22nm_cbram.dsp_heavy.xml                           */
+/*             k6FracN10LB_mem20K_complexDSP_customSB_22nm_sram.dsp_heavy.xml                            */
 /*                                                                                                       */
 /*********************************************************************************************************/
 
@@ -228,16 +228,6 @@ module multiply_fp(
 	input	[31:0]	b,
 	input	[31:0]	a,
 	output	[31:0]	out,
-);
-/* the body of the complex block module is empty since it should be seen as a black box */
-endmodule
-
-module bram_pim(
-	input	[0:0]	clk,
-	input	[95:0]	data,
-	input	[8:0]	addr,
-	input	[0:0]	we,
-	output	[7:0]	out,
 );
 /* the body of the complex block module is empty since it should be seen as a black box */
 endmodule

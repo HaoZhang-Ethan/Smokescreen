@@ -158,3 +158,5 @@ cmake-build-debug
 
 /Flow/Scirpts/tmp/*
 /Flow/Scirpts/tmp/**/*
+
+Tools/

@@ -2,22 +2,22 @@
  * @Author: haozhang-hoge haozhang@mail.sdu.edu.cn
  * @Date: 2022-11-29 10:08:30
  * @LastEditors: haozhang haozhang@mail.sdu.edu.cn
- * @LastEditTime: 2023-05-15 17:11:38
- * @FilePath: /Smokescreen/Flow/Circuits/lenet5/conv.v
+ * @LastEditTime: 2023-05-26 03:00:59
+ * @FilePath: /Smokescreen/Flow/Circuits/CONV33/conv6.v
  * @Description: the basic component of PIM
  * 
  * Copyright (c) 2022 by haozhang-hoge haozhang@mail.sdu.edu.cn, All Rights Reserved. 
  */
 
 
-`define MAX_SIZE_ROW 32 // the max size of the ReRAM Crossbar rows  32*6
+`define MAX_SIZE_ROW 96 // the max size of the ReRAM Crossbar rows  32*6
 `define MAX_SIZE_COL 5 // the max size of the ReRAM Crossbar cols , (default: 5 = log(32) )
 
 // Parameter:
 // INPUT_SIZE, the size of inpuit vector (default: 32), we use 64 for 32x32 crossbar
 // MAP_WIDTH, the column of crossbar we used (default: 5), we use log(32) for 32x32 crossbar
 // ADC_P, ADC precision, we use 8 bits ADC
-module conv #(parameter INPUT_SIZE = 96, DEPTH = 5, ADC_P = 6) (
+module conv6 #(parameter INPUT_SIZE = 96, DEPTH = 5, ADC_P = 6) (
 	input clk, 
 	input rst,
 	input en,	// enable
