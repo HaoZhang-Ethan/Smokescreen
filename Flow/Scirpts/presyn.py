@@ -4,7 +4,7 @@
 Author: haozhang haozhang@mail.sdu.edu.cn
 Date: 2023-04-02 03:13:45
 LastEditors: haozhang haozhang@mail.sdu.edu.cn
-LastEditTime: 2023-05-22 08:43:22
+LastEditTime: 2023-05-28 06:09:23
 FilePath: /Smokescreen/Flow/Scirpts/presyn.py
 Description: 
 
@@ -68,7 +68,7 @@ with open(PATH_FPGA_SIZE_LIB, 'r') as f:
 class OP:
     def __init__(self, op_name, op_key, op_dsp, op_clb, op_pim, op_blk ):
         self.OP_name = op_name   # the OP name
-        self.OP_key = op_key    # the keyword of OP, such as "conv55_6bit" How to find the OP in the Verilog file?
+        self.OP_key = op_key    # the keyword of OP, such as "conv55_6" How to find the OP in the Verilog file?
         self.OP_DSP = op_dsp    # the DSP module name
         self.OP_CLB = op_clb    # the CLB module name
         self.OP_PIM = op_pim    # the PIM module name
@@ -95,85 +95,124 @@ OP_DICT = {}
 OP_AREA_DICT = {}
 OP_NET_DICT = {}
 # TODO: if you add a new type op, you should add the following code
-OP_SET.append(OP("conv55_6bit", "conv55_6bit", "conv55_6bit_DSP", "conv55_6bit_CLB", "conv55_6bit_PIM", "conv55_6bit_BLK"))
-OP_SET.append(OP("conv55_8bit", "conv55_8bit", "conv55_8bit_DSP", "conv55_8bit_CLB", "conv55_8bit_PIM", "conv55_8bit_BLK"))
-OP_SET.append(OP("conv33_6bit", "conv33_6bit", "conv33_6bit_DSP", "conv33_6bit_CLB", "conv33_6bit_PIM", "conv33_6bit_BLK"))
 
+
+# ----------------------------------conv55----------------------------------
+
+# ----------------------------------conv55_8----------------------------------
+# OP-Definition
+OP_SET.append(OP("conv55_8", "conv55_8", "conv55_8_DSP", "conv55_8_CLB", "conv55_8_PIM", "conv55_8_BLK"))
+# OP-Dict
+OP_DICT["conv55_8"] = ["conv55_8_DSP", "conv55_8_CLB", "conv55_8_PIM"]
+# OP-Resource
+OP_AREA_DICT["conv55_8_DSP"] = [24, 25,0]
+OP_AREA_DICT["conv55_8_CLB"] = [249, 0,  0]
+OP_AREA_DICT["conv55_8_PIM"] = [9, 0, 16]
+# OP-Netlist
+OP_NET_DICT["conv55_8_DSP"] = 1417
+OP_NET_DICT["conv55_8_CLB"] = 8267
+OP_NET_DICT["conv55_8_PIM"] = 532
+
+# ----------------------------------conv55_6----------------------------------
+# OP-Definition
+OP_SET.append(OP("conv55_6", "conv55_6", "conv55_6_DSP", "conv55_6_CLB", "conv55_6_PIM", "conv55_6_BLK"))
+# OP-Dict
+OP_DICT["conv55_6"] = ["conv55_6_DSP", "conv55_6_CLB", "conv55_6_PIM"]
+# OP-Resource
+OP_AREA_DICT["conv55_6_DSP"] = [24, 25, 0]
+OP_AREA_DICT["conv55_6_CLB"] = [150, 0, 0]
+OP_AREA_DICT["conv55_6_PIM"] = [12, 0, 4]
+# OP-Netlist
+OP_NET_DICT["conv55_6_DSP"] = 1097
+OP_NET_DICT["conv55_6_CLB"] = 4822
+OP_NET_DICT["conv55_6_PIM"] = 304
+
+# ----------------------------------conv33_8----------------------------------
+# OP-Definition
+OP_SET.append(OP("conv33_8", "conv33_8", "conv33_8_DSP", "conv33_8_CLB", "conv33_8_PIM", "conv33_8_BLK"))
+# OP-Dict
+OP_DICT["conv33_8"] = ["conv33_8_DSP", "conv33_8_CLB", "conv33_8_PIM"]
+# OP-Resource
+OP_AREA_DICT["conv33_8_DSP"] = [8, 9, 0]
+OP_AREA_DICT["conv33_8_CLB"] = [89, 0, 0]
+OP_AREA_DICT["conv33_8_PIM"] = [9, 0, 16]
+# OP-Netlist
+OP_NET_DICT["conv33_8_DSP"] = 387
+OP_NET_DICT["conv33_8_CLB"] = 2955
+OP_NET_DICT["conv33_8_PIM"] = 404
+
+# ----------------------------------conv33_6----------------------------------
+# OP-Definition
+OP_SET.append(OP("conv33_6", "conv33_6", "conv33_6_DSP", "conv33_6_CLB", "conv33_6_PIM", "conv33_6_BLK"))
+# OP-Dict
+OP_DICT["conv33_6"] = ["conv33_6_DSP", "conv33_6_CLB", "conv33_6_PIM"]
+# OP-Resource
+OP_AREA_DICT["conv33_6_DSP"] = [8, 9, 0]
+OP_AREA_DICT["conv33_6_CLB"] = [16, 0, 0]
+OP_AREA_DICT["conv33_6_PIM"] = [14, 0, 16]
+# OP-Netlist
+OP_NET_DICT["conv33_6_DSP"] = 387
+OP_NET_DICT["conv33_6_CLB"] = 18
+OP_NET_DICT["conv33_6_PIM"] = 213
+
+# ----------------------------------vecmat_x_8----------------------------------
+# OP-Definition
 OP_SET.append(OP("vecmat_x_8", "vecmat_x_8", "vecmat_x_8_DSP", "vecmat_x_8_CLB", "vecmat_x_8_PIM", "vecmat_x_8_BLK"))
-OP_SET.append(OP("vecmat_h_8", "vecmat_h_8", "vecmat_h_8_DSP", "vecmat_h_8_CLB", "vecmat_h_8_PIM", "vecmat_h_8_BLK"))
-
-OP_SET.append(OP("vecmat_x_6", "vecmat_x_6", "vecmat_x_6_DSP", "vecmat_x_6_CLB", "vecmat_x_6_PIM", "vecmat_x_6_BLK"))
-OP_SET.append(OP("vecmat_h_6", "vecmat_h_6", "vecmat_h_6_DSP", "vecmat_h_6_CLB", "vecmat_h_6_PIM", "vecmat_h_6_BLK"))
-
-
-OP_DICT["conv55_6bit"] = ["conv55_6bit_DSP", "conv55_6bit_CLB", "conv55_6bit_PIM"]
-OP_DICT["conv55_8bit"] = ["conv55_8bit_DSP", "conv55_8bit_CLB", "conv55_8bit_PIM"]
-OP_DICT["conv33_6bit"] = ["conv33_6bit_DSP", "conv33_6bit_CLB", "conv33_6bit_PIM"]
-
-
+# OP-Dict
 OP_DICT["vecmat_x_8"] = ["vecmat_x_8_DSP", "vecmat_x_8_CLB", "vecmat_x_8_PIM"]
-OP_DICT["vecmat_h_8"] = ["vecmat_h_8_DSP", "vecmat_h_8_CLB", "vecmat_h_8_PIM"]
-
-OP_DICT["vecmat_x_6"] = ["vecmat_x_6_DSP", "vecmat_x_6_CLB", "vecmat_x_6_PIM"]
-OP_DICT["vecmat_h_6"] = ["vecmat_h_6_DSP", "vecmat_h_6_CLB", "vecmat_h_6_PIM"]
-
-
-OP_AREA_DICT["conv55_6bit_DSP"] = [24, 25, 0]
-OP_AREA_DICT["conv55_6bit_CLB"] = [150, 0, 0]
-OP_AREA_DICT["conv55_6bit_PIM"] = [12, 0, 4]
-
-OP_AREA_DICT["conv55_8bit_DSP"] = [24, 25,0]
-OP_AREA_DICT["conv55_8bit_CLB"] = [249, 0,  0]
-OP_AREA_DICT["conv55_8bit_PIM"] = [9, 0, 16]
-
-OP_AREA_DICT["conv33_6bit_DSP"] = [8, 9, 0]
-OP_AREA_DICT["conv33_6bit_CLB"] = [53, 0, 0]
-OP_AREA_DICT["conv33_6bit_PIM"] = [14, 0, 16]
-
+# OP-Resource
 OP_AREA_DICT["vecmat_x_8_DSP"] = [601, 100, 0]
 OP_AREA_DICT["vecmat_x_8_CLB"] = [1394, 0, 0]
 OP_AREA_DICT["vecmat_x_8_PIM"] = [48, 0, 64]
-
-OP_AREA_DICT["vecmat_h_8_DSP"] = [358, 64, 0]
-OP_AREA_DICT["vecmat_h_8_CLB"] = [893, 0, 0]
-OP_AREA_DICT["vecmat_h_8_PIM"] = [24, 0, 32]
-
-OP_AREA_DICT["vecmat_x_6_DSP"] = [601, 100, 0]
-OP_AREA_DICT["vecmat_x_6_CLB"] = [99, 0, 0]
-OP_AREA_DICT["vecmat_x_6_PIM"] = [12, 0, 16]
-
-OP_AREA_DICT["vecmat_h_6_DSP"] = [358, 64, 0]
-OP_AREA_DICT["vecmat_h_6_CLB"] = [63, 0, 0]
-OP_AREA_DICT["vecmat_h_6_PIM"] = [6, 0, 8]
-
-OP_NET_DICT["conv55_6bit_DSP"] = 1097
-OP_NET_DICT["conv55_6bit_CLB"] = 4822
-OP_NET_DICT["conv55_6bit_PIM"] = 304
-
-OP_NET_DICT["conv55_8bit_DSP"] = 1417
-OP_NET_DICT["conv55_8bit_CLB"] = 8267
-OP_NET_DICT["conv55_8bit_PIM"] = 532
-
-OP_NET_DICT["conv33_6bit_DSP"] = 1097
-OP_NET_DICT["conv33_6bit_CLB"] = 4822
-OP_NET_DICT["conv33_6bit_PIM"] = 213
-
-
+# OP-Netlist
 OP_NET_DICT["vecmat_x_8_DSP"] = 29996
 OP_NET_DICT["vecmat_x_8_CLB"] = 45296
 OP_NET_DICT["vecmat_x_8_PIM"] = 2180
 
-OP_NET_DICT["vecmat_h_8_DSP"] = 19316
-OP_NET_DICT["vecmat_h_8_CLB"] = 29108
-OP_NET_DICT["vecmat_h_8_PIM"] = 1340
-
+# ----------------------------------vecmat_x_6----------------------------------
+# OP-Definition
+OP_SET.append(OP("vecmat_x_6", "vecmat_x_6", "vecmat_x_6_DSP", "vecmat_x_6_CLB", "vecmat_x_6_PIM", "vecmat_x_6_BLK"))
+# OP-Dict
+OP_DICT["vecmat_x_6"] = ["vecmat_x_6_DSP", "vecmat_x_6_CLB", "vecmat_x_6_PIM"]
+# OP-Resource
+OP_AREA_DICT["vecmat_x_6_DSP"] = [601, 100, 0]
+OP_AREA_DICT["vecmat_x_6_CLB"] = [99, 0, 0]
+OP_AREA_DICT["vecmat_x_6_PIM"] = [12, 0, 16]
+# OP-Netlist
 OP_NET_DICT["vecmat_x_6_DSP"] = 29996
 OP_NET_DICT["vecmat_x_6_CLB"] = 3295
 OP_NET_DICT["vecmat_x_6_PIM"] = 924
 
+# ----------------------------------vecmat_h_8----------------------------------
+# OP-Definition
+OP_SET.append(OP("vecmat_h_8", "vecmat_h_8", "vecmat_h_8_DSP", "vecmat_h_8_CLB", "vecmat_h_8_PIM", "vecmat_h_8_BLK"))
+# OP-Dict
+OP_DICT["vecmat_h_8"] = ["vecmat_h_8_DSP", "vecmat_h_8_CLB", "vecmat_h_8_PIM"]
+# OP-Resource
+OP_AREA_DICT["vecmat_h_8_DSP"] = [358, 64, 0]
+OP_AREA_DICT["vecmat_h_8_CLB"] = [893, 0, 0]
+OP_AREA_DICT["vecmat_h_8_PIM"] = [24, 0, 32]
+# OP-Netlist
+OP_NET_DICT["vecmat_h_8_DSP"] = 19316
+OP_NET_DICT["vecmat_h_8_CLB"] = 29108
+OP_NET_DICT["vecmat_h_8_PIM"] = 1340
+
+# ----------------------------------vecmat_h_6----------------------------------
+# OP-Definition
+OP_SET.append(OP("vecmat_h_6", "vecmat_h_6", "vecmat_h_6_DSP", "vecmat_h_6_CLB", "vecmat_h_6_PIM", "vecmat_h_6_BLK"))
+# OP-Dict
+OP_DICT["vecmat_h_6"] = ["vecmat_h_6_DSP", "vecmat_h_6_CLB", "vecmat_h_6_PIM"]
+# OP-Resource
+OP_AREA_DICT["vecmat_h_6_DSP"] = [358, 64, 0]
+OP_AREA_DICT["vecmat_h_6_CLB"] = [63, 0, 0]
+OP_AREA_DICT["vecmat_h_6_PIM"] = [6, 0, 8]
+# OP-Netlist
 OP_NET_DICT["vecmat_h_6_DSP"] = 19316
 OP_NET_DICT["vecmat_h_6_CLB"] = 2227
 OP_NET_DICT["vecmat_h_6_PIM"] = 566
+
+
+
 
 KIND_OP_CHIP = len(OP_SET)
 # initialize the CIRCUIT
