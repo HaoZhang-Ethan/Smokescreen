@@ -4,7 +4,7 @@
 Author: haozhang haozhang@mail.sdu.edu.cn
 Date: 2023-04-02 03:13:45
 LastEditors: haozhang haozhang@mail.sdu.edu.cn
-LastEditTime: 2023-05-28 06:09:23
+LastEditTime: 2023-05-28 12:10:42
 FilePath: /Smokescreen/Flow/Scirpts/presyn.py
 Description: 
 
@@ -27,14 +27,22 @@ Get_BLK = 0
 AUTO_EXE = 0
 FIND_OP = 0
 GET_FIND_OP_RES = 0
-SA_RUN = 1
+SA_RUN_OP = 1
+SA_RUN_AREA = 0
+
 
 # Parse the command line arguments
 parser = argparse.ArgumentParser(description='Find instances in a Verilog file containing certain keywords and write their names and corresponding module names to a file.')
 parser.add_argument('-i', '--input', type=str, required=True, help='Input Verilog file')
-parser.add_argument('-o', '--output', type=str, required=True, help='Output file')
+parser.add_argument('-p', '--precision', type=str, required=True, help='Precision of OP')
+parser.add_argument('-g', '--group', type=str, required=True, help='group 1 or 2')
+parser.add_argument('-a', '--architecture', type=str, required=True, help='architecture in group 1')
+# parser.add_argument('-o', '--output', type=str, required=True, help='Output file')
 # parser.add_argument('-k', '--keywords', type=str, required=True, help='Comma-separated list of keywords to search for')
 args = parser.parse_args()
+
+
+
 
 # Function
 # calculate the FPGA size
@@ -48,7 +56,25 @@ def calu_FPGA_SIZE(size, INST):
 
 
 # global parameters
+CIRCUIT_NAME = args.input
+
+
 PATH_FPGA_SIZE_LIB = "/root/Project/Smokescreen/Flow/Scirpts/Lib/FPGA_SIZE.lib"
+PATH_VTR_FLOW_RUN = "/root/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_flow/scripts/run_vtr_flow.py "
+PATH_CIRCUITS = "/root/Project/Smokescreen/Flow/Circuits/"
+PATH_CIRCUIT_FOLDER = PATH_CIRCUITS + CIRCUIT_NAME + "/"
+PATH_CIRCUIT = PATH_CIRCUIT_FOLDER + CIRCUIT_NAME
+PATH_CIRCUIT_FILE = PATH_CIRCUIT_FOLDER + CIRCUIT_NAME + "_" + args.precision + ".v"
+PATH_CACHE_FOLDER = "/root/Project/Smokescreen/Flow/Scirpts/Cache/"
+PATH_CACHE_BLK_SET = "/root/Project/Smokescreen/Flow/Scirpts/Cache/BLK_SETS/"
+PATH_BLK_FILE = PATH_CACHE_BLK_SET + CIRCUIT_NAME + "_" + args.precision + "_BLK.v"
+PATH_ARCHITECTURE = "/root/Project/Smokescreen/Flow/Arch/"
+PATH_ARCHITECTURE_CRAM_FILE = PATH_ARCHITECTURE+"k6FracN10LB_mem20K_complexDSP_customSB_22nm_cbram.dsp_heavy.xml"
+PATH_SOLUTION = "/root/Project/Smokescreen/Flow/Scirpts/Solution/"
+PATH_SOLUTION_OP_FILE = PATH_SOLUTION + "OP_SETS/" + CIRCUIT_NAME + "_" + args.precision + "_OP.v"
+PATH_SOLUTION_AREA_FILE = PATH_SOLUTION + "AREA_SETS/" + CIRCUIT_NAME + "_" + args.precision + "_AREA.v"
+
+
 
 KIND_OP_CHIP = 0 # the kind of OP that can be supported by the chip
 
@@ -220,7 +246,7 @@ CIRCUIT_inst = CIRCUIT()
 # read the Verilog file and replace the instances with the blackboxes module
 # Read the Verilog file
 tmp_verilog_buffer = []
-with open(args.input, 'r') as f:
+with open(PATH_CIRCUIT_FILE, 'r') as f:
     for line in f:
         for OP_ in OP_SET:
             line = line.replace(OP_.OP_key , OP_.OP_BLK)
@@ -228,27 +254,38 @@ with open(args.input, 'r') as f:
             if line.count(OP_.OP_key) != 0:
                 CIRCUIT_inst.DICT_OP[line.split()[1]] =  [OP_.OP_key, OP_.OP_BLK]
         tmp_verilog_buffer.append(line)
-# write the blackboxes Verilog file
-f.close()
-with open(args.output, 'w') as f:
-    for tmp_verilog_ in tmp_verilog_buffer:
-        f.write(tmp_verilog_)
-f.close()
+
 if Get_BLK == 1:
-    cmd =  "/root/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_flow/scripts/run_vtr_flow.py /root/Project/Smokescreen/Flow/Scirpts/out.v  /root/Project/Smokescreen/Flow/Arch/k6FracN10LB_mem20K_complexDSP_customSB_22nm_pim_ald_n.xml  -temp_dir /root/Project/Smokescreen/Flow/Scirpts/tmp -start yosys  --timing_report_detail detailed --route_chan_width 150"
+    tmp_cmd = "cp -rf " +  PATH_CIRCUIT_FOLDER + " " + PATH_CACHE_FOLDER
+    os.system(tmp_cmd)
+    tmp_cmd = "rsync --delete " + PATH_CACHE_FOLDER + CIRCUIT_NAME + " " + PATH_CACHE_FOLDER + CIRCUIT_NAME + "_" +args.precision+"_BLK"
+    os.system(tmp_cmd)
+    tmp_cmd = "rm -rf " + PATH_CACHE_FOLDER + CIRCUIT_NAME 
+    os.system(tmp_cmd)
+    
+
+    # write the blackboxes Verilog file
+    f.close()
+    with open(PATH_BLK_FILE, 'w') as f:
+        for tmp_verilog_ in tmp_verilog_buffer:
+            f.write(tmp_verilog_)
+    f.close()
+
+    cmd =  PATH_VTR_FLOW_RUN + " " + PATH_BLK_FILE +" " + PATH_ARCHITECTURE_CRAM_FILE + " -temp_dir " + PATH_CACHE_FOLDER + CIRCUIT_NAME + "_" +args.precision+"_BLK" +  " -start yosys  --timing_report_detail detailed --route_chan_width 150"
     os.system(cmd)
+
+    PATH_ROUTE = PATH_CACHE_FOLDER + CIRCUIT_NAME + "_" +args.precision+"_BLK" + "/" + CIRCUIT_NAME + "_" +args.precision+"_BLK.route"
     while(1):
-        if os.path.exists("/root/Project/Smokescreen/Flow/Scirpts/tmp/out.route"):
-            cmd = "cp /root/Project/Smokescreen/Flow/Scirpts/tmp/vpr_stdout.log " + args.input.replace(".v","") + "_BLK_vpr.out"
-            os.system(cmd)
+        if os.path.exists(PATH_ROUTE):
             break
         time.sleep(5)
 
 
 # catch the base information from blackboxes synthesis result
 #   Read the synthesis result
+PATH_STD_OUT = PATH_CACHE_FOLDER + CIRCUIT_NAME + "_" +args.precision+"_BLK" + "/vpr_stdout.log" 
 tmp_flag_res_find = 0
-with open(args.input.replace(".v","") + "_BLK_vpr.out", 'r') as f:
+with open(PATH_STD_OUT, 'r') as f:
     for line in f:
         if line.find("Resource usage") != -1:
             tmp_flag_res_find = 6
@@ -305,26 +342,34 @@ def simulated_annealing(cost_function, initial_solution, temperature, cooling_ra
             print(str(delta_P)+"\t"+str(AP*100)+"%")
         else:
             AP = 2
-        if delta_P <= 0 or  AP > random.uniform(0, 1):
-        # if delta_A < 0 or (math.exp(-delta_A / temperature) > random.uniform(0, 1)):
-        #     # print(delta_P)
-            # if math.exp(-delta_P / temperature) > random.uniform(0, 1):
-                print(delta_A, delta_P)
-                print("A-", current_A_cost, current_P_cost, "CLB: ", current_solution.NUM_BASE_CLB, "DSP: ", current_solution.NUM_BASE_DSP, "BRAM: ", current_solution.NUM_BASE_BRAM, "FPGA_SIZE: ", current_solution.BASE_FPGA_SIZE, "NET: ", current_solution.NET, "NUM_SA_TRY: ", NUM_SA_TRY, "temperature: ", temperature, "failed_try: ", failed_try)
-                print("B-", candidate_A_cost, candidate_P_cost, "CLB: ", candidate_solution.NUM_BASE_CLB, "DSP: ", candidate_solution.NUM_BASE_DSP, "BRAM: ", candidate_solution.NUM_BASE_BRAM, "FPGA_SIZE: ", candidate_solution.BASE_FPGA_SIZE, "NET: ", candidate_solution.NET, "NUM_SA_TRY: ", NUM_SA_TRY, "temperature: ", temperature, "failed_try: ", failed_try)
-                current_solution = copy.deepcopy(candidate_solution)
-                current_A_cost = candidate_A_cost  
-                current_P_cost = candidate_P_cost  
-                # if delta_A > 0 and delta_P > 0:
-                #     failed_try = failed_try + 1
-                #     if failed_try > math.ceil(math.sqrt(temperature)):
-                #         current_solution = copy.deepcopy(best_solution)
-                #         failed_try = 0
-            # if current_A_cost < best_cost:
-                best_solution = copy.deepcopy(current_solution)
-                best_cost = current_A_cost
-                print("best_cost" + str(best_cost) +  "\t temperature" + str(temperature))
-                print(best_solution.NUM_BASE_CLB/DICT_FPGA_SIZE[best_solution.BASE_FPGA_SIZE][0], best_solution.NUM_BASE_DSP/DICT_FPGA_SIZE[best_solution.BASE_FPGA_SIZE][1], best_solution.NUM_BASE_BRAM/DICT_FPGA_SIZE[best_solution.BASE_FPGA_SIZE][2])
+        ACC_Flag = 0
+        if SA_RUN_OP == 1:
+            if delta_P <= 0 or  AP > random.uniform(0, 1):
+                ACC_Flag = 1
+            else:
+                ACC_Flag = 0
+        elif SA_RUN_AREA == 1:
+            if delta_A < 0 or (math.exp(-delta_A / temperature) > random.uniform(0, 1)):
+                ACC_Flag = 1
+            else:
+                ACC_Flag = 0
+        if ACC_Flag == 1:
+            print(delta_A, delta_P)
+            print("A-", current_A_cost, current_P_cost, "CLB: ", current_solution.NUM_BASE_CLB, "DSP: ", current_solution.NUM_BASE_DSP, "BRAM: ", current_solution.NUM_BASE_BRAM, "FPGA_SIZE: ", current_solution.BASE_FPGA_SIZE, "NET: ", current_solution.NET, "NUM_SA_TRY: ", NUM_SA_TRY, "temperature: ", temperature, "failed_try: ", failed_try)
+            print("B-", candidate_A_cost, candidate_P_cost, "CLB: ", candidate_solution.NUM_BASE_CLB, "DSP: ", candidate_solution.NUM_BASE_DSP, "BRAM: ", candidate_solution.NUM_BASE_BRAM, "FPGA_SIZE: ", candidate_solution.BASE_FPGA_SIZE, "NET: ", candidate_solution.NET, "NUM_SA_TRY: ", NUM_SA_TRY, "temperature: ", temperature, "failed_try: ", failed_try)
+            current_solution = copy.deepcopy(candidate_solution)
+            current_A_cost = candidate_A_cost  
+            current_P_cost = candidate_P_cost  
+            # if delta_A > 0 and delta_P > 0:
+            #     failed_try = failed_try + 1
+            #     if failed_try > math.ceil(math.sqrt(temperature)):
+            #         current_solution = copy.deepcopy(best_solution)
+            #         failed_try = 0
+        # if current_A_cost < best_cost:
+            best_solution = copy.deepcopy(current_solution)
+            best_cost = current_A_cost
+            print("best_cost" + str(best_cost) +  "\t temperature" + str(temperature))
+            print(best_solution.NUM_BASE_CLB/DICT_FPGA_SIZE[best_solution.BASE_FPGA_SIZE][0], best_solution.NUM_BASE_DSP/DICT_FPGA_SIZE[best_solution.BASE_FPGA_SIZE][1], best_solution.NUM_BASE_BRAM/DICT_FPGA_SIZE[best_solution.BASE_FPGA_SIZE][2])
         temperature *= cooling_rate
     print("try swap " + str(NUM_SA_TRY) + "\n")
     print(best_cost)
@@ -361,20 +406,23 @@ def cost_function(solution):
     P_Cost = (solution.NET) # /(solution.BASE_FPGA_SIZE*solution.BASE_FPGA_SIZE)
     return A_Cost, P_Cost
 
-if SA_RUN == 1:    
+if SA_RUN_OP == 1 or SA_RUN_AREA == 1:    
     best_solution, best_cost = simulated_annealing(cost_function, CIRCUIT_inst, temperature = 1000, cooling_rate = 0.9999, stopping_temperature = 0.01)
-
     # read the Verilog file and replace the instances with the blackboxes module
     # Read the Verilog file
     tmp_verilog_buffer = []
-    with open(args.input, 'r') as f:
+    with open(PATH_CIRCUIT_FILE, 'r') as f:
         for line in f:
             for OP_ in OP_SET:
                 if line.count(OP_.OP_key) != 0:
                     line = line.replace(OP_.OP_key ,best_solution.DICT_OP[line.split()[1]][1])
             tmp_verilog_buffer.append(line)
     # write the blackboxes Verilog file
-    with open(args.input.replace(".v","_myop.v"), 'w') as f:
+    if SA_RUN_OP == 1:
+        tmp_path = PATH_SOLUTION_OP_FILE
+    elif SA_RUN_AREA == 1:
+        tmp_path = PATH_SOLUTION_AREA_FILE
+    with open(tmp_path, 'w') as f:
         for tmp_verilog_ in tmp_verilog_buffer:
             f.write(tmp_verilog_)
     print("ok")

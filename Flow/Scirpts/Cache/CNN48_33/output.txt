@@ -1,0 +1,5 @@
+vpr_status=success
+vpr_seconds=3
+rundir=/root/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_flow/scripts
+hostname=c11ac9f91a43
+error=
