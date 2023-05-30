@@ -4,7 +4,7 @@
 Author: haozhang haozhang@mail.sdu.edu.cn
 Date: 2023-04-02 03:13:45
 LastEditors: haozhang haozhang@mail.sdu.edu.cn
-LastEditTime: 2023-05-28 12:10:42
+LastEditTime: 2023-05-29 03:02:40
 FilePath: /Smokescreen/Flow/Scirpts/presyn.py
 Description: 
 
@@ -27,7 +27,7 @@ Get_BLK = 0
 AUTO_EXE = 0
 FIND_OP = 0
 GET_FIND_OP_RES = 0
-SA_RUN_OP = 1
+SA_RUN_OP = 0
 SA_RUN_AREA = 0
 
 
@@ -37,10 +37,14 @@ parser.add_argument('-i', '--input', type=str, required=True, help='Input Verilo
 parser.add_argument('-p', '--precision', type=str, required=True, help='Precision of OP')
 parser.add_argument('-g', '--group', type=str, required=True, help='group 1 or 2')
 parser.add_argument('-a', '--architecture', type=str, required=True, help='architecture in group 1')
+parser.add_argument('-s', '--strategy', type=str, required=False, help='strategy in group 1')
 # parser.add_argument('-o', '--output', type=str, required=True, help='Output file')
 # parser.add_argument('-k', '--keywords', type=str, required=True, help='Comma-separated list of keywords to search for')
 args = parser.parse_args()
-
+if args.strategy == "OP":
+    SA_RUN_OP = 1
+elif args.strategy == "AREA":
+    SA_RUN_AREA = 1
 
 
 
@@ -135,7 +139,7 @@ OP_AREA_DICT["conv55_8_DSP"] = [24, 25,0]
 OP_AREA_DICT["conv55_8_CLB"] = [249, 0,  0]
 OP_AREA_DICT["conv55_8_PIM"] = [9, 0, 16]
 # OP-Netlist
-OP_NET_DICT["conv55_8_DSP"] = 1417
+OP_NET_DICT["conv55_8_DSP"] = 1441
 OP_NET_DICT["conv55_8_CLB"] = 8267
 OP_NET_DICT["conv55_8_PIM"] = 532
 
@@ -145,11 +149,11 @@ OP_SET.append(OP("conv55_6", "conv55_6", "conv55_6_DSP", "conv55_6_CLB", "conv55
 # OP-Dict
 OP_DICT["conv55_6"] = ["conv55_6_DSP", "conv55_6_CLB", "conv55_6_PIM"]
 # OP-Resource
-OP_AREA_DICT["conv55_6_DSP"] = [24, 25, 0]
+OP_AREA_DICT["conv55_6_DSP"] = [26, 25, 0]
 OP_AREA_DICT["conv55_6_CLB"] = [150, 0, 0]
 OP_AREA_DICT["conv55_6_PIM"] = [12, 0, 4]
 # OP-Netlist
-OP_NET_DICT["conv55_6_DSP"] = 1097
+OP_NET_DICT["conv55_6_DSP"] = 1197
 OP_NET_DICT["conv55_6_CLB"] = 4822
 OP_NET_DICT["conv55_6_PIM"] = 304
 
@@ -163,7 +167,7 @@ OP_AREA_DICT["conv33_8_DSP"] = [8, 9, 0]
 OP_AREA_DICT["conv33_8_CLB"] = [89, 0, 0]
 OP_AREA_DICT["conv33_8_PIM"] = [9, 0, 16]
 # OP-Netlist
-OP_NET_DICT["conv33_8_DSP"] = 387
+OP_NET_DICT["conv33_8_DSP"] = 443
 OP_NET_DICT["conv33_8_CLB"] = 2955
 OP_NET_DICT["conv33_8_PIM"] = 404
 
@@ -174,12 +178,12 @@ OP_SET.append(OP("conv33_6", "conv33_6", "conv33_6_DSP", "conv33_6_CLB", "conv33
 OP_DICT["conv33_6"] = ["conv33_6_DSP", "conv33_6_CLB", "conv33_6_PIM"]
 # OP-Resource
 OP_AREA_DICT["conv33_6_DSP"] = [8, 9, 0]
-OP_AREA_DICT["conv33_6_CLB"] = [16, 0, 0]
-OP_AREA_DICT["conv33_6_PIM"] = [14, 0, 16]
+OP_AREA_DICT["conv33_6_CLB"] = [55, 0, 0]
+OP_AREA_DICT["conv33_6_PIM"] = [12, 0, 4]
 # OP-Netlist
-OP_NET_DICT["conv33_6_DSP"] = 387
-OP_NET_DICT["conv33_6_CLB"] = 18
-OP_NET_DICT["conv33_6_PIM"] = 213
+OP_NET_DICT["conv33_6_DSP"] = 443
+OP_NET_DICT["conv33_6_CLB"] = 1754
+OP_NET_DICT["conv33_6_PIM"] = 125
 
 # ----------------------------------vecmat_x_8----------------------------------
 # OP-Definition
@@ -256,12 +260,15 @@ with open(PATH_CIRCUIT_FILE, 'r') as f:
         tmp_verilog_buffer.append(line)
 
 if Get_BLK == 1:
-    tmp_cmd = "cp -rf " +  PATH_CIRCUIT_FOLDER + " " + PATH_CACHE_FOLDER
+    # copy the circuit folder to the cache folder and rename it with the precision
+    if os.path.exists(PATH_CACHE_FOLDER + CIRCUIT_NAME + "_" +args.precision+"_BLK") == False:
+        os.mkdir(PATH_CACHE_FOLDER + CIRCUIT_NAME + "_" +args.precision+"_BLK")
+    tmp_cmd = "cp -rf " +  PATH_CIRCUIT_FOLDER + "* " + PATH_CACHE_FOLDER + CIRCUIT_NAME + "_" +args.precision+"_BLK"
     os.system(tmp_cmd)
-    tmp_cmd = "rsync --delete " + PATH_CACHE_FOLDER + CIRCUIT_NAME + " " + PATH_CACHE_FOLDER + CIRCUIT_NAME + "_" +args.precision+"_BLK"
-    os.system(tmp_cmd)
-    tmp_cmd = "rm -rf " + PATH_CACHE_FOLDER + CIRCUIT_NAME 
-    os.system(tmp_cmd)
+    # tmp_cmd = "rsync -a --delete " + PATH_CACHE_FOLDER + CIRCUIT_NAME + " " + PATH_CACHE_FOLDER + CIRCUIT_NAME + "_" +args.precision+"_BLK"
+    # os.system(tmp_cmd)
+    # tmp_cmd = "rm -rf " + PATH_CACHE_FOLDER + CIRCUIT_NAME 
+    # os.system(tmp_cmd)
     
 
     # write the blackboxes Verilog file

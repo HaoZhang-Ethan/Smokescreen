@@ -39,40 +39,34 @@ module conv33_6_CLB (
   multiplier336 mult_inst9(.a(in_data_8), .b(kernel_8), .p(conv_sum[107:96]));
 
 
+  wire [15:0] c1[4:0], c2[6:0], c3[3:0], c4[2:0]; // 中间电路
+  qadd_33 add_inst1(.a(conv_sum[23:12]), .b(conv_sum[11:0]), .c(c1[0]));
+  qadd_33 add_inst2(.a(conv_sum[47:36]), .b(conv_sum[35:24]), .c(c1[1]));
+  qadd_33 add_inst3(.a(conv_sum[71:60]), .b(conv_sum[59:48]), .c(c1[2]));
+  qadd_33 add_inst4(.a(conv_sum[95:84]), .b(conv_sum[83:72]), .c(c1[3]));
+  // qadd_33 add_inst5(.a(conv_sum[107:96]), .b(conv_sum[95:84]), .c(c1[4]));
 
-  parallel_adder_tree_clb_33 adder_tree_inst(.a(conv_sum), .clk(clk), .sum(out_data));
+  qadd_33 add_inst6(.a(c1[0]), .b(c1[1]), .c(c2[0]));
+  qadd_33 add_inst7(.a(c1[2]), .b(c1[3]), .c(c2[1]));
 
+  qadd_33 add_inst8(.a(c2[0]), .b(c2[1]), .c(c3[0]));
 
-endmodule
-
-module parallel_adder_tree_clb_33 (
-    input [107:0] a,  // 25个16位数字输入
-    input clk,
-    output [17:0] sum // 结果
-);
-
-wire [17:0] c1[24:0], c2[6:0], c3[3:0], c4[2:0]; // 中间电路
-assign c1[0] = a[11:0] + a[23:12];
-assign c1[1] = a[35:24] + a[47:36];
-assign c1[2] = a[59:48] + a[71:60];
-assign c1[3] = a[83:72] + a[95:84];
-// assign c1[4] = a[107:96];
-
-
-assign c2[0] = c1[0] + c1[1];
-assign c2[1] = c1[2] + c1[3];
-
-
-assign c3[0] = c2[0] + c2[1];
-assign c3[1] = c2[2] + a[107:96];
-
-
-assign sum = c3[0] + c3[1];
-
+  qadd_33 add_inst9(.a(c3[0]), .b(conv_sum[107:96]), .c(out_data));
 
 
 endmodule
 
 
+
+module qadd_33(
+ input [15:0] a,
+ input [15:0] b,
+ output [15:0] c
+    );
+    
+assign c = a + b;
+
+
+endmodule
 
 

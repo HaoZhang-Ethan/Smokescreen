@@ -24,7 +24,7 @@ module parallel_adder_tree_dsp_33 (
     output [17:0] sum // 结果
 );
 
-wire [16:0] c1[4:0], c2[2:0], c3; // 中间电路
+wire [17:0] c1[4:0], c2[2:0], c3; // 中间电路
 assign c1[0] = a + b;
 assign c1[1] = c + d;
 assign c1[2] = e + f;

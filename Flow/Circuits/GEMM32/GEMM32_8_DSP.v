@@ -1,4 +1,4 @@
-module conv77_8bit_DSP (
+module GEMM32_8_DSP (
   input [7:0] in_data_0, input [7:0] in_data_1, input [7:0] in_data_2, input [7:0] in_data_3, input [7:0] in_data_4, input [7:0] in_data_5, input [7:0] in_data_6, input [7:0] in_data_7, input [7:0] in_data_8, input [7:0] in_data_9, input [7:0] in_data_10, input [7:0] in_data_11, input [7:0] in_data_12, input [7:0] in_data_13, input [7:0] in_data_14, input [7:0] in_data_15, input [7:0] in_data_16, input [7:0] in_data_17, input [7:0] in_data_18, input [7:0] in_data_19, input [7:0] in_data_20, input [7:0] in_data_21, input [7:0] in_data_22, input [7:0] in_data_23, input [7:0] in_data_24,   input [7:0] in_data_25, input [7:0] in_data_26, input [7:0] in_data_27, input [7:0] in_data_28, input [7:0] in_data_29, input [7:0] in_data_30, input [7:0] in_data_31, input [7:0] in_data_32, 
   input [7:0] kernel_0, input [7:0] kernel_1, input [7:0] kernel_2, input [7:0] kernel_3, input [7:0] kernel_4, input [7:0] kernel_5, input [7:0] kernel_6, input [7:0] kernel_7, input [7:0] kernel_8, input [7:0] kernel_9, input [7:0] kernel_10, input [7:0] kernel_11, input [7:0] kernel_12,   input [7:0] kernel_13, input [7:0] kernel_14, input [7:0] kernel_15, input [7:0] kernel_16, input [7:0] kernel_17, input [7:0] kernel_18, input [7:0] kernel_19, input [7:0] kernel_20, input [7:0] kernel_21, input [7:0] kernel_22, input [7:0] kernel_23, input [7:0] kernel_24,   input [7:0] kernel_25, input [7:0] kernel_26, input [7:0] kernel_27, input [7:0] kernel_28, input [7:0] kernel_29, input [7:0] kernel_30, input [7:0] kernel_31, input [7:0] kernel_32, 
   input clk,
@@ -53,68 +53,6 @@ qadd2 qadd2_inst45(.a(c3[0]), .b(c3[1]), .c(c4[0]));
 qadd2 qadd2_inst46(.a(c3[2]), .b(c3[3]), .c(c4[1]));
 
 qadd2 qadd2_inst54(.a(c4[0]), .b(c4[1]), .c(sum));
-// assign c1[0] = a0 + a1;
-// assign c1[1] = a2 + a3;
-// assign c1[2] = a4 + a5;
-// assign c1[3] = a6 + a7;
-// assign c1[4] = a8 + a9;
-// assign c1[5] = a10 + a11;
-// assign c1[6] = a12 + a13;
-// assign c1[7] = a14 + a15;
-// assign c1[8] = a16 + a17;
-// assign c1[9] = a18 + a19;
-// assign c1[10] = a20 + a21;
-// assign c1[11] = a22 + a23;
-// assign c1[12] = a24 + a25;
-// assign c1[13] = a26 + a27;
-// assign c1[14] = a28 + a29;
-// assign c1[15] = a30 + a31;
-// assign c1[16] = a32 + a33;
-// assign c1[17] = a34 + a35;
-// assign c1[18] = a36 + a37;
-// assign c1[19] = a38 + a39;
-// assign c1[20] = a40 + a41;
-// assign c1[21] = a42 + a43;
-// assign c1[22] = a44 + a45;
-// assign c1[23] = a46 + a47;
-
-
-// assign c2[0] = c1[0] + c1[1];
-// assign c2[1] = c1[2] + c1[3];
-// assign c2[2] = c1[4] + c1[5];
-// assign c2[3] = c1[6] + c1[7];
-// assign c2[4] = c1[8] + c1[9];
-// assign c2[5] = c1[10] + c1[11];
-// assign c2[6] = c1[12]+ c1[13];
-// assign c2[7] = c1[14] + c1[15];
-// assign c2[8] = c1[16] + c1[17];
-// assign c2[9] = c1[18] + c1[19];
-// assign c2[10] = c1[20] + c1[21];
-// assign c2[11] = c1[22] + c1[23];
-
-
-
-// assign c3[0] = c2[0] + c2[1];
-// assign c3[1] = c2[2] + c2[3];
-// assign c3[2] = c2[4] + c2[5];
-// assign c3[3] = c2[6] + c2[7];
-// assign c3[4] = c2[8] + c2[9];
-// assign c3[5] = c2[10] + c2[11];
-
-
-
-// assign c4[0] = c3[0] + c3[1];
-// assign c4[1] = c3[2] + c3[3];
-// assign c4[2] = c3[4] + c3[5];
-
-// assign c5[0] = c4[0] + c4[1];
-// assign c5[1] = c4[2] + a48;
-
-// assign sum = c4[1]; //c5[0] + c5[1];
-
-// always @(posedge clk) begin
-//     sum <= c4[0] + c4[1];c1[0]; //
-// end
 
 endmodule
 
