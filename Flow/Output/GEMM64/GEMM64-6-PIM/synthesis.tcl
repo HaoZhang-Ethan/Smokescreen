@@ -72,7 +72,7 @@ if {$env(PARSER) == "surelog" } {
 
 # read the custom complex blocks in the architecture
 
-read_verilog -lib /root/Project/Smokescreen/Flow/Output/GEMM64-6-PIM/arch_dsps.v
+read_verilog -lib /root/Project/Smokescreen/Flow/Output/GEMM64/GEMM64-6-PIM/arch_dsps.v
 
 
 
@@ -136,13 +136,13 @@ opt -full
 
 techmap -map +/adff2dff.v
 
-techmap -map /root/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_flow/misc/yosyslib/../../../ODIN_II/techlib/adffe2dff.v
+techmap -map /root/Project/Smokescreen_/Tools/vtr-verilog-to-routing/vtr_flow/misc/yosyslib/../../../ODIN_II/techlib/adffe2dff.v
 
 
 
 # Map multipliers, DSPs, and add/subtracts according to yosys_models.v
 
-techmap -map /root/Project/Smokescreen/Flow/Output/GEMM64-6-PIM/yosys_models.v */t:\$mul */t:\$mem */t:\$sub */t:\$add
+techmap -map /root/Project/Smokescreen/Flow/Output/GEMM64/GEMM64-6-PIM/yosys_models.v */t:\$mul */t:\$mem */t:\$sub */t:\$add
 
 opt -fast -full
 
@@ -172,19 +172,19 @@ opt -fast
 
 # as blackboxes
 
-read_verilog -lib /root/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_flow/misc/yosyslib/adder.v
+read_verilog -lib /root/Project/Smokescreen_/Tools/vtr-verilog-to-routing/vtr_flow/misc/yosyslib/adder.v
 
-read_verilog -lib /root/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_flow/misc/yosyslib/multiply.v
+read_verilog -lib /root/Project/Smokescreen_/Tools/vtr-verilog-to-routing/vtr_flow/misc/yosyslib/multiply.v
 
-#(/root/Project/Smokescreen/Flow/Output/GEMM64-6-PIM/single_port_ram.v) will be replaced by single_port_ram.v by python script
+#(/root/Project/Smokescreen/Flow/Output/GEMM64/GEMM64-6-PIM/single_port_ram.v) will be replaced by single_port_ram.v by python script
 
-read_verilog -lib /root/Project/Smokescreen/Flow/Output/GEMM64-6-PIM/single_port_ram.v
+read_verilog -lib /root/Project/Smokescreen/Flow/Output/GEMM64/GEMM64-6-PIM/single_port_ram.v
 
-read_verilog -lib /root/Project/Smokescreen/Flow/Output/GEMM64-6-PIM/memory_pim.v
+read_verilog -lib /root/Project/Smokescreen/Flow/Output/GEMM64/GEMM64-6-PIM/memory_pim.v
 
-#(/root/Project/Smokescreen/Flow/Output/GEMM64-6-PIM/dual_port_ram.v) will be replaced by dual_port_ram.v by python script
+#(/root/Project/Smokescreen/Flow/Output/GEMM64/GEMM64-6-PIM/dual_port_ram.v) will be replaced by dual_port_ram.v by python script
 
-read_verilog -lib /root/Project/Smokescreen/Flow/Output/GEMM64-6-PIM/dual_port_ram.v
+read_verilog -lib /root/Project/Smokescreen/Flow/Output/GEMM64/GEMM64-6-PIM/dual_port_ram.v
 
 
 
@@ -196,15 +196,15 @@ read_verilog -lib /root/Project/Smokescreen/Flow/Output/GEMM64-6-PIM/dual_port_r
 
 # since it may outcome hierarchy error
 
-#(/root/Project/Smokescreen/Flow/Output/GEMM64-6-PIM/spram_rename.v) will be replaced by spram_rename.v by python script
+#(/root/Project/Smokescreen/Flow/Output/GEMM64/GEMM64-6-PIM/spram_rename.v) will be replaced by spram_rename.v by python script
 
-read_verilog /root/Project/Smokescreen/Flow/Output/GEMM64-6-PIM/spram_rename.v
+read_verilog /root/Project/Smokescreen/Flow/Output/GEMM64/GEMM64-6-PIM/spram_rename.v
 
-read_verilog /root/Project/Smokescreen/Flow/Output/GEMM64-6-PIM/pimram_rename.v
+read_verilog /root/Project/Smokescreen/Flow/Output/GEMM64/GEMM64-6-PIM/pimram_rename.v
 
-#(/root/Project/Smokescreen/Flow/Output/GEMM64-6-PIM/dpram_rename.v) will be replaced by dpram_rename.v by python script
+#(/root/Project/Smokescreen/Flow/Output/GEMM64/GEMM64-6-PIM/dpram_rename.v) will be replaced by dpram_rename.v by python script
 
-read_verilog /root/Project/Smokescreen/Flow/Output/GEMM64-6-PIM/dpram_rename.v
+read_verilog /root/Project/Smokescreen/Flow/Output/GEMM64/GEMM64-6-PIM/dpram_rename.v
 
 
 

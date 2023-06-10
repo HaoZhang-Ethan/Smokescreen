@@ -4,7 +4,7 @@
 Author: haozhang haozhang@mail.sdu.edu.cn
 Date: 2023-04-02 03:13:45
 LastEditors: haozhang haozhang@mail.sdu.edu.cn
-LastEditTime: 2023-05-29 03:02:40
+LastEditTime: 2023-05-30 08:16:50
 FilePath: /Smokescreen/Flow/Scirpts/presyn.py
 Description: 
 
@@ -26,25 +26,23 @@ import psutil
 Get_BLK = 0
 AUTO_EXE = 0
 FIND_OP = 0
-GET_FIND_OP_RES = 0
+GET_FIND_OP_RES = 1
 SA_RUN_OP = 0
 SA_RUN_AREA = 0
 
 
 # Parse the command line arguments
 parser = argparse.ArgumentParser(description='Find instances in a Verilog file containing certain keywords and write their names and corresponding module names to a file.')
-parser.add_argument('-i', '--input', type=str, required=True, help='Input Verilog file')
-parser.add_argument('-p', '--precision', type=str, required=True, help='Precision of OP')
-parser.add_argument('-g', '--group', type=str, required=True, help='group 1 or 2')
-parser.add_argument('-a', '--architecture', type=str, required=True, help='architecture in group 1')
+parser.add_argument('-D', '--debug', type=str, required=True, help='Debug 0: Without, 1: Find OP')
+parser.add_argument('-i', '--input', type=str, required=False, help='Input Verilog file')
+parser.add_argument('-p', '--precision', type=str, required=False, help='Precision of OP')
+parser.add_argument('-g', '--group', type=str, required=False, help='group 1 or 2')
+parser.add_argument('-a', '--architecture', type=str, required=False, help='architecture in group 1')
 parser.add_argument('-s', '--strategy', type=str, required=False, help='strategy in group 1')
 # parser.add_argument('-o', '--output', type=str, required=True, help='Output file')
 # parser.add_argument('-k', '--keywords', type=str, required=True, help='Comma-separated list of keywords to search for')
 args = parser.parse_args()
-if args.strategy == "OP":
-    SA_RUN_OP = 1
-elif args.strategy == "AREA":
-    SA_RUN_AREA = 1
+
 
 
 
@@ -59,25 +57,30 @@ def calu_FPGA_SIZE(size, INST):
         return calu_FPGA_SIZE(size-1, INST)
 
 
-# global parameters
-CIRCUIT_NAME = args.input
-
-
 PATH_FPGA_SIZE_LIB = "/root/Project/Smokescreen/Flow/Scirpts/Lib/FPGA_SIZE.lib"
 PATH_VTR_FLOW_RUN = "/root/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_flow/scripts/run_vtr_flow.py "
 PATH_CIRCUITS = "/root/Project/Smokescreen/Flow/Circuits/"
-PATH_CIRCUIT_FOLDER = PATH_CIRCUITS + CIRCUIT_NAME + "/"
-PATH_CIRCUIT = PATH_CIRCUIT_FOLDER + CIRCUIT_NAME
-PATH_CIRCUIT_FILE = PATH_CIRCUIT_FOLDER + CIRCUIT_NAME + "_" + args.precision + ".v"
-PATH_CACHE_FOLDER = "/root/Project/Smokescreen/Flow/Scirpts/Cache/"
-PATH_CACHE_BLK_SET = "/root/Project/Smokescreen/Flow/Scirpts/Cache/BLK_SETS/"
-PATH_BLK_FILE = PATH_CACHE_BLK_SET + CIRCUIT_NAME + "_" + args.precision + "_BLK.v"
-PATH_ARCHITECTURE = "/root/Project/Smokescreen/Flow/Arch/"
-PATH_ARCHITECTURE_CRAM_FILE = PATH_ARCHITECTURE+"k6FracN10LB_mem20K_complexDSP_customSB_22nm_cbram.dsp_heavy.xml"
-PATH_SOLUTION = "/root/Project/Smokescreen/Flow/Scirpts/Solution/"
-PATH_SOLUTION_OP_FILE = PATH_SOLUTION + "OP_SETS/" + CIRCUIT_NAME + "_" + args.precision + "_OP.v"
-PATH_SOLUTION_AREA_FILE = PATH_SOLUTION + "AREA_SETS/" + CIRCUIT_NAME + "_" + args.precision + "_AREA.v"
 
+if args.debug == "0":
+    if args.strategy == "OP":
+        SA_RUN_OP = 1
+    elif args.strategy == "AREA":
+        SA_RUN_AREA = 1
+    # global parameters
+    CIRCUIT_NAME = args.input
+    PATH_CIRCUIT_FOLDER = PATH_CIRCUITS + CIRCUIT_NAME + "/"
+    PATH_CIRCUIT = PATH_CIRCUIT_FOLDER + CIRCUIT_NAME
+    PATH_CIRCUIT_FILE = PATH_CIRCUIT_FOLDER + CIRCUIT_NAME + "_" + args.precision + ".v"
+    PATH_CACHE_FOLDER = "/root/Project/Smokescreen/Flow/Scirpts/Cache/"
+    PATH_CACHE_BLK_SET = "/root/Project/Smokescreen/Flow/Scirpts/Cache/BLK_SETS/"
+    PATH_BLK_FILE = PATH_CACHE_BLK_SET + CIRCUIT_NAME + "_" + args.precision + "_BLK.v"
+    PATH_ARCHITECTURE = "/root/Project/Smokescreen/Flow/Arch/"
+    PATH_ARCHITECTURE_CRAM_FILE = PATH_ARCHITECTURE+"k6FracN10LB_mem20K_complexDSP_customSB_22nm_cbram.dsp_heavy.xml"
+    PATH_SOLUTION = "/root/Project/Smokescreen/Flow/Scirpts/Solution/"
+    PATH_SOLUTION_OP_FILE = PATH_SOLUTION + "OP_SETS/" + CIRCUIT_NAME + "_" + args.precision + "_OP.v"
+    PATH_SOLUTION_AREA_FILE = PATH_SOLUTION + "AREA_SETS/" + CIRCUIT_NAME + "_" + args.precision + "_AREA.v"
+elif args.debug == "1":
+    PATH_CIRCUIT_FILE = "/root/Project/Smokescreen/Flow/Circuits/CNN48_55/CNN48_55_8.v"
 
 
 KIND_OP_CHIP = 0 # the kind of OP that can be supported by the chip
@@ -287,47 +290,47 @@ if Get_BLK == 1:
             break
         time.sleep(5)
 
+if args.debug == "0":
+    # catch the base information from blackboxes synthesis result
+    #   Read the synthesis result
+    PATH_STD_OUT = PATH_CACHE_FOLDER + CIRCUIT_NAME + "_" +args.precision+"_BLK" + "/vpr_stdout.log" 
+    tmp_flag_res_find = 0
+    with open(PATH_STD_OUT, 'r') as f:
+        for line in f:
+            if line.find("Resource usage") != -1:
+                tmp_flag_res_find = 6
+            if tmp_flag_res_find > 0:
+                if tmp_flag_res_find == 6 and line.find("clb") != -1 :
+                    tmp_flag_res_find = tmp_flag_res_find -1
+                    CIRCUIT_inst.NUM_BASE_CLB = int(line.split()[0])
+                elif tmp_flag_res_find == 5 and line.find("clb") != -1 :
+                    tmp_flag_res_find = tmp_flag_res_find -1
+                    CIRCUIT_inst.NUM_BASE_FPGA_CLB = int(line.split()[0])
+                elif tmp_flag_res_find == 4 and line.find("dsp_top") != -1 :
+                    tmp_flag_res_find = tmp_flag_res_find -1
+                    CIRCUIT_inst.NUM_BASE_DSP = int(line.split()[0])
+                elif tmp_flag_res_find == 3 and line.find("dsp_top") != -1 :
+                    tmp_flag_res_find = tmp_flag_res_find -1
+                    CIRCUIT_inst.NUM_BASE_FPGA_DSP = int(line.split()[0])
+                elif tmp_flag_res_find == 2 and line.find("memory") != -1 :
+                    tmp_flag_res_find = tmp_flag_res_find -1
+                    CIRCUIT_inst.NUM_BASE_BRAM = int(line.split()[0])
+                elif tmp_flag_res_find == 1 and line.find("memory") != -1 :
+                    tmp_flag_res_find = tmp_flag_res_find -1
+                    CIRCUIT_inst.NUM_BASE_FPGA_BRAM = int(line.split()[0])   
+            if line.find("FPGA sized to") != -1: 
+                CIRCUIT_inst.BASE_FPGA_SIZE = int(line.split()[3])
 
-# catch the base information from blackboxes synthesis result
-#   Read the synthesis result
-PATH_STD_OUT = PATH_CACHE_FOLDER + CIRCUIT_NAME + "_" +args.precision+"_BLK" + "/vpr_stdout.log" 
-tmp_flag_res_find = 0
-with open(PATH_STD_OUT, 'r') as f:
-    for line in f:
-        if line.find("Resource usage") != -1:
-            tmp_flag_res_find = 6
-        if tmp_flag_res_find > 0:
-            if tmp_flag_res_find == 6 and line.find("clb") != -1 :
-                tmp_flag_res_find = tmp_flag_res_find -1
-                CIRCUIT_inst.NUM_BASE_CLB = int(line.split()[0])
-            elif tmp_flag_res_find == 5 and line.find("clb") != -1 :
-                tmp_flag_res_find = tmp_flag_res_find -1
-                CIRCUIT_inst.NUM_BASE_FPGA_CLB = int(line.split()[0])
-            elif tmp_flag_res_find == 4 and line.find("dsp_top") != -1 :
-                tmp_flag_res_find = tmp_flag_res_find -1
-                CIRCUIT_inst.NUM_BASE_DSP = int(line.split()[0])
-            elif tmp_flag_res_find == 3 and line.find("dsp_top") != -1 :
-                tmp_flag_res_find = tmp_flag_res_find -1
-                CIRCUIT_inst.NUM_BASE_FPGA_DSP = int(line.split()[0])
-            elif tmp_flag_res_find == 2 and line.find("memory") != -1 :
-                tmp_flag_res_find = tmp_flag_res_find -1
-                CIRCUIT_inst.NUM_BASE_BRAM = int(line.split()[0])
-            elif tmp_flag_res_find == 1 and line.find("memory") != -1 :
-                tmp_flag_res_find = tmp_flag_res_find -1
-                CIRCUIT_inst.NUM_BASE_FPGA_BRAM = int(line.split()[0])   
-        if line.find("FPGA sized to") != -1: 
-            CIRCUIT_inst.BASE_FPGA_SIZE = int(line.split()[3])
-
-# generate a initial solution
-# traverse the DICT_OP of CIRCUIT_inst and randomly assign the OP to the OP_M
-for key, value in CIRCUIT_inst.DICT_OP.items():
-    CIRCUIT_inst.DICT_OP[key][1] =  random.choice(OP_DICT[CIRCUIT_inst.DICT_OP[key][0]]) # OP_DICT[CIRCUIT_inst.DICT_OP[key][0]][2] #
-    CIRCUIT_inst.NUM_BASE_CLB = CIRCUIT_inst.NUM_BASE_CLB + OP_AREA_DICT[CIRCUIT_inst.DICT_OP[key][1]][0]
-    CIRCUIT_inst.NUM_BASE_DSP = CIRCUIT_inst.NUM_BASE_DSP + OP_AREA_DICT[CIRCUIT_inst.DICT_OP[key][1]][1]
-    CIRCUIT_inst.NUM_BASE_BRAM = CIRCUIT_inst.NUM_BASE_BRAM + OP_AREA_DICT[CIRCUIT_inst.DICT_OP[key][1]][2]
-    CIRCUIT_inst.BASE_FPGA_SIZE = calu_FPGA_SIZE(CIRCUIT_inst.BASE_FPGA_SIZE, CIRCUIT_inst)
-    CIRCUIT_inst.NET = CIRCUIT_inst.NET + OP_NET_DICT[CIRCUIT_inst.DICT_OP[key][1]]
-    CIRCUIT_inst.DENSITY = CIRCUIT_inst.NET/CIRCUIT_inst.BASE_FPGA_SIZE
+    # generate a initial solution
+    # traverse the DICT_OP of CIRCUIT_inst and randomly assign the OP to the OP_M
+    for key, value in CIRCUIT_inst.DICT_OP.items():
+        CIRCUIT_inst.DICT_OP[key][1] =  random.choice(OP_DICT[CIRCUIT_inst.DICT_OP[key][0]]) # OP_DICT[CIRCUIT_inst.DICT_OP[key][0]][2] #
+        CIRCUIT_inst.NUM_BASE_CLB = CIRCUIT_inst.NUM_BASE_CLB + OP_AREA_DICT[CIRCUIT_inst.DICT_OP[key][1]][0]
+        CIRCUIT_inst.NUM_BASE_DSP = CIRCUIT_inst.NUM_BASE_DSP + OP_AREA_DICT[CIRCUIT_inst.DICT_OP[key][1]][1]
+        CIRCUIT_inst.NUM_BASE_BRAM = CIRCUIT_inst.NUM_BASE_BRAM + OP_AREA_DICT[CIRCUIT_inst.DICT_OP[key][1]][2]
+        CIRCUIT_inst.BASE_FPGA_SIZE = calu_FPGA_SIZE(CIRCUIT_inst.BASE_FPGA_SIZE, CIRCUIT_inst)
+        CIRCUIT_inst.NET = CIRCUIT_inst.NET + OP_NET_DICT[CIRCUIT_inst.DICT_OP[key][1]]
+        CIRCUIT_inst.DENSITY = CIRCUIT_inst.NET/CIRCUIT_inst.BASE_FPGA_SIZE
 
 def simulated_annealing(cost_function, initial_solution, temperature, cooling_rate, stopping_temperature):
     NUM_SA_TRY = 0
@@ -413,26 +416,27 @@ def cost_function(solution):
     P_Cost = (solution.NET) # /(solution.BASE_FPGA_SIZE*solution.BASE_FPGA_SIZE)
     return A_Cost, P_Cost
 
-if SA_RUN_OP == 1 or SA_RUN_AREA == 1:    
-    best_solution, best_cost = simulated_annealing(cost_function, CIRCUIT_inst, temperature = 1000, cooling_rate = 0.9999, stopping_temperature = 0.01)
-    # read the Verilog file and replace the instances with the blackboxes module
-    # Read the Verilog file
-    tmp_verilog_buffer = []
-    with open(PATH_CIRCUIT_FILE, 'r') as f:
-        for line in f:
-            for OP_ in OP_SET:
-                if line.count(OP_.OP_key) != 0:
-                    line = line.replace(OP_.OP_key ,best_solution.DICT_OP[line.split()[1]][1])
-            tmp_verilog_buffer.append(line)
-    # write the blackboxes Verilog file
-    if SA_RUN_OP == 1:
-        tmp_path = PATH_SOLUTION_OP_FILE
-    elif SA_RUN_AREA == 1:
-        tmp_path = PATH_SOLUTION_AREA_FILE
-    with open(tmp_path, 'w') as f:
-        for tmp_verilog_ in tmp_verilog_buffer:
-            f.write(tmp_verilog_)
-    print("ok")
+if args.debug == "0":
+    if SA_RUN_OP == 1 or SA_RUN_AREA == 1:    
+        best_solution, best_cost = simulated_annealing(cost_function, CIRCUIT_inst, temperature = 1000, cooling_rate = 0.9999, stopping_temperature = 0.01)
+        # read the Verilog file and replace the instances with the blackboxes module
+        # Read the Verilog file
+        tmp_verilog_buffer = []
+        with open(PATH_CIRCUIT_FILE, 'r') as f:
+            for line in f:
+                for OP_ in OP_SET:
+                    if line.count(OP_.OP_key) != 0:
+                        line = line.replace(OP_.OP_key ,best_solution.DICT_OP[line.split()[1]][1])
+                tmp_verilog_buffer.append(line)
+        # write the blackboxes Verilog file
+        if SA_RUN_OP == 1:
+            tmp_path = PATH_SOLUTION_OP_FILE
+        elif SA_RUN_AREA == 1:
+            tmp_path = PATH_SOLUTION_AREA_FILE
+        with open(tmp_path, 'w') as f:
+            for tmp_verilog_ in tmp_verilog_buffer:
+                f.write(tmp_verilog_)
+        print("ok")
 
 
 
@@ -454,14 +458,14 @@ if FIND_OP == 1:
                     for tmp_j in range(tmp_num_dsp + tmp_num_clb, tmp_num_dsp + tmp_num_clb + tmp_num_pim):
                         tmp_vector[tmp_j] = 2
                     random.shuffle(tmp_vector)
-                    path = "/root/Project/Smokescreen/Flow/Output/debug/LSTM" + str(tmp_num_dsp) + "-" + str(tmp_num_clb) + "-" + str(tmp_num_pim) + "/"
+                    path = "/root/Project/Smokescreen/Flow/Output/Find_OP/" + str(tmp_num_dsp) + "-" + str(tmp_num_clb) + "-" + str(tmp_num_pim) + "/"
                     if os.path.exists(path):
-                        cmd = "cp -f " + "/root/Project/Smokescreen/Flow/Circuits/lstm/Adapt/*.v" + " " + path
+                        cmd = "cp -f " + "/root/Project/Smokescreen/Flow/Circuits/CNN48_55/*.v" + " " + path
                         os.system(cmd)
                     else:
                         cmd = "mkdir " + path 
                         os.system(cmd)
-                        cmd = "cp " + "/root/Project/Smokescreen/Flow/Circuits/lstm/Adapt/*.v" + " " + path
+                        cmd = "cp " + "/root/Project/Smokescreen/Flow/Circuits/CNN48_55/*.v" + " " + path
                         os.system(cmd)
                     time.sleep(0.5)
                     tmp_verilog_buffer = []
@@ -473,19 +477,21 @@ if FIND_OP == 1:
                     # read the Verilog file and replace the instances with the blackboxes module
                     # Read the Verilog file
                     tmp_verilog_buffer = []
-                    with open(args.input, 'r') as f:
+                    with open("/root/Project/Smokescreen/Flow/Circuits/CNN48_55/CNN48_55_8.v", 'r') as f:
                         for line in f:
                             for OP_ in OP_SET:
                                 if line.count(OP_.OP_key) != 0:
                                     line = line.replace(OP_.OP_key ,tmp_CIRCUIT_inst.DICT_OP[line.split()[1]][1])
                             tmp_verilog_buffer.append(line)
+                    f.close()
                     # write the blackboxes Verilog file
-                    with open(args.input.replace(".v","_op.v"), 'w') as f:
+                    with open("/root/Project/Smokescreen/Flow/Scirpts/Cache/test_op.v", 'w') as f:
                         for tmp_verilog_ in tmp_verilog_buffer:
                             f.write(tmp_verilog_)
                     print("ok")
+                    f.close()
                     # execute synthesis
-                    cmd = "/root/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_flow/scripts/run_vtr_flow.py /root/Project/Smokescreen/Flow/Scirpts/test_op.v /root/Project/Smokescreen/Flow/Arch/k6FracN10LB_mem20K_complexDSP_customSB_22nm_pim_ald_n.xml  -temp_dir " + path + " -start yosys  --timing_report_detail detailed --route_chan_width 150 &"
+                    cmd = "/root/Project/Smokescreen/Tools/vtr-verilog-to-routing/vtr_flow/scripts/run_vtr_flow.py /root/Project/Smokescreen/Flow/Scirpts/Cache/test_op.v /root/Project/Smokescreen/Flow/Arch/k6FracN10LB_mem20K_complexDSP_customSB_22nm_cbram.dsp_heavy.xml  -temp_dir " + path + " -start yosys  --timing_report_detail detailed --route_chan_width 150 &"
                     while True:
                         # if cpu usage is less than 95%, then execute the command
                         if psutil.cpu_percent() < 95:
@@ -496,6 +502,7 @@ if FIND_OP == 1:
                         else:
                             time.sleep(10)
 
+
 if GET_FIND_OP_RES == 1:
     # write the report
     re_f = open("/root/Project/Smokescreen/Flow/Scirpts/test_op.res", 'w')
@@ -505,7 +512,7 @@ if GET_FIND_OP_RES == 1:
             for tmp_num_clb in range(0,len(CIRCUIT_inst.DICT_OP)+1):   # 1):
                 for tmp_num_pim in range(0,  len(CIRCUIT_inst.DICT_OP)+1): # 1):
                     if (tmp_num_dsp + tmp_num_clb + tmp_num_pim) == len(CIRCUIT_inst.DICT_OP):
-                        path = "/root/Project/Smokescreen/Flow/Output/debug/LSTM" + str(tmp_num_dsp) + "-" + str(tmp_num_clb) + "-" + str(tmp_num_pim) + "/"
+                        path = "/root/Project/Smokescreen/Flow/Output/Find_OP/" + str(tmp_num_dsp) + "-" + str(tmp_num_clb) + "-" + str(tmp_num_pim) + "/"
                         if os.path.exists(path):
                             if os.path.exists(path + "test_op.route"):
                                 # read the report
