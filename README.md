@@ -2,7 +2,7 @@
  * @Author: Hao Zhang haozhang@mail.sdu.edu.cn
  * @Date: 2022-08-13 15:33:31
  * @LastEditors: Ethan haozhang@mail.sdu.edu.cn
- * @LastEditTime: 2024-04-03 23:29:02
+ * @LastEditTime: 2024-04-03 23:32:32
  * @FilePath: /Smokescreen/README.md
  * @Description: 
  * 
@@ -21,6 +21,7 @@ Field-programmable gate arrays (FPGAs) have been widely used in artificial intel
 
 <div align="center">
 <img src="./Figure/Architecture.png" width="700">
+
  <figcaption>Architecture of C-BRAM.</figcaption>
 </div>
 
@@ -28,6 +29,7 @@ We explore another feature of NVMs, i.e., computation-in-memory (CiM), to study 
 
 <div align="center">
 <img src="./Figure/Flow.png" width="500">
+
  <figcaption>Offload some MVM OPs into C-BRAM.</figcaption>
 </div>
 
