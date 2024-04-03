@@ -1,41 +1,62 @@
 <!--
  * @Author: Hao Zhang haozhang@mail.sdu.edu.cn
  * @Date: 2022-08-13 15:33:31
- * @LastEditors: haozhang haozhang@mail.sdu.edu.cn
- * @LastEditTime: 2023-05-24 13:09:56
+ * @LastEditors: Ethan haozhang@mail.sdu.edu.cn
+ * @LastEditTime: 2024-04-03 23:29:02
  * @FilePath: /Smokescreen/README.md
  * @Description: 
  * 
  * Copyright (c) 2022 by Hao Zhang haozhang@mail.sdu.edu.cn, All Rights Reserved. 
 -->
 # Smokescreen
-# Towards High-throughput Neural Network Inference with Computational BRAM on Nonvolatile FPGAs
+<div align="center">
+<img src="./Figure/Smokescreen.png" width="200">
+</div>
 
+# Towards High-throughput Neural Network Inference with Computational BRAM on Nonvolatile FPGAs
 
 ## Introduction
 
 Field-programmable gate arrays (FPGAs) have been widely used in artificial intelligence applications. As the capacity requirements of both computation and memory resources continuously increase, emerging nonvolatile memory has been proposed to replace static random access memory (SRAM) in FPGAs to build nonvolatile FPGAs (NV-FPGAs), which have advantages of high density and near-zero leakage power. Features of emerging nonvolatile memory should be fully explored to improve performance, energy efficiency as well as lifetime of NV-FPGAs. In this paper, we study an intrinsic characteristic of emerging nonvolatile memory, i.e., computing-in-memory, in nonvolatile block random access memory (BRAM) of NV-FPGAs. Specifically, we present a computational BRAM architecture (C-BRAM), and propose a computational density aware operator allocation strategy to fully utilize C-BRAM.
 
-## Files structure
+<div align="center">
+<img src="./Figure/Architecture.png" width="700">
+ <figcaption>Architecture of C-BRAM.</figcaption>
+</div>
+
+We explore another feature of NVMs, i.e., computation-in-memory (CiM), to study the architecture design and synthesis flow optimization of NV-FPGAs. CiM is a new paradigm in which computation tasks are performed directly within the memory units, rather than transferring data between memory and processing units for computation. By mapping weight to the conductance of NVM cells and vectors on the input voltage, the NVM crossbar can perform matrix-vector-multiplication (MVM) operations  with high parallelism. This enables NVM to work in computation mode in addition to traditional storage mode.
+
+<div align="center">
+<img src="./Figure/Flow.png" width="500">
+ <figcaption>Offload some MVM OPs into C-BRAM.</figcaption>
+</div>
+
+
+
+
+
+
+
+
+## Implementation
+
+### 0. Files structure
 
 ```
 ├── Flow                                                                        # Main work space
 │   ├── Arch                                                                    # FPGA Architecture files
-|   │   ├── k6FracN10LB_mem20K_complexDSP_customSB_22nm_nvm.dsp_heavy.xml       # Architecture file: NVBRAM with heavy DSP [jv TCAD]
+|   │   ├── k6FracN10LB_mem20K_complexDSP_customSB_22nm_nvm.dsp_heavy.xml       # Architecture file: NVBRAM with heavy DSP 
 │   │   ├── k6FracN10LB_mem20K_complexDSP_customSB_22nm_cbram.dsp_heavy.xml     # Architecture file: BRAM-PIM with heavy DSP 
 │   │   ├── k6FracN10LB_mem20K_complexDSP_customSB_22nm_sram.dsp_heavy.xml      # Architecture file: heavy DSP
 │   ├── Circuits                                                                # Circuits files
 │   ├── Output                                                                  # Output files
 │   ├── Scripts                                                                 # Scripts files
-│   ├── Documents                                                               # Some documents of this project
 ├── Tool                                                                        # Some Tools
 |   ├── COFFE                                                                   # COFFE framework used for estimate the performance and area of BRAM
 │   ├── MNSIM-2.0                                                               # MNSIM simulator used for quantization simulation
 │   ├── vtr-verilog-to-routing                                                  # FPGA synthesis tool
 ├── README.md
 ```
-
-## Implementation
 
 ### 1. git clone some dependent submodules
 
@@ -66,6 +87,3 @@ $VTR_ROOT/ make CMAKE_PARAMS="-DWITH_YOSYS=ON"
 $VTR_ROOT/vtr_flow/scripts ./run_vtr_flow.py  Smokescreen_ROOT/Flow/Circuits/XXXX.v  Smokescreen_ROOT/Flow/Arch/XXXXX.xml  -temp_dir Smokescreen_ROOT/Flow/Output/XXXX -start yosys
 ```
 If the scripts run successfully, you will get a `vpr.out` file in `Smokescreen_ROOT/Flow/Output/XXXX`. You can use `cat vpr.out` to check the result.
-
-## Documents
-[Documents](https://haozhang-hoge.notion.site/FPGA-PIM-MAP-85711495157249a6a1587130abea785c)
