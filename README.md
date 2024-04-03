@@ -2,7 +2,7 @@
  * @Author: Hao Zhang haozhang@mail.sdu.edu.cn
  * @Date: 2022-08-13 15:33:31
  * @LastEditors: Ethan haozhang@mail.sdu.edu.cn
- * @LastEditTime: 2024-04-03 23:34:15
+ * @LastEditTime: 2024-04-03 23:37:19
  * @FilePath: /Smokescreen/README.md
  * @Description: 
  * 
@@ -34,9 +34,15 @@ We explore another feature of NVMs, i.e., computation-in-memory (CiM), to study 
 </div>
 
 
+Specifically, we consider BRAMs in NV-FPGAs, which are essentially nonvolatile memory arrays distributed across NV-FPGA platforms. In addition to traditional storage function, we introduce computational function into BRAMs, referred to as computational BRAM (C-BRAM), and give architecture design as well as an operator allocation strategy to fully utilize high computing parallelism of C-BRAMs. 
 
 
 
+To the best of our knowledge, this is the first work to study computational BRAM in the context of NV-FPGAs. We make the following contributions in this paper. 
+
+- We explore how to adapt NVM-based CiM architecture into BRAM in NV-FPGA to reduce area overhead of peripheral circuits.
+- We develop a computational density aware operator allocation strategy to select appropriate resource type for operators, leveraging the high computational density of C-BRAM to its full potential.
+- We integrate the proposed architecture and strategy into an open-source FPGA synthesis tool-chain for evaluation.
 
 
 
