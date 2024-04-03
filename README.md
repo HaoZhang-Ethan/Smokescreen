@@ -2,7 +2,7 @@
  * @Author: Hao Zhang haozhang@mail.sdu.edu.cn
  * @Date: 2022-08-13 15:33:31
  * @LastEditors: Ethan haozhang@mail.sdu.edu.cn
- * @LastEditTime: 2024-04-03 23:32:32
+ * @LastEditTime: 2024-04-03 23:34:15
  * @FilePath: /Smokescreen/README.md
  * @Description: 
  * 
@@ -21,16 +21,16 @@ Field-programmable gate arrays (FPGAs) have been widely used in artificial intel
 
 <div align="center">
 <img src="./Figure/Architecture.png" width="700">
-
- <figcaption>Architecture of C-BRAM.</figcaption>
+  <br>
+  <p>Architecture of C-BRAM.</p>
 </div>
 
 We explore another feature of NVMs, i.e., computation-in-memory (CiM), to study the architecture design and synthesis flow optimization of NV-FPGAs. CiM is a new paradigm in which computation tasks are performed directly within the memory units, rather than transferring data between memory and processing units for computation. By mapping weight to the conductance of NVM cells and vectors on the input voltage, the NVM crossbar can perform matrix-vector-multiplication (MVM) operations  with high parallelism. This enables NVM to work in computation mode in addition to traditional storage mode.
 
 <div align="center">
 <img src="./Figure/Flow.png" width="500">
-
- <figcaption>Offload some MVM OPs into C-BRAM.</figcaption>
+  <br>
+  <p>Offload some MVM OPs into C-BRAM.</p>
 </div>
 
 
