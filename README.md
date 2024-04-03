@@ -9,10 +9,12 @@
  * Copyright (c) 2022 by Hao Zhang haozhang@mail.sdu.edu.cn, All Rights Reserved. 
 -->
 # Smokescreen
+# Towards High-throughput Neural Network Inference with Computational BRAM on Nonvolatile FPGAs
+
 
 ## Introduction
 
-Vector matrix multiplication by NV-FPGA
+Field-programmable gate arrays (FPGAs) have been widely used in artificial intelligence applications. As the capacity requirements of both computation and memory resources continuously increase, emerging nonvolatile memory has been proposed to replace static random access memory (SRAM) in FPGAs to build nonvolatile FPGAs (NV-FPGAs), which have advantages of high density and near-zero leakage power. Features of emerging nonvolatile memory should be fully explored to improve performance, energy efficiency as well as lifetime of NV-FPGAs. In this paper, we study an intrinsic characteristic of emerging nonvolatile memory, i.e., computing-in-memory, in nonvolatile block random access memory (BRAM) of NV-FPGAs. Specifically, we present a computational BRAM architecture (C-BRAM), and propose a computational density aware operator allocation strategy to fully utilize C-BRAM.
 
 ## Files structure
 
